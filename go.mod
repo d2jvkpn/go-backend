@@ -1,3 +1,3 @@
 module github.com/d2jvkpn/go-backend
 
-go 1.23.1
+go 1.23
