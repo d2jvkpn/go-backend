@@ -7,7 +7,7 @@ command -v git > /dev/null
 command -v yq > /dev/null
 
 #### 1. setup
-[ $# -eq 0 ] && { >&2 echo "Argument {branch} is required!"; exit 1; }
+[ $# -eq 0 ] && { >&2 echo '!!! '"Argument {branch} is required!"; exit 1; }
 
 git_branch=$1
 
@@ -16,7 +16,7 @@ app_version=$(yq .app_version project.yaml)
 image_name=$(yq .image_name project.yaml)
 
 [[ "${app_name}${app_version}${image_name}" == *"null"* ]] &&
-  { >&2 echo "args are unset in project.yaml"; exit 1; }
+  { >&2 echo '!!! '"args are unset in project.yaml"; exit 1; }
 
 image_tag=${git_branch}-${app_version}
 image_tag=${DOCKER_Tag:-$image_tag}
@@ -26,8 +26,8 @@ build_time=$(date +'%FT%T%:z')
 build_host=$(hostname)
 
 # env variables
-# GIT_Pull=$(printenv GIT_Pull || true)
-GIT_Pull=${GIT_Pull:-"true"}
+# GIT=$(printenv GIT || true)
+GIT=${GIT:-"true"}
 DOCKER_Pull=${DOCKER_Pull:-"true"}
 DOCKER_Push=${DOCKER_Push:-"true"}
 BUILD_Region=${BUILD_Region:-""}
@@ -43,8 +43,6 @@ trap on_exit EXIT
 
 git checkout $git_branch
 
-[[ "$GIT_Pull" != "false" ]] && git pull --no-edit
-
 git_repository="$(git config --get remote.origin.url)"
 
 git_branch="$(git rev-parse --abbrev-ref HEAD)" # current branch
@@ -53,9 +51,15 @@ git_commit_time=$(git log -1 --format="%at" | xargs -I{} date -d @{} +%FT%T%:z)
 git_tree_state="clean"
 uncommitted=$(git status --short)
 unpushed=$(git diff origin/$git_branch..HEAD --name-status)
-# [[ ! -z "$uncommitted$unpushed" ]] && git_tree_state="dirty"
 [[ ! -z "$unpushed" ]] && git_tree_state="unpushed"
 [[ ! -z "$uncommitted" ]] && git_tree_state="uncommitted"
+
+if [[ "$GIT" != "false" && ! -z "$uncommitted$unpushed" ]]; then
+    >&2 echo '!!! '"git state is dirty"
+    exit 1
+fi
+
+[[ "$GIT" != "false" ]] && git pull --no-edit
 
 #### 3. pull image
 [[ "$DOCKER_Pull" != "false" ]] && \

@@ -54,7 +54,7 @@ run-swag:
 
 #### image, image-api-dev
 image-local:
-	BUILD_Region=cn DOCKER_Pull=false DOCKER_Push=false DOCKER_Tag=local GIT_Pull=false \
+	BUILD_Region=cn DOCKER_Pull=false DOCKER_Push=false DOCKER_Tag=local GIT=false \
 	  bash deployments/docker_build.sh dev
 
 image-dev:
