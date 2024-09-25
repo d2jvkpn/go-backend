@@ -48,3 +48,31 @@ api_config: |
     address: 127.0.0.1:4317
     trace: false
     metrics: false
+
+crons_config: |
+  ##### 2. crons: configs/crons.yaml
+
+  postgres:
+    # dsn: "host=127.0.0.1 port=5432 user=account password=password dbname=database sslmode=disable"
+    dsn: postgres://account:password@127.0.0.1:5432/database?sslmode=disable
+    max_idle_conns: 4
+    max_open_conns: 32
+    conn_max_idle_time: 15m
+    conn_max_lifetime: 30m
+
+  redis:
+    addr: "127.0.0.1:6379"
+    username: ""
+    password: "password"
+    db: 0
+    protocol: 3
+    min_idle_conns: 4
+    max_idle_conns: 8
+    max_active_conns: 32
+
+swagger_config: |
+  ##### 3. swagger: configs/swagger.yaml
+
+  swagger:
+    accounts:
+    - { name: "account", password: "password" }

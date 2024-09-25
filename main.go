@@ -3,6 +3,8 @@ package main
 import (
 	"embed"
 	"fmt"
+	"log/slog"
+	"os"
 
 	"github.com/d2jvkpn/go-backend/bin/api"
 	"github.com/d2jvkpn/go-backend/bin/crons"
@@ -24,10 +26,20 @@ var (
 func main() {
 	var (
 		err        error
+		logger     *slog.Logger
 		command    *cobra.Command
 		showConfig *cobra.Command
 		showBuild  *cobra.Command
 	)
+
+	logger = slog.New(slog.NewJSONHandler(os.Stderr, nil))
+
+	defer func() {
+		if err != nil {
+			logger.Error("exit", "error", err)
+			os.Exit(1)
+		}
+	}()
 
 	if err = settings.Setup(_Project, _Migrations); err != nil {
 		err = fmt.Errorf("settings.Setup: %w", err)
@@ -40,8 +52,10 @@ func main() {
 
 		Run: func(cmd *cobra.Command, args []string) {
 			fmt.Printf(
-				"%s\n",
+				"%s\n%s\n%s\n",
 				settings.Project.GetString("api_config"),
+				settings.Project.GetString("crons_config"),
+				settings.Project.GetString("swagger_config"),
 			)
 		},
 	}
