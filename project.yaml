@@ -1,6 +1,6 @@
 app_name: go-backend
 app_version: 1.0.0
-image_name: go-backend
+image_name: registry.cn-shanghai.aliyuncs.com/d2jvkpn/go-backend
 authors: ["d2jvkpn <d2jvkpn@noreply.local>"]
 repository: git@github.com:d2jvkpn/go-backend.git
 
@@ -21,8 +21,8 @@ api_config: |
     method: 256
 
   postgres:
-    # dsn: "host=127.0.0.1 port=5432 user=account password=password dbname=dbname sslmode=disable"
-    dsn: postgres://account:password@127.0.0.1:5432/dbname?sslmode=disable
+    # dsn: "host=127.0.0.1 port=5432 user=account password=password dbname=database sslmode=disable"
+    dsn: postgres://account:password@127.0.0.1:5432/database?sslmode=disable
     max_idle_conns: 4
     max_open_conns: 32
     conn_max_idle_time: 15m

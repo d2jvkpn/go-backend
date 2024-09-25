@@ -1,0 +1,6 @@
+vendor/
+*.pb.go
+
+swagger-go/
+archive/
+_*.sql

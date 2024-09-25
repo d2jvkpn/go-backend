@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  ${APP_Name}:
+    image: ${IMAGE_Name}:${IMAGE_Tag}
+    restart: always
+    container_name: ${APP_Name}
+    user: "${USER_UID}:${USER_GID}"
+    # networks: ["net"]
+    network_mode: bridge
+    ports: ["127.0.0.1:${HTTP_Port}:${HTTP_Port}"]
+    environment: ["TZ=Asia/Shanghai"]
+    working_dir: /app
+    volumes:
+    - ./configs/swagger.yaml:/app/configs/swagger.yaml:ro
+    command: [./target/main, -config=configs/swagger.yaml, -http.addr=:${HTTP_Port}]
+
+# networks:
+#   net: { name: "${APP_Name}", driver: bridge, external: false }
