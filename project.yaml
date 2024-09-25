@@ -5,7 +5,7 @@ authors: ["d2jvkpn <d2jvkpn@noreply.local>"]
 repository: git@github.com:d2jvkpn/go-backend.git
 
 api_config: |
-  ##### 1. api: configs/local.yaml
+  ##### location: configs/local.yaml
 
   http:
     path: ""
@@ -50,7 +50,7 @@ api_config: |
     metrics: false
 
 crons_config: |
-  ##### 2. crons: configs/crons.yaml
+  ##### location: configs/crons.yaml
 
   postgres:
     # dsn: "host=127.0.0.1 port=5432 user=account password=password dbname=database sslmode=disable"
@@ -71,7 +71,7 @@ crons_config: |
     max_active_conns: 32
 
 swagger_config: |
-  ##### 3. swagger: configs/swagger.yaml
+  ##### location: configs/swagger.yaml
 
   swagger:
     accounts:

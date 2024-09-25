@@ -51,12 +51,26 @@ func main() {
 		Short: "show configurations",
 
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Printf(
-				"%s\n%s\n%s\n",
-				settings.Project.GetString("api_config"),
-				settings.Project.GetString("crons_config"),
-				settings.Project.GetString("swagger_config"),
-			)
+			var arg string
+
+			if len(args) == 0 {
+				fmt.Fprintf(os.Stderr, "arg required: api | crons | swagger\n")
+				os.Exit(1)
+			} else {
+				arg = args[0]
+			}
+
+			switch arg {
+			case "api":
+				fmt.Printf("%s\n", settings.Project.GetString("api_config"))
+			case "crons":
+				fmt.Printf("%s\n", settings.Project.GetString("crons_config"))
+			case "swagger":
+				fmt.Printf("%s\n", settings.Project.GetString("swagger_config"))
+			default:
+				fmt.Fprintf(os.Stderr, "arg required: api | crons | swagger\n")
+				os.Exit(1)
+			}
 		},
 	}
 
