@@ -6,7 +6,6 @@ import (
 	"os"
 
 	"github.com/d2jvkpn/go-backend/bin"
-	"github.com/d2jvkpn/go-backend/internal/settings"
 
 	"github.com/d2jvkpn/gotk"
 	"github.com/spf13/cobra"
@@ -42,7 +41,7 @@ func main() {
 		}
 	}()
 
-	if project, err = settings.LoadProject(_Project); err != nil {
+	if project, err = gotk.ProjectFromBytes(_Project); err != nil {
 		err = fmt.Errorf("settings.LoadProject: %w", err)
 		return
 	}
