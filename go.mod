@@ -3,7 +3,7 @@ module github.com/d2jvkpn/go-backend
 go 1.23
 
 require (
-	github.com/d2jvkpn/gotk v0.0.0-20240923142735-e4c98ebdec67
+	github.com/d2jvkpn/gotk v0.0.0-20240929040113-4ca83b673cd9
 	github.com/spf13/cobra v1.8.1
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.19.0

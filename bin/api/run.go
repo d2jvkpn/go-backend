@@ -1,17 +1,15 @@
 package api
 
 import (
-	"errors"
 	"flag"
 	"fmt"
 	"log/slog"
 	"os"
-	"os/signal"
-	"syscall"
 
 	"github.com/d2jvkpn/go-backend/internal"
 	"github.com/d2jvkpn/go-backend/internal/settings"
 
+	"github.com/d2jvkpn/gotk"
 	"github.com/spf13/cobra"
 )
 
@@ -36,11 +34,9 @@ func Run(args []string) {
 		httpAddr     string
 		internalAddr string
 		config       string
-		count        int
 
 		err    error
 		errch  chan error
-		quit   chan os.Signal
 		logger *slog.Logger
 	)
 
@@ -100,7 +96,6 @@ func Run(args []string) {
 		err = fmt.Errorf("internal.Run: %w", err)
 		return
 	}
-	count = cap(errch)
 
 	logger.Info(
 		fmt.Sprintf("%s is up", app_name),
@@ -110,25 +105,5 @@ func Run(args []string) {
 	)
 
 	// 5. exit
-	quit = make(chan os.Signal, 1)
-	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM) // linux: syscall.SIGUSR2
-
-	syncErrs := func(count int) {
-		for i := 0; i < count; i++ {
-			err = errors.Join(err, <-errch)
-		}
-	}
-
-	select {
-	case e := <-errch:
-		logger.Error("... received from channel errch", "error", e)
-		err = errors.Join(err, e)
-		count -= 1
-	case sig := <-quit:
-		fmt.Println()
-		logger.Info("... received from channel quit", "signal", sig.String())
-	}
-
-	err = errors.Join(err, internal.Shutdown())
-	syncErrs(count)
+	err = gotk.ExitChan(errch, internal.Shutdown)
 }
