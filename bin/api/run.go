@@ -1,34 +1,56 @@
 package api
 
 import (
+	"embed"
 	"flag"
 	"fmt"
 	"log/slog"
 	"os"
 
 	"github.com/d2jvkpn/go-backend/internal"
-	"github.com/d2jvkpn/go-backend/internal/settings"
 
 	"github.com/d2jvkpn/gotk"
+	"github.com/spf13/viper"
 )
 
-func Run(args []string) {
+func Run(project *viper.Viper, args []string, migrations embed.FS) {
 	var (
 		fSet         *flag.FlagSet
 		release      bool
-		app_name     string
+		config       string
 		httpAddr     string
 		internalAddr string
-		config       string
 
 		err    error
 		errCh  chan error
 		logger *slog.Logger
 	)
 
-	// 1. setup project
+	// 1. setup
+	// fmt.Println("~~~", args)
+	fSet = flag.NewFlagSet("api", flag.ExitOnError)
+
+	fSet.BoolVar(&release, "release", false, "run in release mode")
+	fSet.StringVar(&config, "config", "configs/local.yaml", "configuration file(yaml)")
+	fSet.StringVar(&httpAddr, "http.addr", ":9011", "http listening address")
+	fSet.StringVar(&internalAddr, "internal.addr", ":9019", "internal listening address")
+
+	fSet.Usage = func() {
+		output := flag.CommandLine.Output()
+		fmt.Fprintf(output, "Usage api:\n")
+		fSet.PrintDefaults()
+	}
+
+	if err = fSet.Parse(args); err != nil {
+		fmt.Fprintf(os.Stderr, "api exit: %s\n", err)
+		os.Exit(1)
+		return
+	}
+
+	//logger = slog.New(slog.NewJSONHandler(
+	//	os.Stderr, &slog.HandlerOptions{AddSource: true},
+	//).WithGroup("api"))
 	logger = slog.New(slog.NewJSONHandler(os.Stderr, nil))
-	app_name = settings.Project.GetString("app_name")
 
 	defer func() {
 		if err != nil {
@@ -39,37 +61,16 @@ func Run(args []string) {
 		}
 	}()
 
-	// fmt.Println("~~~", args)
-	fSet = flag.NewFlagSet("api", flag.ExitOnError)
-
-	fSet.BoolVar(&release, "release", false, "run in release mode")
-	fSet.StringVar(&config, "config", "configs/local.yaml", "configuration file(yaml) path")
-	fSet.StringVar(&httpAddr, "http.addr", ":9011", "http listening address")
-	fSet.StringVar(&internalAddr, "internal.addr", ":9019", "internal listening address")
-
-	fSet.Usage = func() {
-		output := flag.CommandLine.Output()
-		fmt.Fprintf(output, "api:\n")
-		fSet.PrintDefaults()
-	}
-
-	if err = fSet.Parse(args); err != nil {
-		return
-	}
-
 	// 2. configuration
-	err = settings.Load(
-		config,
+	updateMeta(
+		project,
 		map[string]any{
+			"config":        config,
 			"release":       release,
-			"http_addr":     httpAddr,
+			"http_addr":     httpAddr, // don't use http.addr as key here
 			"internal_addr": internalAddr,
 		},
 	)
-	if err != nil {
-		err = fmt.Errorf("settings.Load: %w", err)
-		return
-	}
 
 	// 3.
 	if err = internal.Load(release); err != nil {
@@ -84,12 +85,22 @@ func Run(args []string) {
 	}
 
 	logger.Info(
-		fmt.Sprintf("%s is up", app_name),
+		fmt.Sprintf("api is up"),
 		"config", config,
 		"release", release,
-		"app_version", settings.Meta["app_version"],
+		"appVersion", project.GetString("meta.app_version"),
+		"httpAddr", httpAddr,
+		"internalAddr", internalAddr,
 	)
 
 	// 5. exit
 	err = gotk.ExitChan(errCh, internal.Shutdown)
+}
+
+func updateMeta(project *viper.Viper, mp map[string]any) {
+	meta := project.GetStringMap("meta")
+
+	for k, v := range mp {
+		meta[k] = v
+	}
 }

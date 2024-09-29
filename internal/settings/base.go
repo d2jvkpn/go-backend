@@ -3,43 +3,26 @@ package settings
 import (
 	// "fmt"
 	"bytes"
-	"embed"
 
 	"github.com/d2jvkpn/gotk"
 	"github.com/spf13/viper"
 )
 
-var (
-	Meta       map[string]any
-	Migrations embed.FS
+func LoadProject(bts []byte) (project *viper.Viper, err error) {
+	var meta map[string]any
 
-	Project *viper.Viper
-	Config  *viper.Viper
-)
-
-func init() {
-	Project = viper.New()
-	Config = viper.New()
-
-}
-
-func Setup(bts []byte, migrations embed.FS) (err error) {
-	Migrations = migrations
-
-	Project.SetConfigType("yaml")
+	project = viper.New()
+	project.SetConfigType("yaml")
 
 	// _Project.ReadConfig(strings.NewReader(str))
-	if err = Project.ReadConfig(bytes.NewReader(bts)); err != nil {
-		return err
+	if err = project.ReadConfig(bytes.NewReader(bts)); err != nil {
+		return nil, err
 	}
 
-	Meta = gotk.BuildInfo()
-	Meta["app_name"] = Project.GetString("app_name")
-	Meta["app_version"] = Project.GetString("app_version")
+	meta = gotk.BuildInfo()
+	meta["app_name"] = project.GetString("app_name")
+	meta["app_version"] = project.GetString("app_version")
+	project.Set("meta", meta)
 
-	return nil
-}
-
-func Load(config string, mp map[string]any) (err error) {
-	return nil
+	return project, nil
 }

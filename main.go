@@ -3,7 +3,6 @@ package main
 import (
 	"embed"
 	"fmt"
-	"log/slog"
 	"os"
 
 	"github.com/d2jvkpn/go-backend/bin/api"
@@ -12,6 +11,8 @@ import (
 
 	"github.com/d2jvkpn/gotk"
 	"github.com/spf13/cobra"
+	// "github.com/spf13/pflag"
+	"github.com/spf13/viper"
 )
 
 var (
@@ -25,57 +26,64 @@ var (
 // ./target/main api -- --release
 func main() {
 	var (
-		err        error
-		logger     *slog.Logger
-		command    *cobra.Command
-		showConfig *cobra.Command
-		showBuild  *cobra.Command
-		apiCmd     *cobra.Command
-		cronsCmd   *cobra.Command
-	)
+		err error
+		// fSet   *pflag.FlagSet
+		project *viper.Viper
 
-	logger = slog.New(slog.NewJSONHandler(os.Stderr, nil))
+		command  *cobra.Command
+		showCmd  *cobra.Command
+		apiCmd   *cobra.Command
+		cronsCmd *cobra.Command
+	)
 
 	defer func() {
 		if err != nil {
-			logger.Error("exit", "error", err)
+			fmt.Fprintf(os.Stderr, "main exit: %s\n", err)
 			os.Exit(1)
 		}
 	}()
 
-	if err = settings.Setup(_Project, _Migrations); err != nil {
-		err = fmt.Errorf("settings.Setup: %w", err)
+	if project, err = settings.LoadProject(_Project); err != nil {
+		err = fmt.Errorf("settings.LoadProject: %w", err)
 		return
 	}
 
-	showConfig = &cobra.Command{
-		Use:   "show-config",
-		Short: "show configurations",
+	command = &cobra.Command{
+		Use: project.GetString("meta.app_name"),
+	}
+	/*
+		fSet = command.Flags()
+		fSet.StringVar(&config, "config", "configs/local.yaml", "configuration file(yaml)")
+		fSet.BoolVar(&release, "release", false, "run in release mode")
+
+		if err = fSet.Parse(os.Args[1:]); err != nil {
+			fmt.Println("~~~ error:", err)
+		}
+		command.SetArgs(fSet.Args())
+	*/
+
+	showCmd = &cobra.Command{
+		Use:   "show",
+		Short: "show build information(build) and configuration(api, crons, swagger)",
 		Run: func(cmd *cobra.Command, args []string) {
 			if len(args) == 0 {
-				fmt.Fprintf(os.Stderr, "arg required: api | crons | swagger\n")
+				fmt.Fprintf(os.Stderr, "required: build | api | crons | swagger\n")
 				os.Exit(1)
 			}
 
 			switch args[0] {
+			case "build":
+				fmt.Printf("%s\n", gotk.BuildInfoText(project.GetStringMap("meta")))
 			case "api":
-				fmt.Printf("%s\n", settings.Project.GetString("api_config"))
+				fmt.Printf("%s\n", project.GetString("api_config"))
 			case "crons":
-				fmt.Printf("%s\n", settings.Project.GetString("crons_config"))
+				fmt.Printf("%s\n", project.GetString("crons_config"))
 			case "swagger":
-				fmt.Printf("%s\n", settings.Project.GetString("swagger_config"))
+				fmt.Printf("%s\n", project.GetString("swagger_config"))
 			default:
 				fmt.Fprintf(os.Stderr, "arg required: api | crons | swagger\n")
 				os.Exit(1)
 			}
-		},
-	}
-
-	showBuild = &cobra.Command{
-		Use:   "show-build",
-		Short: "show build information",
-		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Printf("%s\n", gotk.BuildInfoText(settings.Meta))
 		},
 	}
 
@@ -84,7 +92,8 @@ func main() {
 		Short: "api service",
 
 		Run: func(cmd *cobra.Command, args []string) {
-			api.Run(args)
+			// fmt.Println("~~~ api args:", args)
+			api.Run(project, args, _Migrations)
 		},
 	}
 
@@ -97,9 +106,7 @@ func main() {
 		},
 	}
 
-	command = &cobra.Command{Use: settings.Project.GetString("app_name")}
-	command.AddCommand(showConfig)
-	command.AddCommand(showBuild)
+	command.AddCommand(showCmd)
 	command.AddCommand(apiCmd)
 	command.AddCommand(cronsCmd)
 
