@@ -1,4 +1,4 @@
-package api
+package bin
 
 import (
 	"embed"
@@ -13,7 +13,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-func Run(project *viper.Viper, args []string, migrations embed.FS) {
+func RunApi(project *viper.Viper, args []string, migrations embed.FS) {
 	var (
 		fSet         *flag.FlagSet
 		release      bool

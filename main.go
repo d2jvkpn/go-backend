@@ -5,8 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/d2jvkpn/go-backend/bin/api"
-	"github.com/d2jvkpn/go-backend/bin/crons"
+	"github.com/d2jvkpn/go-backend/bin"
 	"github.com/d2jvkpn/go-backend/internal/settings"
 
 	"github.com/d2jvkpn/gotk"
@@ -66,8 +65,10 @@ func main() {
 		Use:   "show",
 		Short: "show build information(build) and configuration(api, crons, swagger)",
 		Run: func(cmd *cobra.Command, args []string) {
+			errMsg := "required: build | api | crons | swagger\n"
+
 			if len(args) == 0 {
-				fmt.Fprintf(os.Stderr, "required: build | api | crons | swagger\n")
+				fmt.Fprintf(os.Stderr, errMsg)
 				os.Exit(1)
 			}
 
@@ -81,7 +82,7 @@ func main() {
 			case "swagger":
 				fmt.Printf("%s\n", project.GetString("swagger_config"))
 			default:
-				fmt.Fprintf(os.Stderr, "required: build | api | crons | swagger\n")
+				fmt.Fprintf(os.Stderr, errMsg)
 				os.Exit(1)
 			}
 		},
@@ -93,7 +94,7 @@ func main() {
 
 		Run: func(cmd *cobra.Command, args []string) {
 			// fmt.Println("~~~ api args:", args)
-			api.Run(project, args, _Migrations)
+			bin.RunApi(project, args, _Migrations)
 		},
 	}
 
@@ -102,7 +103,7 @@ func main() {
 		Short: "cron deamon",
 
 		Run: func(cmd *cobra.Command, args []string) {
-			crons.Run(args)
+			bin.RunCrons(args)
 		},
 	}
 

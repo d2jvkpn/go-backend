@@ -1,10 +1,10 @@
-package crons
+package bin
 
 import (
 	// "flag"
 	"fmt"
 )
 
-func Run(args []string) {
+func RunCrons(args []string) {
 	fmt.Printf("!!! TODO: %+v\n", args)
 }
