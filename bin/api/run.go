@@ -21,14 +21,14 @@ func NewCmd(name string) (command *cobra.Command) {
 		Short: "api service",
 
 		Run: func(cmd *cobra.Command, args []string) {
-			run(args)
+			Run(args)
 		},
 	}
 
 	return command
 }
 
-func run(args []string) {
+func Run(args []string) {
 	var (
 		fSet         *flag.FlagSet
 		release      bool
@@ -46,18 +46,18 @@ func run(args []string) {
 
 	// 1. setup project
 	logger = slog.New(slog.NewJSONHandler(os.Stderr, nil))
+	app_name = settings.Project.GetString("app_name")
 
 	defer func() {
 		if err != nil {
 			logger.Error("exit", "error", err)
 			os.Exit(1)
+		} else {
+			logger.Info("exit")
 		}
 	}()
 
 	// fmt.Println("~~~", args)
-
-	app_name = settings.Project.GetString("app_name")
-
 	fSet = flag.NewFlagSet("api", flag.ExitOnError)
 
 	fSet.BoolVar(&release, "release", false, "run in release mode")
@@ -71,7 +71,9 @@ func run(args []string) {
 		fSet.PrintDefaults()
 	}
 
-	fSet.Parse(args)
+	if err = fSet.Parse(args); err != nil {
+		return
+	}
 
 	// 2. configuration
 	err = settings.Load(
@@ -98,6 +100,7 @@ func run(args []string) {
 		err = fmt.Errorf("internal.Run: %w", err)
 		return
 	}
+	count = cap(errch)
 
 	logger.Info(
 		fmt.Sprintf("%s is up", app_name),
@@ -110,22 +113,22 @@ func run(args []string) {
 	quit = make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM) // linux: syscall.SIGUSR2
 
-	syncErrors := func(count int) {
+	syncErrs := func(count int) {
 		for i := 0; i < count; i++ {
 			err = errors.Join(err, <-errch)
 		}
 	}
 
-	count = cap(errch)
-
 	select {
-	case err = <-errch:
-		logger.Error("... received from channel errch")
+	case e := <-errch:
+		logger.Error("... received from channel errch", "error", e)
+		err = errors.Join(err, e)
 		count -= 1
 	case sig := <-quit:
+		fmt.Println()
 		logger.Info("... received from channel quit", "signal", sig.String())
 	}
 
 	err = errors.Join(err, internal.Shutdown())
-	syncErrors(count)
+	syncErrs(count)
 }

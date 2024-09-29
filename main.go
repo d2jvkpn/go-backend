@@ -49,18 +49,13 @@ func main() {
 	showConfig = &cobra.Command{
 		Use:   "show-config",
 		Short: "show configurations",
-
 		Run: func(cmd *cobra.Command, args []string) {
-			var arg string
-
 			if len(args) == 0 {
 				fmt.Fprintf(os.Stderr, "arg required: api | crons | swagger\n")
 				os.Exit(1)
-			} else {
-				arg = args[0]
 			}
 
-			switch arg {
+			switch args[0] {
 			case "api":
 				fmt.Printf("%s\n", settings.Project.GetString("api_config"))
 			case "crons":
@@ -77,7 +72,6 @@ func main() {
 	showBuild = &cobra.Command{
 		Use:   "show-build",
 		Short: "show build information",
-
 		Run: func(cmd *cobra.Command, args []string) {
 			fmt.Printf("%s\n", gotk.BuildInfoText(settings.Meta))
 		},
