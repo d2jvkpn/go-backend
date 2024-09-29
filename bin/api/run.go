@@ -10,21 +10,7 @@ import (
 	"github.com/d2jvkpn/go-backend/internal/settings"
 
 	"github.com/d2jvkpn/gotk"
-	"github.com/spf13/cobra"
 )
-
-func NewCmd(name string) (command *cobra.Command) {
-	command = &cobra.Command{
-		Use:   name,
-		Short: "api service",
-
-		Run: func(cmd *cobra.Command, args []string) {
-			Run(args)
-		},
-	}
-
-	return command
-}
 
 func Run(args []string) {
 	var (

@@ -30,6 +30,8 @@ func main() {
 		command    *cobra.Command
 		showConfig *cobra.Command
 		showBuild  *cobra.Command
+		apiCmd     *cobra.Command
+		cronsCmd   *cobra.Command
 	)
 
 	logger = slog.New(slog.NewJSONHandler(os.Stderr, nil))
@@ -77,12 +79,29 @@ func main() {
 		},
 	}
 
-	command = &cobra.Command{Use: settings.Project.GetString("app_name")}
+	apiCmd = &cobra.Command{
+		Use:   "api",
+		Short: "api service",
 
-	command.AddCommand(api.NewCmd("api"))
-	command.AddCommand(crons.NewCmd("crons"))
+		Run: func(cmd *cobra.Command, args []string) {
+			api.Run(args)
+		},
+	}
+
+	cronsCmd = &cobra.Command{
+		Use:   "crons",
+		Short: "cron deamon",
+
+		Run: func(cmd *cobra.Command, args []string) {
+			crons.Run(args)
+		},
+	}
+
+	command = &cobra.Command{Use: settings.Project.GetString("app_name")}
 	command.AddCommand(showConfig)
 	command.AddCommand(showBuild)
+	command.AddCommand(apiCmd)
+	command.AddCommand(cronsCmd)
 
 	command.Execute()
 }

@@ -29,6 +29,9 @@ lint:
 build:
 	target_name=main ./deployments/go_build.sh
 
+app:
+	target_name=go-backend ./deployments/go_build.sh
+
 run-api:
 	target_name=main ./deployments/go_build.sh
 	./target/main api -- --config=configs/local.yaml -http.addr=:9019
