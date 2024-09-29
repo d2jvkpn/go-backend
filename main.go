@@ -81,7 +81,7 @@ func main() {
 			case "swagger":
 				fmt.Printf("%s\n", project.GetString("swagger_config"))
 			default:
-				fmt.Fprintf(os.Stderr, "arg required: api | crons | swagger\n")
+				fmt.Fprintf(os.Stderr, "required: build | api | crons | swagger\n")
 				os.Exit(1)
 			}
 		},
