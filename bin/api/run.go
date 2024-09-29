@@ -36,7 +36,7 @@ func Run(args []string) {
 		config       string
 
 		err    error
-		errch  chan error
+		errCh  chan error
 		logger *slog.Logger
 	)
 
@@ -92,7 +92,7 @@ func Run(args []string) {
 	}
 
 	// 4. up
-	if errch, err = internal.Run(httpAddr, internalAddr); err != nil {
+	if errCh, err = internal.Run(httpAddr, internalAddr); err != nil {
 		err = fmt.Errorf("internal.Run: %w", err)
 		return
 	}
@@ -105,5 +105,5 @@ func Run(args []string) {
 	)
 
 	// 5. exit
-	err = gotk.ExitChan(errch, internal.Shutdown)
+	err = gotk.ExitChan(errCh, internal.Shutdown)
 }
