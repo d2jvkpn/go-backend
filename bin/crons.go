@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/d2jvkpn/go-backend/internal/crons"
@@ -58,13 +60,26 @@ func RunCrons(project *viper.Viper, args []string) {
 		project,
 		map[string]any{
 			"config":  config,
+			"command": "crons",
 			"startup": time.Now().Format(gotk.RFC3339Milli),
 		},
 	)
 
+	// 3.
 	if err = crons.Load(project); err != nil {
 		return
 	}
 
-	// TODO
+	if err = crons.Run(project); err != nil {
+		return
+	}
+
+	// 4. exit
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM) // linux: syscall.SIGUSR2
+
+	sig := <-quit
+	logger.Info("... received from channel quit", "signal", sig.String())
+
+	err = crons.Exit()
 }

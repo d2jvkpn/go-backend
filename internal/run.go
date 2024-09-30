@@ -115,6 +115,7 @@ func Run(project *viper.Viper) (errch chan error, err error) {
 	}()
 
 	_Logger.Info("run", zap.Any("meta", project.GetStringMap("meta")))
+
 	err = gotk.ConcRunErr(
 		func() (err error) {
 			httpListener, err = net.Listen("tcp", project.GetString("meta.http_addr"))

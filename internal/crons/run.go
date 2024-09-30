@@ -2,26 +2,33 @@ package crons
 
 import (
 	"errors"
-	"fmt"
+	// "fmt"
 
 	"github.com/d2jvkpn/go-backend/pkg/infra"
 
 	"github.com/d2jvkpn/gotk"
-	_ "github.com/robfig/cron/v3"
+	"github.com/robfig/cron/v3"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
 )
 
 func Load(project *viper.Viper) (err error) {
 	var (
+		release bool
 		appName string
 		config  *viper.Viper
 	)
 
 	// 1. Log
 	appName = project.GetString("app_name")
+	release = project.GetBool("meta.release")
+
 	config, err = gotk.LoadYamlConfig(project.GetString("meta.config"), "config")
 	if err != nil {
+		return err
+	}
+
+	if err = SetupLog(release, appName); err != nil {
 		return err
 	}
 
@@ -47,9 +54,18 @@ func Load(project *viper.Viper) (err error) {
 	}
 
 	// 3.
-	fmt.Printf("==> TODO crons: %s\n", appName)
+	_Cron = cron.New()
+	// TODO
 
 	return err
+}
+
+func Run(project *viper.Viper) (err error) {
+	_Logger.Info("run", zap.Any("meta", project.GetStringMap("meta")))
+
+	_Cron.Start()
+
+	return nil
 }
 
 func Exit() (err error) {
@@ -60,7 +76,9 @@ func Exit() (err error) {
 	}
 
 	// 1. stop crons
-	// TODO:
+	if _Cron != nil {
+		<-_Cron.Stop().Done()
+	}
 
 	// 2. close databases: postgres and redis
 	e = gotk.ConcRunErr(

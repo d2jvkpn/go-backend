@@ -12,8 +12,8 @@ import (
 	"go.uber.org/zap"
 )
 
-func SetupLog(release bool, app string) (err error) {
-	log_file := filepath.Join("logs", app+".log")
+func SetupLog(release bool, appName string) (err error) {
+	log_file := filepath.Join("logs", appName+".log")
 
 	if release {
 		settings.Logger, err = gotk.NewZapLogger(log_file, zap.InfoLevel, 1024)

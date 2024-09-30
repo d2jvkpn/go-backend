@@ -74,6 +74,7 @@ func RunApi(project *viper.Viper, args []string, migrations embed.FS) {
 			"http_addr":     httpAddr, // don't use http.addr as key here
 			"internal_addr": internalAddr,
 			"grpc_addr":     grpcAddr,
+			"command":       "api",
 			"startup":       time.Now().Format(gotk.RFC3339Milli),
 		},
 	)
