@@ -114,25 +114,25 @@ func Shutdown() (err error) {
 		err = errors.Join(err, e)
 	}
 
-	// 2. stop http.server
+	// 1. stop http.server
 	if _HttpServer != nil {
 		_SLogger.Warn("shutdown http server")
 		if e = _HttpServer.Shutdown(ctx); e != nil {
-			_Logger.Error("http server.Shutdown", zap.String("error", e.Error()))
+			_Logger.Error("shutdown http server", zap.String("error", e.Error()))
 			joinErr(e)
 		}
 	}
 
-	// 3. stop internal server
+	// 2. stop internal server
 	if _InternalServer != nil {
 		_SLogger.Warn("shutdown internal server")
 		if e = _InternalServer.Shutdown(ctx); e != nil {
-			_Logger.Error("internal server.Shutdown", zap.String("error", e.Error()))
+			_Logger.Error("shutdown internal server", zap.String("error", e.Error()))
 			joinErr(e)
 		}
 	}
 
-	// 4. stop grpc sever
+	// 3. stop grpc sever
 	if _RPCServer != nil {
 		_SLogger.Warn("shutdown grpc server")
 		_RPCServer.Server.GracefulStop()
@@ -144,7 +144,7 @@ func Shutdown() (err error) {
 		func() error { return _CloseOtelMetrics(ctx) },
 	)
 	if e != nil {
-		_Logger.Error("Close Otel", zap.String("error", e.Error()))
+		_Logger.Error("close otel", zap.String("error", e.Error()))
 		joinErr(e)
 	}
 
@@ -153,16 +153,16 @@ func Shutdown() (err error) {
 	// 6. close logger
 	if settings.Logger != nil {
 		if e = settings.Logger.Down(); e != nil {
-			_Logger.Error("Logger.Shutdown", zap.String("error", e.Error()))
+			_Logger.Error("shutdown logger", zap.String("error", e.Error()))
 			joinErr(e)
 		}
 	}
 
 	// 7. end
 	if err == nil {
-		_Logger.Warn("Shutdown")
+		_Logger.Warn("end")
 	} else {
-		_Logger.Error("Shutdown", zap.Any("error", &err))
+		_Logger.Error("end", zap.Any("error", &err))
 	}
 
 	return err
