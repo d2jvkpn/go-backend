@@ -77,8 +77,8 @@ func RunApi(project *viper.Viper, args []string, migrations embed.FS) {
 		},
 	)
 
-	// 3.
-	if err = internal.Load(release); err != nil {
+	// 3. load
+	if err = internal.Load(project); err != nil {
 		err = fmt.Errorf("internal.Load: %w", err)
 		return
 	}
