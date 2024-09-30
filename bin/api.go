@@ -71,8 +71,8 @@ func RunApi(project *viper.Viper, args []string, migrations embed.FS) {
 			"config":        config,
 			"release":       release,
 			"http_addr":     httpAddr, // don't use http.addr as key here
-			"grpc_addr":     grpcAddr,
 			"internal_addr": internalAddr,
+			"grpc_addr":     grpcAddr,
 		},
 	)
 
@@ -94,8 +94,8 @@ func RunApi(project *viper.Viper, args []string, migrations embed.FS) {
 		"release", release,
 		"app_version", project.GetString("meta.app_version"),
 		"http_addr", httpAddr,
-		"grpc_addr", grpcAddr,
 		"internal_addr", internalAddr,
+		"grpc_addr", grpcAddr,
 	)
 
 	// 5. exit
