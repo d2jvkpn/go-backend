@@ -9,7 +9,7 @@ services:
     user: "${USER_UID}:${USER_GID}"
     networks: ["net"]
     # network_mode: bridge
-    ports: ["${HTTP_Port}:${HTTP_Port}","127.0.0.1:${HTTP_Port}:${HTTP_Port}"]
+    ports: ["127.0.0.1:${HTTP_Port}:${HTTP_Port}", "9015:9015", "9019:9019"]
     environment: ["TZ=Asia/Shanghai"]
     working_dir: /app
     volumes:
@@ -20,7 +20,6 @@ services:
     command:
     - ./target/go-backend
     - api
-    - --
     - -release
     - -config=configs/prod.yaml
     - -http.addr=:${HTTP_Port}
@@ -33,7 +32,6 @@ services:
     user: "${USER_UID}:${USER_GID}"
     networks: ["net"]
     # network_mode: bridge
-    ports: ["127.0.0.1:9018:9018"]
     environment: ["TZ=Asia/Shanghai"]
     working_dir: /app
     volumes:
@@ -42,9 +40,7 @@ services:
     command:
     - ./target/go-backend
     - crons
-    - --
     - -config=configs/crons.yaml
-    - -addr=:9018
 
   swagger:
     image: ${IMAGE_Name}:${IMAGE_Tag}
@@ -52,12 +48,13 @@ services:
     container_name: go-backend-swagger
     user: "${USER_UID}:${USER_GID}"
     network_mode: bridge
-    ports: ["9017:9017"]
+    ports: ["9018:9018"]
     environment: ["TZ=Asia/Shanghai"]
     volumes:
     - ./configs/swagger.yaml:/app/configs/swagger.yaml:ro
     command:
-    - ./target/swagger
+    - ./target/main
+    - swagger
     - -config=configs/swagger.yaml
     - -http.addr=:9017
 
