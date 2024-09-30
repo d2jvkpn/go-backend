@@ -59,9 +59,9 @@ func RunCrons(project *viper.Viper, args []string) {
 	updateMeta(
 		project,
 		map[string]any{
-			"config":  config,
-			"command": "crons",
-			"startup": time.Now().Format(gotk.RFC3339Milli),
+			"config":     config,
+			"command":    "crons",
+			"startup_at": time.Now().Format(gotk.RFC3339Milli),
 		},
 	)
 

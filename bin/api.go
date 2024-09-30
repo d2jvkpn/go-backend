@@ -75,7 +75,7 @@ func RunApi(project *viper.Viper, args []string, migrations embed.FS) {
 			"internal_addr": internalAddr,
 			"grpc_addr":     grpcAddr,
 			"command":       "api",
-			"startup":       time.Now().Format(gotk.RFC3339Milli),
+			"startup_at":    time.Now().Format(gotk.RFC3339Milli),
 		},
 	)
 
