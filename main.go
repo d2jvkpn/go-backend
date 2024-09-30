@@ -52,12 +52,8 @@ func main() {
 			}
 
 			switch args[0] {
-			case "api":
-				fmt.Printf("%s\n", project.GetString("api_config"))
-			case "crons":
-				fmt.Printf("%s\n", project.GetString("crons_config"))
-			case "swagger":
-				fmt.Printf("%s\n", project.GetString("swagger_config"))
+			case "api", "crons", "swagger":
+				fmt.Printf("%s\n", project.GetString(args[0]+"_config"))
 			default:
 				fmt.Fprintf(os.Stderr, errMsg)
 				os.Exit(1)
@@ -68,25 +64,19 @@ func main() {
 	command.AddCmd(
 		"api",
 		"api service",
-		func(args []string) {
-			bin.RunApi(project, args, _Migrations)
-		},
+		func(args []string) { bin.RunApi(project, args, _Migrations) },
 	)
 
 	command.AddCmd(
 		"crons",
 		"cron deamon",
-		func(args []string) {
-			bin.RunCrons(args)
-		},
+		func(args []string) { bin.RunCrons(args) },
 	)
 
 	command.AddCmd(
 		"swagger",
 		"swagger service",
-		func(args []string) {
-			bin.RunBin("swagger", args)
-		},
+		func(args []string) { bin.RunBin("swagger", args) },
 	)
 
 	command.Execute(os.Args[1:])

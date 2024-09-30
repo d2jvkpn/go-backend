@@ -20,6 +20,7 @@ func RunApi(project *viper.Viper, args []string, migrations embed.FS) {
 		config       string
 		httpAddr     string
 		internalAddr string
+		grpcAddr     string
 
 		err    error
 		errCh  chan error
@@ -32,7 +33,10 @@ func RunApi(project *viper.Viper, args []string, migrations embed.FS) {
 
 	fSet.BoolVar(&release, "release", false, "run in release mode")
 	fSet.StringVar(&config, "config", "configs/local.yaml", "configuration file(yaml)")
+
 	fSet.StringVar(&httpAddr, "http.addr", ":9011", "http listening address")
+	fSet.StringVar(&grpcAddr, "grpc.addr", ":9015", "grpc listening address")
+
 	fSet.StringVar(&internalAddr, "internal.addr", ":9019", "internal listening address")
 
 	fSet.Usage = func() {
@@ -68,6 +72,7 @@ func RunApi(project *viper.Viper, args []string, migrations embed.FS) {
 			"config":        config,
 			"release":       release,
 			"http_addr":     httpAddr, // don't use http.addr as key here
+			"grpc_addr":     grpcAddr,
 			"internal_addr": internalAddr,
 		},
 	)
@@ -79,7 +84,7 @@ func RunApi(project *viper.Viper, args []string, migrations embed.FS) {
 	}
 
 	// 4. up
-	if errCh, err = internal.Run(httpAddr, internalAddr); err != nil {
+	if errCh, err = internal.Run(project); err != nil {
 		err = fmt.Errorf("internal.Run: %w", err)
 		return
 	}
@@ -88,9 +93,10 @@ func RunApi(project *viper.Viper, args []string, migrations embed.FS) {
 		fmt.Sprintf("api is up"),
 		"config", config,
 		"release", release,
-		"appVersion", project.GetString("meta.app_version"),
-		"httpAddr", httpAddr,
-		"internalAddr", internalAddr,
+		"app_version", project.GetString("meta.app_version"),
+		"http_addr", httpAddr,
+		"grpc_addr", grpcAddr,
+		"internal_addr", internalAddr,
 	)
 
 	// 5. exit

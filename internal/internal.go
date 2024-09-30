@@ -1,14 +1,16 @@
 package internal
 
 import (
-// "fmt"
+	// "fmt"
+
+	"github.com/spf13/viper"
 )
 
 func Load(release bool) (err error) {
 	return nil
 }
 
-func Run(httpAddr, internalAddr string) (errch chan error, err error) {
+func Run(project *viper.Viper) (errch chan error, err error) {
 	return errch, nil
 }
 

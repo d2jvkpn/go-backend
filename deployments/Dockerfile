@@ -80,13 +80,13 @@ COPY --from=builder /app/cache.local/build.yaml /app/
 
 # http server
 EXPOSE 9011
+# grpc server
+EXPOSE 9015
 # internal server
 EXPOSE 9019
-# crons port
-EXPOSE 9018
 # swagger server
-EXPOSE 9017
+EXPOSE 9018
 
-CMD [./target/main, api, --, -release, -config=configs/prod.yaml, -http.addr=:9011, --internal.addr=:9019]
-# CMD [./target/main, crons, --, -config=configs/prod.yaml, --addr=:9018]
-# CMD [./target/swagger, -config=configs/swagger.yaml, -http.addr=:9017]
+CMD [./target/main, api, -release, -config=configs/prod.yaml, -http.addr=:9011, --grpc.addr=:9015, --internal.addr=:9019]
+# CMD [./target/main, crons, -config=configs/prod.yaml]
+# CMD [./target/main, swagger, -config=configs/swagger.yaml, -http.addr=:9018]
