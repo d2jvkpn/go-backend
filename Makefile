@@ -78,6 +78,3 @@ image-test:
 image-main:
 	BUILD_Region=cn DOCKER_Pull=false DOCKER_Tag=main \
 	  bash deployments/docker_build.sh main
-
-deploy:
-	echo "TODO"
