@@ -28,10 +28,7 @@ func main() {
 		// fSet   *pflag.FlagSet
 		project *viper.Viper
 
-		command  *cobra.Command
-		showCmd  *cobra.Command
-		apiCmd   *cobra.Command
-		cronsCmd *cobra.Command
+		command *cobra.Command
 	)
 
 	defer func() {
@@ -60,7 +57,7 @@ func main() {
 		command.SetArgs(fSet.Args())
 	*/
 
-	showCmd = &cobra.Command{
+	showCmd := &cobra.Command{
 		Use:   "show",
 		Short: "show build information(build) and configuration(api, crons, swagger)",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -87,7 +84,7 @@ func main() {
 		},
 	}
 
-	apiCmd = &cobra.Command{
+	apiCmd := &cobra.Command{
 		Use:   "api",
 		Short: "api service",
 
@@ -97,7 +94,7 @@ func main() {
 		},
 	}
 
-	cronsCmd = &cobra.Command{
+	cronsCmd := &cobra.Command{
 		Use:   "crons",
 		Short: "cron deamon",
 
@@ -106,9 +103,19 @@ func main() {
 		},
 	}
 
+	swaggerCmd := &cobra.Command{
+		Use:   "swagger",
+		Short: "swagger service",
+
+		Run: func(cmd *cobra.Command, args []string) {
+			bin.RunBin("swagger", args)
+		},
+	}
+
 	command.AddCommand(showCmd)
 	command.AddCommand(apiCmd)
 	command.AddCommand(cronsCmd)
+	command.AddCommand(swaggerCmd)
 
 	command.Execute()
 }
