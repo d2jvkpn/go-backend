@@ -5,10 +5,13 @@ import (
 	"errors"
 	"net"
 	// "fmt"
+	"encoding/json"
 	"html/template"
 	"io/fs"
 	"net/http"
 	"time"
+
+	"github.com/d2jvkpn/go-backend/internal/api"
 
 	"github.com/d2jvkpn/gotk/ginx"
 	"github.com/gin-contrib/cors"
@@ -58,13 +61,12 @@ func SetupHttp(release bool, config *viper.Viper) (err error) {
 	if release {
 		gin.SetMode(gin.ReleaseMode)
 		engine = gin.New()
-		// engi.Use(gin.Recovery())
+		// engi.Use(gin.Recovery()) // custom in middleware
 	} else {
 		engine = gin.Default()
 	}
 	engine.RedirectTrailingSlash = false
-	// TODO: max body size
-	// engine.MaxMultipartMemory = HTTP_MaxMultipartMemory
+	// engine.MaxMultipartMemory = HTTP_MaxMultipartMemory // ??
 
 	// engine.Use(Cors(config.GetString("cors")))
 	engine.Use(Cors(httpConfig.GetStringSlice("allow_origins")))
@@ -82,8 +84,14 @@ func SetupHttp(release bool, config *viper.Viper) (err error) {
 	engine.SetHTMLTemplate(templ)
 
 	// 4. middlwares
-	// engine.NoRoute(...) // TODO
-	// apiLog = ... // TODO
+	notRoute, _ := json.Marshal(gin.H{"code": "no_route", "kind": "NoRoute", "msg": "..."})
+	engine.NoRoute(func(ctx *gin.Context) {
+		time.Sleep(1000 * time.Millisecond)
+
+		ctx.Header("Content-Type", "application/json")
+		ctx.Writer.WriteHeader(http.StatusNotFound)
+		ctx.Writer.Write(notRoute)
+	})
 
 	// 5. apis and router
 	router.GET("/healthz", ginx.Healthz)
@@ -96,8 +104,9 @@ func SetupHttp(release bool, config *viper.Viper) (err error) {
 
 	ginx.ServeStaticDir("/site", "./site", false)(router)
 
-	// 4. load api
-	// TODO: apiLog
+	// 6. load api
+	// TODO:
+	api.LoadOpen(router)
 
 	_HttpServer.Handler = engine
 
