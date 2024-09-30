@@ -35,9 +35,8 @@ func RunApi(project *viper.Viper, args []string, migrations embed.FS) {
 	fSet.StringVar(&config, "config", "configs/local.yaml", "configuration file(yaml)")
 
 	fSet.StringVar(&httpAddr, "http.addr", ":9011", "http listening address")
-	fSet.StringVar(&grpcAddr, "grpc.addr", ":9015", "grpc listening address")
-
-	fSet.StringVar(&internalAddr, "internal.addr", ":9019", "internal listening address")
+	fSet.StringVar(&internalAddr, "internal.addr", ":9015", "internal listening address")
+	fSet.StringVar(&grpcAddr, "grpc.addr", ":9016", "grpc listening address")
 
 	fSet.Usage = func() {
 		output := flag.CommandLine.Output()

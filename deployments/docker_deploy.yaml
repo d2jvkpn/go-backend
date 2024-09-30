@@ -9,7 +9,7 @@ services:
     user: "${USER_UID}:${USER_GID}"
     networks: ["net"]
     # network_mode: bridge
-    ports: ["127.0.0.1:${HTTP_Port}:${HTTP_Port}", "9015:9015", "9019:9019"]
+    ports: ["127.0.0.1:${HTTP_Port}:${HTTP_Port}", "9015:9015", "9019:9016"]
     environment: ["TZ=Asia/Shanghai"]
     working_dir: /app
     volumes:
@@ -48,7 +48,7 @@ services:
     container_name: go-backend-swagger
     user: "${USER_UID}:${USER_GID}"
     network_mode: bridge
-    ports: ["9018:9018"]
+    ports: ["9017:9017"]
     environment: ["TZ=Asia/Shanghai"]
     volumes:
     - ./configs/swagger.yaml:/app/configs/swagger.yaml:ro

@@ -34,11 +34,11 @@ app:
 
 run-api:
 	target_name=main ./deployments/go_build.sh
-	./target/main api -- --config=configs/local.yaml -http.addr=:9019
+	./target/main api --config=configs/local.yaml -http.addr=:9011
 
 run-crons:
 	target_name=name ./deployments/go_build.sh
-	./target/main crons -- --config=configs/crons.yaml --addr=:9018
+	./target/main crons -- --config=configs/crons.yaml
 
 #### swagger
 build-swag:
