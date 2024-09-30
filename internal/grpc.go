@@ -5,7 +5,7 @@ import (
 	// "fmt"
 	"net"
 
-	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	grpcMdlw "github.com/grpc-ecosystem/go-grpc-middleware"
 	"github.com/spf13/viper"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"google.golang.org/grpc"
@@ -43,8 +43,8 @@ func NewRPCServer(config *viper.Viper) (server *RPCServer, err error) {
 	}
 
 	options = append(options,
-		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(uIntes...)),
-		grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(sIntes...)),
+		grpc.UnaryInterceptor(grpcMdlw.ChainUnaryServer(uIntes...)),
+		grpc.StreamInterceptor(grpcMdlw.ChainStreamServer(sIntes...)),
 	)
 
 	//
