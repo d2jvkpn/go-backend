@@ -45,7 +45,7 @@ func Load(project *viper.Viper) (err error) {
 	// ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	// defer cancel()
 
-	// 2. databases
+	// 2. databases: postgres, redis
 	// TODO:
 
 	// 3. cloud
@@ -182,8 +182,25 @@ func Shutdown() (err error) {
 		joinErr(e)
 	}
 
-	// 5. databases
-	// TODO:
+	// 5. close databases: postgres and redis
+	e = gotk.ConcRunErr(
+		func() error {
+			if _Redis == nil {
+				return nil
+			}
+			return _Redis.Close()
+		},
+		func() error {
+			if _DB == nil {
+				return nil
+			}
+			return _DB.Close()
+		},
+	)
+	if e != nil {
+		_Logger.Error("Close databases", zap.String("error", e.Error()))
+		joinErr(e)
+	}
 
 	// 6. close logger
 	if settings.Logger != nil {

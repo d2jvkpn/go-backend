@@ -10,6 +10,7 @@ import (
 
 	"github.com/d2jvkpn/gotk"
 	"github.com/d2jvkpn/gotk/trace_error"
+	"github.com/redis/go-redis/v9"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
@@ -29,6 +30,7 @@ var (
 
 	_DB      *sql.DB
 	_GORM_PG *gorm.DB
+	_Redis   *redis.Client
 	// _GORM_MySQL *gorm.DB
 	_Tickers    []*gotk.Ticker
 	_APIMetrics []func(string, float64, *trace_error.Error)
