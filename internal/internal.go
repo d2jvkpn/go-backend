@@ -198,7 +198,7 @@ func Shutdown() (err error) {
 		},
 	)
 	if e != nil {
-		_Logger.Error("Close databases", zap.String("error", e.Error()))
+		_Logger.Error("close databases", zap.String("error", e.Error()))
 		joinErr(e)
 	}
 

@@ -18,7 +18,7 @@ func SetupLog(release bool, app string) (err error) {
 	if release {
 		settings.Logger, err = gotk.NewZapLogger(log_file, zap.InfoLevel, 1024)
 	} else {
-		settings.Logger, err = gotk.NewZapLogger(log_file, zap.DebugLevel, 1024)
+		settings.Logger, err = gotk.NewZapLogger("", zap.DebugLevel, 1024)
 	}
 	if err != nil {
 		return fmt.Errorf("NewLogger: %w", err)
