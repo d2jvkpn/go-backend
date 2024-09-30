@@ -81,19 +81,32 @@ func Run(project *viper.Viper) (errch chan error, err error) {
 		}
 	}()
 
-	httpListener, err = net.Listen("tcp", project.GetString("meta.http_addr"))
-	if err != nil {
-		return nil, fmt.Errorf("http net.Listen: %w", err)
-	}
+	err = gotk.ConcRunErr(
+		func() (err error) {
+			httpListener, err = net.Listen("tcp", project.GetString("meta.http_addr"))
+			if err != nil {
+				return fmt.Errorf("http net.Listen: %w", err)
+			}
+			return nil
+		},
+		func() (err error) {
+			grpcListener, err = net.Listen("tcp", project.GetString("meta.grpc_addr"))
+			if err != nil {
+				return fmt.Errorf("grpc net.Listen: %w", err)
+			}
+			return nil
+		},
+		func() (err error) {
+			internalListener, err = net.Listen("tcp", project.GetString("meta.internal_addr"))
+			if err != nil {
+				return fmt.Errorf("internal net.Listen: %w", err)
+			}
+			return nil
+		},
+	)
 
-	grpcListener, err = net.Listen("tcp", project.GetString("meta.grpc_addr"))
 	if err != nil {
-		return nil, fmt.Errorf("grpc net.Listen: %w", err)
-	}
-
-	internalListener, err = net.Listen("tcp", project.GetString("meta.internal_addr"))
-	if err != nil {
-		return nil, fmt.Errorf("internal net.Listen: %w", err)
+		return nil, err
 	}
 
 	errch = make(chan error, 3)
