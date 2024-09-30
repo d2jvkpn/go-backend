@@ -58,10 +58,10 @@ func RunApi(project *viper.Viper, args []string, migrations embed.FS) {
 
 	defer func() {
 		if err != nil {
-			logger.Error("exit", "error", err)
+			logger.Error("api exit", "error", err)
 			os.Exit(1)
 		} else {
-			logger.Info("exit")
+			logger.Info("api exit")
 		}
 	}()
 

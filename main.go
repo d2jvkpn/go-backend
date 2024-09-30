@@ -70,7 +70,7 @@ func main() {
 	command.AddCmd(
 		"crons",
 		"cron deamon",
-		func(args []string) { bin.RunCrons(args) },
+		func(args []string) { bin.RunCrons(project, args) },
 	)
 
 	command.AddCmd(

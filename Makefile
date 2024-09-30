@@ -44,7 +44,7 @@ run-api:
 	  -http.addr=:9011 -internal.addr=:9015 -grpc.addr=:9016
 
 run-crons:
-	target_name=name ./deployments/go_build.sh
+	target_name=main ./deployments/go_build.sh
 	./target/main crons --config=configs/crons.yaml
 
 #### swagger

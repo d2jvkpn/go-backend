@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/d2jvkpn/go-backend/internal/settings"
+	"github.com/d2jvkpn/go-backend/pkg/infra"
 
 	"github.com/d2jvkpn/gotk"
 	"github.com/spf13/viper"
@@ -45,11 +46,11 @@ func Load(project *viper.Viper) (err error) {
 	// 2. databases: postgres, redis
 	err = gotk.ConcRunErr(
 		func() (err error) {
-			_GORM_PG, _DB, err = PgConnect(config.Sub("postgres"), release)
+			_GORM_PG, _DB, err = infra.PgConnect(config.Sub("postgres"), release)
 			return err
 		},
 		func() (err error) {
-			_Redis, err = NewRedisClient(config.Sub("redis"))
+			_Redis, err = infra.NewRedisClient(config.Sub("redis"))
 			return err
 		},
 	)
