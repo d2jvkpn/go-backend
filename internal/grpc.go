@@ -18,7 +18,7 @@ type RPCServer struct {
 	*grpc.Server
 }
 
-func NewRPCServer(config *viper.Viper) (server *RPCServer, err error) {
+func NewRPCServer(config *viper.Viper, enableOtel bool) (server *RPCServer, err error) {
 	var (
 		options []grpc.ServerOption
 		uIntes  []grpc.UnaryServerInterceptor
@@ -30,7 +30,7 @@ func NewRPCServer(config *viper.Viper) (server *RPCServer, err error) {
 	sIntes = make([]grpc.StreamServerInterceptor, 0)
 
 	//
-	if config.GetBool("otel") {
+	if enableOtel {
 		uIntes = append(
 			uIntes,
 			otelgrpc.UnaryServerInterceptor( /*opts ...Option*/ ),
@@ -52,7 +52,7 @@ func NewRPCServer(config *viper.Viper) (server *RPCServer, err error) {
 		var creds credentials.TransportCredentials
 
 		creds, err = credentials.NewServerTLSFromFile(
-			config.GetString("cert"),
+			config.GetString("cer"),
 			config.GetString("key"),
 		)
 		if err != nil {
@@ -72,7 +72,8 @@ func SetupGrpc(config *viper.Viper) (err error) {
 
 	grpcConfig = config.Sub("grpc")
 
-	if _RPCServer, err = NewRPCServer(grpcConfig); err != nil {
+	_RPCServer, err = NewRPCServer(grpcConfig, config.GetBool("opentelemetry.trace"))
+	if err != nil {
 		return err
 	}
 

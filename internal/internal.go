@@ -16,9 +16,12 @@ import (
 
 func Load(project *viper.Viper) (err error) {
 	var (
+		appName string
 		release bool
 		config  *viper.Viper
 	)
+
+	appName = project.GetString("app_name")
 
 	config, err = gotk.LoadYamlConfig(project.GetString("meta.config"), "config")
 	if err != nil {
@@ -39,6 +42,22 @@ func Load(project *viper.Viper) (err error) {
 
 	// ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	// defer cancel()
+
+	// 2. databases
+	// TODO:
+
+	// 3. cloud
+	err = gotk.ConcRunErr(
+		func() (err error) {
+			return SetupOtelMetrics(appName, config)
+		},
+		func() (err error) {
+			return SetupOtelTrace(appName, config)
+		},
+	)
+	if err != nil {
+		return err
+	}
 
 	// 4. http server
 	if err = SetupHttp(release, config); err != nil {

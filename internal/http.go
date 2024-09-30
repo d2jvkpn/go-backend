@@ -12,7 +12,6 @@ import (
 
 	"github.com/d2jvkpn/gotk"
 	"github.com/d2jvkpn/gotk/ginx"
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -46,7 +45,7 @@ func SetupHttp(release bool, config *viper.Viper) (err error) {
 	}
 
 	if httpConfig.GetBool("tls") {
-		certFile, keyFile := httpConfig.GetString("cert"), httpConfig.GetString("key")
+		certFile, keyFile := httpConfig.GetString("cer"), httpConfig.GetString("key")
 
 		if cert, err = tls.LoadX509KeyPair(certFile, keyFile); err != nil {
 			return err
@@ -105,35 +104,6 @@ func SetupHttp(release bool, config *viper.Viper) (err error) {
 	_HttpServer.Handler = engine
 
 	return nil
-}
-
-func Cors(origins []string, maxAges ...time.Duration) gin.HandlerFunc {
-	maxAge := 12 * time.Hour
-	if len(maxAges) > 0 {
-		maxAge = maxAges[0]
-	}
-
-	return cors.New(cors.Config{
-		AllowOrigins: origins,
-		AllowMethods: []string{"GET", "POST", "OPTIONS", "HEAD"},
-		AllowHeaders: []string{
-			"Origin",
-			"Content-Type",
-			"Authorization",
-			"x-client",
-		},
-		ExposeHeaders: []string{
-			"Access-Control-Allow-Origin",
-			"Access-Control-Allow-Headers",
-			"Content-Type",
-			"Content-Length",
-			"Content-Disposition",
-		},
-		AllowWildcard:    true,
-		AllowCredentials: true,
-		// AllowOriginFunc:  func(origin string) bool { return origin == "https://github.com" },
-		MaxAge: maxAge,
-	})
 }
 
 func SetupInternal(config *viper.Viper, meta map[string]any) {

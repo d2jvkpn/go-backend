@@ -15,7 +15,6 @@ api_config: |
     key: configs/site.key
 
   grpc:
-    otel: false
     tls: false
     cer: configs/site.cer
     key: configs/site.key
@@ -46,7 +45,6 @@ api_config: |
 
   prometheus:
     enabled: false
-    custom_metrics: false
     path: /metrics
 
   opentelemetry:
