@@ -3,7 +3,13 @@
 # export $(shell sed 's/=.*//' envfile)
 
 working_dir = $(shell pwd)
+build_host = $(shell hostname)
 
+build_time = $(shell date +'%FT%T.%N%:z')
+git_repository = $(shell git config --get remote.origin.url)
+git_branch = $(shell git rev-parse --abbrev-ref HEAD)
+git_commit_id = $(shell git rev-parse --verify HEAD)
+git_commit_time = $(shell git log -1 --format="%at" | xargs -I{} date -d @{} +%FT%T%:z)
 
 #### go
 check:
@@ -13,10 +19,10 @@ check:
 	command -v swag
 	command -v docker
 
-cache:
-	go mod vendor
-	mkdir -p cache.local
-	mv vendor cache.local/
+#cache:
+#	go mod vendor
+#	mkdir -p cache.local
+#	mv vendor cache.local/
 
 lint:
 	go mod tidy

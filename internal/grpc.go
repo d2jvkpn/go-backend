@@ -1,9 +1,11 @@
 package internal
 
 import (
-	// "context"
+	"context"
 	// "fmt"
 	"net"
+
+	"github.com/d2jvkpn/go-backend/proto"
 
 	grpcMdlw "github.com/grpc-ecosystem/go-grpc-middleware"
 	"github.com/spf13/viper"
@@ -67,6 +69,7 @@ func NewRPCServer(config *viper.Viper, enableOtel bool) (server *RPCServer, err 
 	return server, nil
 }
 
+// setup and sever
 func SetupGrpc(config *viper.Viper) (err error) {
 	var grpcConfig *viper.Viper
 
@@ -79,7 +82,7 @@ func SetupGrpc(config *viper.Viper) (err error) {
 
 	grpc_health_v1.RegisterHealthServer(_RPCServer.Server, health.NewServer())
 
-	// pkgXX.RegisterXXServiceServer(_RPCServer.Server, _RPCServer)
+	proto.RegisterLogServiceServer(_RPCServer.Server, _RPCServer)
 
 	return nil
 }
@@ -91,4 +94,11 @@ func ServeGrpc(listener net.Listener, errch chan<- error) {
 
 	e = _RPCServer.Serve(listener)
 	errch <- e
+}
+
+// biz
+func (self *RPCServer) PushLog(ctx context.Context, record *proto.LogData) (*proto.LogId, error) {
+	// TODO: biz
+
+	return &proto.LogId{Id: record.GetRequestId()}, nil
 }
