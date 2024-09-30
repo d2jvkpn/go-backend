@@ -158,12 +158,5 @@ func Shutdown() (err error) {
 		}
 	}
 
-	// 7. end
-	if err == nil {
-		_Logger.Warn("end")
-	} else {
-		_Logger.Error("end", zap.Any("error", &err))
-	}
-
 	return err
 }
