@@ -79,7 +79,7 @@ func SetupGrpc(config *viper.Viper) (err error) {
 
 	grpc_health_v1.RegisterHealthServer(_RPCServer.Server, health.NewServer())
 
-	// pkgXX.RegisterLogServiceServer(_RPCServer.Server, _RPCServer)
+	// pkgXX.RegisterXXServiceServer(_RPCServer.Server, _RPCServer)
 
 	return nil
 }
