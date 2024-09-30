@@ -10,11 +10,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/d2jvkpn/gotk"
 	"github.com/d2jvkpn/gotk/ginx"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
 	// "go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
@@ -106,50 +104,6 @@ func SetupHttp(release bool, config *viper.Viper) (err error) {
 	return nil
 }
 
-func SetupInternal(config *viper.Viper, meta map[string]any) {
-	var (
-		promConfig *viper.Viper
-		pprofs     map[string]http.HandlerFunc
-		engine     *gin.Engine
-		router     *gin.RouterGroup
-	)
-
-	promConfig = config.Sub("prometheus")
-
-	engine = gin.New()
-	engine.Use(gin.Recovery())
-	// engine = gin.Default()
-	engine.RedirectTrailingSlash = true
-
-	// engine.NoRoute(...) // TODO
-
-	router = &engine.RouterGroup
-
-	router.GET("/healthz", ginx.Healthz)
-	router.GET("/meta", ginx.JSONStatic(meta))
-
-	if promConfig != nil && promConfig.GetBool("enabled") { // !promConfig.GetBool("external")
-		router.GET(
-			promConfig.GetString("path"),
-			// gin.WrapH(promhttp.Handler()),
-			gin.WrapH(promhttp.HandlerFor(prometheus.DefaultGatherer, promhttp.HandlerOpts{})),
-		)
-	}
-	// mux := http.NewServeMux()
-	// mux.Handle(p, promhttp.Handler())
-
-	pprofs = gotk.PprofHandlerFuncs()
-	for _, k := range gotk.PprofFuncKeys() {
-		router.GET("/pprof/"+k, gin.WrapH(pprofs[k]))
-	}
-
-	_InternalServer = &http.Server{
-		Handler: engine, // mux
-	}
-
-	return
-}
-
 func ServeHTTP(listener net.Listener, errch chan<- error) {
 	_SLogger.Info("http server is up")
 
@@ -167,21 +121,31 @@ func ServeHTTP(listener net.Listener, errch chan<- error) {
 	}
 }
 
-func ServeInternal(listener net.Listener, errch chan<- error) {
-	_SLogger.Info("internal server is up")
-
-	var e error
-
-	e = _InternalServer.Serve(listener)
-	_InternalServer = nil // tag as closed
-
-	if e != nil && !errors.Is(e, http.ErrServerClosed) { // e != http.ErrServerClosed
-		_Logger.Error("internal server has been shutdown", zap.String("error", e.Error()))
-		errch <- e
-	} else {
-		_Logger.Warn("internal server has been shutdown")
-		errch <- nil
+func Cors(origins []string, maxAges ...time.Duration) gin.HandlerFunc {
+	maxAge := 12 * time.Hour
+	if len(maxAges) > 0 {
+		maxAge = maxAges[0]
 	}
 
-	return
+	return cors.New(cors.Config{
+		AllowOrigins: origins,
+		AllowMethods: []string{"GET", "POST", "OPTIONS", "HEAD"},
+		AllowHeaders: []string{
+			"Origin",
+			"Content-Type",
+			"Authorization",
+			"x-client",
+		},
+		ExposeHeaders: []string{
+			"Access-Control-Allow-Origin",
+			"Access-Control-Allow-Headers",
+			"Content-Type",
+			"Content-Length",
+			"Content-Disposition",
+		},
+		AllowWildcard:    true,
+		AllowCredentials: true,
+		// AllowOriginFunc:  func(origin string) bool { return origin == "https://github.com" },
+		MaxAge: maxAge,
+	})
 }

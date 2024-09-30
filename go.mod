@@ -3,10 +3,10 @@ module github.com/d2jvkpn/go-backend
 go 1.23
 
 require (
-	github.com/d2jvkpn/gotk v0.0.0-20240930063112-b1bbb23f9eb8
-	github.com/d2jvkpn/gotk/cloud v0.0.0-20240930063112-b1bbb23f9eb8
-	github.com/d2jvkpn/gotk/ginx v0.0.0-20240930063112-b1bbb23f9eb8
-	github.com/d2jvkpn/gotk/trace_error v0.0.0-20240930063112-b1bbb23f9eb8
+	github.com/d2jvkpn/gotk v0.0.0-20240930074344-a71486ae47e1
+	github.com/d2jvkpn/gotk/cloud v0.0.0-20240930074344-a71486ae47e1
+	github.com/d2jvkpn/gotk/ginx v0.0.0-20240930074344-a71486ae47e1
+	github.com/d2jvkpn/gotk/trace_error v0.0.0-20240930074344-a71486ae47e1
 	github.com/gin-contrib/cors v1.7.2
 	github.com/gin-gonic/gin v1.10.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0

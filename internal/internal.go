@@ -1,214 +1,80 @@
 package internal
 
 import (
-	"context"
 	"errors"
-	"fmt"
 	"net"
-	"time"
-
-	"github.com/d2jvkpn/go-backend/internal/settings"
+	// "fmt"
+	"net/http"
 
 	"github.com/d2jvkpn/gotk"
+	"github.com/d2jvkpn/gotk/ginx"
+	"github.com/gin-gonic/gin"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
+	// "go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 )
 
-func Load(project *viper.Viper) (err error) {
+func SetupInternal(config *viper.Viper, meta map[string]any) (err error) {
 	var (
-		appName string
-		release bool
-		config  *viper.Viper
+		promConfig *viper.Viper
+		pprofs     map[string]http.HandlerFunc
+		engine     *gin.Engine
+		router     *gin.RouterGroup
 	)
 
-	release = project.GetBool("meta.release")
-	appName = project.GetString("app_name")
+	promConfig = config.Sub("prometheus")
 
-	config, err = gotk.LoadYamlConfig(project.GetString("meta.config"), "config")
-	if err != nil {
-		return err
+	engine = gin.New()
+	engine.Use(gin.Recovery())
+	// engine = gin.Default()
+	engine.RedirectTrailingSlash = true
+
+	// engine.NoRoute(...) // TODO
+
+	router = &engine.RouterGroup
+
+	router.GET("/healthz", ginx.Healthz)
+	router.GET("/meta", ginx.JSONStatic(meta))
+
+	if promConfig != nil && promConfig.GetBool("enabled") { // !promConfig.GetBool("external")
+		router.GET(
+			promConfig.GetString("path"),
+			// gin.WrapH(promhttp.Handler()),
+			gin.WrapH(promhttp.HandlerFor(prometheus.DefaultGatherer, promhttp.HandlerOpts{})),
+		)
 	}
-	config.SetDefault("prometheus", map[string]any{})
-	config.SetDefault("opentelemetry", map[string]any{})
+	// mux := http.NewServeMux()
+	// mux.Handle(p, promhttp.Handler())
 
-	// 1. Log
-	if err = SetupLog(release, project.GetString("app_name")); err != nil {
-		return err
-	}
-
-	defer func() {
-		if err != nil {
-			Shutdown()
-		}
-	}()
-
-	// ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	// defer cancel()
-
-	// 2. databases: postgres, redis
-	// TODO:
-
-	// 3. cloud
-	err = gotk.ConcRunErr(
-		func() (err error) {
-			return SetupOtelMetrics(appName, config)
-		},
-		func() (err error) {
-			return SetupOtelTrace(appName, config)
-		},
-	)
-	if err != nil {
-		return err
+	pprofs = gotk.PprofHandlerFuncs()
+	for _, k := range gotk.PprofFuncKeys() {
+		router.GET("/pprof/"+k, gin.WrapH(pprofs[k]))
 	}
 
-	// 4. http server
-	if err = SetupHttp(release, config); err != nil {
-		return err
-	}
-
-	// 5. internal server
-	SetupInternal(config, project.GetStringMap("meta"))
-
-	// 6. grpc server
-	if err = SetupGrpc(config); err != nil {
-		return err
+	_InternalServer = &http.Server{
+		Handler: engine, // mux
 	}
 
 	return nil
 }
 
-func Run(project *viper.Viper) (errch chan error, err error) {
-	var (
-		httpListener     net.Listener
-		grpcListener     net.Listener
-		internalListener net.Listener
-	)
+func ServeInternal(listener net.Listener, errch chan<- error) {
+	_SLogger.Info("internal server is up")
 
-	defer func() {
-		if err == nil {
-			return
-		}
-
-		if httpListener != nil {
-			err = errors.Join(err, httpListener.Close())
-		}
-
-		if internalListener != nil {
-			err = errors.Join(err, internalListener.Close())
-		}
-
-		if grpcListener != nil {
-			err = errors.Join(err, grpcListener.Close())
-		}
-	}()
-
-	err = gotk.ConcRunErr(
-		func() (err error) {
-			httpListener, err = net.Listen("tcp", project.GetString("meta.http_addr"))
-			if err != nil {
-				return fmt.Errorf("http net.Listen: %w", err)
-			}
-			return nil
-		},
-		func() (err error) {
-			internalListener, err = net.Listen("tcp", project.GetString("meta.internal_addr"))
-			if err != nil {
-				return fmt.Errorf("internal net.Listen: %w", err)
-			}
-			return nil
-		},
-		func() (err error) {
-			grpcListener, err = net.Listen("tcp", project.GetString("meta.grpc_addr"))
-			if err != nil {
-				return fmt.Errorf("grpc net.Listen: %w", err)
-			}
-			return nil
-		},
-	)
-
-	if err != nil {
-		return nil, err
-	}
-
-	errch = make(chan error, 3)
-	go ServeHTTP(httpListener, errch)
-	go ServeInternal(internalListener, errch)
-	go ServeGrpc(grpcListener, errch)
-
-	return errch, nil
-}
-
-func Shutdown() (err error) {
 	var e error
 
-	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
-	defer cancel()
+	e = _InternalServer.Serve(listener)
+	_InternalServer = nil // tag as closed
 
-	joinErr := func(e error) {
-		err = errors.Join(err, e)
+	if e != nil && !errors.Is(e, http.ErrServerClosed) { // e != http.ErrServerClosed
+		_Logger.Error("internal server has been shutdown", zap.String("error", e.Error()))
+		errch <- e
+	} else {
+		_Logger.Warn("internal server has been shutdown")
+		errch <- nil
 	}
 
-	// 1. stop http.server
-	if _HttpServer != nil {
-		_SLogger.Warn("shutdown http server")
-		if e = _HttpServer.Shutdown(ctx); e != nil {
-			_Logger.Error("shutdown http server", zap.String("error", e.Error()))
-			joinErr(e)
-		}
-	}
-
-	// 2. stop internal server
-	if _InternalServer != nil {
-		_SLogger.Warn("shutdown internal server")
-		if e = _InternalServer.Shutdown(ctx); e != nil {
-			_Logger.Error("shutdown internal server", zap.String("error", e.Error()))
-			joinErr(e)
-		}
-	}
-
-	// 3. stop grpc sever
-	if _RPCServer != nil {
-		_SLogger.Warn("shutdown grpc server")
-		_RPCServer.Server.GracefulStop()
-	}
-
-	// 4. close otel
-	e = gotk.ConcRunErr(
-		func() error { return _CloseOtelTracing(ctx) },
-		func() error { return _CloseOtelMetrics(ctx) },
-	)
-	if e != nil {
-		_Logger.Error("close otel", zap.String("error", e.Error()))
-		joinErr(e)
-	}
-
-	// 5. close databases: postgres and redis
-	e = gotk.ConcRunErr(
-		func() error {
-			if _Redis == nil {
-				return nil
-			}
-			return _Redis.Close()
-		},
-		func() error {
-			if _DB == nil {
-				return nil
-			}
-			return _DB.Close()
-		},
-	)
-	if e != nil {
-		_Logger.Error("close databases", zap.String("error", e.Error()))
-		joinErr(e)
-	}
-
-	// 6. close logger
-	if settings.Logger != nil {
-		if e = settings.Logger.Down(); e != nil {
-			_Logger.Error("shutdown logger", zap.String("error", e.Error()))
-			joinErr(e)
-		}
-	}
-
-	return err
+	return
 }

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
+	"time"
 
 	"github.com/d2jvkpn/go-backend/internal"
 
@@ -73,6 +74,7 @@ func RunApi(project *viper.Viper, args []string, migrations embed.FS) {
 			"http_addr":     httpAddr, // don't use http.addr as key here
 			"internal_addr": internalAddr,
 			"grpc_addr":     grpcAddr,
+			"startup":       time.Now().Format(gotk.RFC3339Milli),
 		},
 	)
 
@@ -99,7 +101,7 @@ func RunApi(project *viper.Viper, args []string, migrations embed.FS) {
 	)
 
 	// 5. exit
-	err = gotk.ExitChan(errCh, internal.Shutdown)
+	err = gotk.ExitChan(errCh, internal.Exit)
 }
 
 func updateMeta(project *viper.Viper, mp map[string]any) {
