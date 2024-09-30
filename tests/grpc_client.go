@@ -1,7 +1,7 @@
 package tests
 
 import (
-	"context"
+	// "context"
 	"flag"
 	// "fmt"
 	"log"
@@ -30,11 +30,10 @@ func testGrpcClient(args []string) {
 		tls     bool
 		err     error
 		flagSet *flag.FlagSet
-		ctx     context.Context
 
 		conn   *grpc.ClientConn
 		client *GrpcClient
-		in     *proto.LogData
+		input  *proto.LogData
 		res    *proto.LogId
 	)
 
@@ -53,8 +52,6 @@ func testGrpcClient(args []string) {
 			log.Fatal(err)
 		}
 	}()
-
-	ctx = context.TODO()
 
 	inte := cloud.HeaderInterceptor{
 		Headers: map[string]string{"hello": "world"},
@@ -75,12 +72,12 @@ func testGrpcClient(args []string) {
 
 	client = NewGrpcClient(conn)
 
-	in = &proto.LogData{
+	input = &proto.LogData{
 		AppName:    "go-backend/tests",
 		AppVersion: "0.1.0",
 		RequestId:  "testGrpcClient-01",
 	}
-	if res, err = client.PushLog(ctx, in); err != nil {
+	if res, err = client.PushLog(_TestCtx, input); err != nil {
 		return
 	}
 

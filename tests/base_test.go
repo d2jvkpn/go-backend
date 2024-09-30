@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"os"
@@ -12,6 +13,7 @@ import (
 
 var (
 	_TestFlags  *flag.FlagSet
+	_TestCtx    context.Context
 	_TestConfig *viper.Viper
 )
 
@@ -36,7 +38,9 @@ func TestMain(m *testing.M) {
 		}
 	}()
 
-	_TestConfig, err = gotk.LoadYamlConfig("config", "config")
+	_TestCtx = context.TODO()
+
+	_TestConfig, err = gotk.LoadYamlConfig(config, "config")
 	if err != nil {
 		return
 	}
@@ -61,6 +65,6 @@ func TestClients(t *testing.T) {
 	case "grpc":
 		testGrpcClient(args[1:])
 	default:
-		t.Fatalf("unkonw command: %s", cmd)
+		t.Fatalf("unkonwn command: %s", cmd)
 	}
 }
