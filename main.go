@@ -8,8 +8,6 @@ import (
 	"github.com/d2jvkpn/go-backend/bin"
 
 	"github.com/d2jvkpn/gotk"
-	"github.com/spf13/cobra"
-	// "github.com/spf13/pflag"
 	"github.com/spf13/viper"
 )
 
@@ -21,14 +19,11 @@ var (
 	_Migrations embed.FS
 )
 
-// ./target/main api -- --release
 func main() {
 	var (
-		err error
-		// fSet   *pflag.FlagSet
+		err     error
 		project *viper.Viper
-
-		command *cobra.Command
+		command *gotk.Command
 	)
 
 	defer func() {
@@ -43,25 +38,13 @@ func main() {
 		return
 	}
 
-	command = &cobra.Command{
-		Use: project.GetString("meta.app_name"),
-	}
-	/*
-		fSet = command.Flags()
-		fSet.StringVar(&config, "config", "configs/local.yaml", "configuration file(yaml)")
-		fSet.BoolVar(&release, "release", false, "run in release mode")
+	command = gotk.NewCommand(project.GetString("meta.app_name"), project)
 
-		if err = fSet.Parse(os.Args[1:]); err != nil {
-			fmt.Println("~~~ error:", err)
-		}
-		command.SetArgs(fSet.Args())
-	*/
-
-	showCmd := &cobra.Command{
-		Use:   "show",
-		Short: "show build information(build) and configuration(api, crons, swagger)",
-		Run: func(cmd *cobra.Command, args []string) {
-			errMsg := "required: build | api | crons | swagger\n"
+	command.AddCmd(
+		"config",
+		"show configuration(api, crons, swagger)",
+		func(args []string) {
+			errMsg := "required: api | crons | swagger\n"
 
 			if len(args) == 0 {
 				fmt.Fprintf(os.Stderr, errMsg)
@@ -69,8 +52,6 @@ func main() {
 			}
 
 			switch args[0] {
-			case "build":
-				fmt.Printf("%s\n", gotk.BuildInfoText(project.GetStringMap("meta")))
 			case "api":
 				fmt.Printf("%s\n", project.GetString("api_config"))
 			case "crons":
@@ -82,40 +63,31 @@ func main() {
 				os.Exit(1)
 			}
 		},
-	}
+	)
 
-	apiCmd := &cobra.Command{
-		Use:   "api",
-		Short: "api service",
-
-		Run: func(cmd *cobra.Command, args []string) {
-			// fmt.Println("~~~ api args:", args)
+	command.AddCmd(
+		"api",
+		"api service",
+		func(args []string) {
 			bin.RunApi(project, args, _Migrations)
 		},
-	}
+	)
 
-	cronsCmd := &cobra.Command{
-		Use:   "crons",
-		Short: "cron deamon",
-
-		Run: func(cmd *cobra.Command, args []string) {
+	command.AddCmd(
+		"crons",
+		"cron deamon",
+		func(args []string) {
 			bin.RunCrons(args)
 		},
-	}
+	)
 
-	swaggerCmd := &cobra.Command{
-		Use:   "swagger",
-		Short: "swagger service",
-
-		Run: func(cmd *cobra.Command, args []string) {
+	command.AddCmd(
+		"swagger",
+		"swagger service",
+		func(args []string) {
 			bin.RunBin("swagger", args)
 		},
-	}
+	)
 
-	command.AddCommand(showCmd)
-	command.AddCommand(apiCmd)
-	command.AddCommand(cronsCmd)
-	command.AddCommand(swaggerCmd)
-
-	command.Execute()
+	command.Execute(os.Args[1:])
 }
