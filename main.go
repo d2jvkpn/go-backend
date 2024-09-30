@@ -37,6 +37,10 @@ func main() {
 		err = fmt.Errorf("settings.LoadProject: %w", err)
 		return
 	}
+	if project.GetString("app_name") == "" || project.GetString("app_version") == "" {
+		err = fmt.Errorf("either app_name or app_version is unset in project.yaml")
+		return
+	}
 
 	command = gotk.NewCommand(project.GetString("meta.app_name"), project)
 

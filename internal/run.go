@@ -22,8 +22,8 @@ func Load(project *viper.Viper) (err error) {
 		config  *viper.Viper
 	)
 
+	appName = project.GetString("app_name") + ".api"
 	release = project.GetBool("meta.release")
-	appName = project.GetString("app_name")
 
 	config, err = gotk.LoadYamlConfig(project.GetString("meta.config"), "config")
 	if err != nil {

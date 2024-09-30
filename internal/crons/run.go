@@ -20,7 +20,7 @@ func Load(project *viper.Viper) (err error) {
 	)
 
 	// 1. Log
-	appName = project.GetString("app_name")
+	appName = project.GetString("app_name") + ".crons"
 	release = project.GetBool("meta.release")
 
 	config, err = gotk.LoadYamlConfig(project.GetString("meta.config"), "config")
