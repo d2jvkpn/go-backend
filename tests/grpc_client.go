@@ -11,6 +11,7 @@ import (
 
 	"github.com/d2jvkpn/gotk"
 	"github.com/d2jvkpn/gotk/cloud"
+	"github.com/google/uuid"
 	"google.golang.org/grpc"
 )
 
@@ -78,7 +79,7 @@ func testGrpcClient(args []string) {
 		AppName:    "go-backend/tests",
 		AppVersion: "0.1.0",
 
-		RequestId: "testGrpcClient-01",
+		RequestId: uuid.New().String(),
 		RequestAt: time.Now().Format(gotk.RFC3339Milli),
 
 		LatencyMilli: 42,

@@ -42,11 +42,20 @@ func Load(project *viper.Viper) (err error) {
 		}
 	}()
 
-	// ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	// defer cancel()
-
 	// 2. databases: postgres, redis
-	// TODO:
+	err = gotk.ConcRunErr(
+		func() (err error) {
+			_GORM_PG, _DB, err = PgConnect(config.Sub("postgres"), release)
+			return err
+		},
+		func() (err error) {
+			_Redis, err = NewRedisClient(config.Sub("redis"))
+			return err
+		},
+	)
+	if err != nil {
+		return err
+	}
 
 	// 3. cloud
 	err = gotk.ConcRunErr(
