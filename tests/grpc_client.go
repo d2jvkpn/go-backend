@@ -5,9 +5,11 @@ import (
 	"flag"
 	// "fmt"
 	"log"
+	"time"
 
 	"github.com/d2jvkpn/go-backend/proto"
 
+	"github.com/d2jvkpn/gotk"
 	"github.com/d2jvkpn/gotk/cloud"
 	"google.golang.org/grpc"
 )
@@ -75,11 +77,17 @@ func testGrpcClient(args []string) {
 	input = &proto.LogData{
 		AppName:    "go-backend/tests",
 		AppVersion: "0.1.0",
-		RequestId:  "testGrpcClient-01",
+
+		RequestId: "testGrpcClient-01",
+		RequestAt: time.Now().Format(gotk.RFC3339Milli),
+
+		LatencyMilli: 42,
+		Identity:     map[string]string{"account": "test"},
+		Data:         []byte(`{"module":"biz_user"}`),
 	}
 	if res, err = client.PushLog(_TestCtx, input); err != nil {
 		return
 	}
 
-	log.Printf("==> response: %+#v\n", res)
+	log.Printf("<== response: %#v\n", res)
 }

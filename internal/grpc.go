@@ -2,7 +2,7 @@ package internal
 
 import (
 	"context"
-	// "fmt"
+	"fmt"
 	"net"
 
 	"github.com/d2jvkpn/go-backend/proto"
@@ -99,6 +99,8 @@ func ServeGrpc(listener net.Listener, errch chan<- error) {
 // biz
 func (self *RPCServer) PushLog(ctx context.Context, record *proto.LogData) (*proto.LogId, error) {
 	// TODO: biz
+
+	fmt.Printf("<== PushLog: %+v\n", record)
 
 	return &proto.LogId{Id: record.GetRequestId()}, nil
 }
