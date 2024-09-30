@@ -21,13 +21,15 @@ func Load(project *viper.Viper) (err error) {
 		config  *viper.Viper
 	)
 
+	release = project.GetBool("meta.release")
 	appName = project.GetString("app_name")
 
 	config, err = gotk.LoadYamlConfig(project.GetString("meta.config"), "config")
 	if err != nil {
 		return err
 	}
-	release = project.GetBool("meta.release")
+	config.SetDefault("prometheus", map[string]any{})
+	config.SetDefault("opentelemetry", map[string]any{})
 
 	// 1. Log
 	if err = SetupLog(release, project.GetString("app_name")); err != nil {
@@ -181,6 +183,7 @@ func Shutdown() (err error) {
 	}
 
 	// 5. databases
+	// TODO:
 
 	// 6. close logger
 	if settings.Logger != nil {

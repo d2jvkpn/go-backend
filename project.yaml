@@ -44,7 +44,7 @@ api_config: |
     max_active_conns: 32
 
   prometheus:
-    enabled: false
+    enabled: true
     path: /metrics
 
   opentelemetry:
