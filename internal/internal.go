@@ -93,12 +93,12 @@ func Run(project *viper.Viper) (errch chan error, err error) {
 			err = errors.Join(err, httpListener.Close())
 		}
 
-		if grpcListener != nil {
-			err = errors.Join(err, grpcListener.Close())
-		}
-
 		if internalListener != nil {
 			err = errors.Join(err, internalListener.Close())
+		}
+
+		if grpcListener != nil {
+			err = errors.Join(err, grpcListener.Close())
 		}
 	}()
 
@@ -111,16 +111,16 @@ func Run(project *viper.Viper) (errch chan error, err error) {
 			return nil
 		},
 		func() (err error) {
-			grpcListener, err = net.Listen("tcp", project.GetString("meta.grpc_addr"))
+			internalListener, err = net.Listen("tcp", project.GetString("meta.internal_addr"))
 			if err != nil {
-				return fmt.Errorf("grpc net.Listen: %w", err)
+				return fmt.Errorf("internal net.Listen: %w", err)
 			}
 			return nil
 		},
 		func() (err error) {
-			internalListener, err = net.Listen("tcp", project.GetString("meta.internal_addr"))
+			grpcListener, err = net.Listen("tcp", project.GetString("meta.grpc_addr"))
 			if err != nil {
-				return fmt.Errorf("internal net.Listen: %w", err)
+				return fmt.Errorf("grpc net.Listen: %w", err)
 			}
 			return nil
 		},
