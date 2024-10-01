@@ -8,8 +8,8 @@ message LogData {
 	string appName = 1;
 	string appVersion = 2;
 
-	string requestId = 3;
-	string requestAt = 4;
+	string requestId = 3; // uuid
+	string requestAt = 4; // RFC3339Milli
 	// google.protobuf.Timestamp requestAt = 4;
 	string ip = 5;
 	string msg = 6;
@@ -19,7 +19,7 @@ message LogData {
 
 	int64 latency_milli = 10;
 	map<string, string> identity = 11;
-	bytes data = 12;
+	bytes data = 12; // json bytes
 }
 
 message LogId {

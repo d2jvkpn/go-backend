@@ -14,21 +14,19 @@ import (
 
 func Load(project *viper.Viper) (err error) {
 	var (
-		release bool
 		appName string
 		config  *viper.Viper
 	)
 
 	// 1. Log
 	appName = project.GetString("app_name") + ".crons"
-	release = project.GetBool("meta.release")
 
 	config, err = gotk.LoadYamlConfig(project.GetString("meta.config"), "config")
 	if err != nil {
 		return err
 	}
 
-	if err = SetupLog(release, appName); err != nil {
+	if err = SetupLog(appName, true); err != nil {
 		return err
 	}
 
@@ -61,6 +59,7 @@ func Load(project *viper.Viper) (err error) {
 }
 
 func Run(project *viper.Viper) (err error) {
+	// TODO: tasks
 	_Logger.Info("run", zap.Any("meta", project.GetStringMap("meta")))
 
 	_Cron.Start()

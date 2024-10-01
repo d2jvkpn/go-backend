@@ -12,7 +12,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func SetupLog(release bool, appName string) (err error) {
+func SetupLog(appName string, release bool) (err error) {
 	log_file := filepath.Join("logs", appName+".log")
 
 	if release {

@@ -8,6 +8,8 @@ import (
 	"log/slog"
 	"net/http"
 
+	"github.com/d2jvkpn/go-backend/internal/rpc"
+
 	"github.com/d2jvkpn/gotk"
 	"github.com/d2jvkpn/gotk/trace_error"
 	"github.com/redis/go-redis/v9"
@@ -26,7 +28,7 @@ var (
 
 	_InternalServer *http.Server
 	_HttpServer     *http.Server
-	_RPCServer      *RPCServer
+	_RPCServer      *rpc.RPCServer
 
 	_DB      *sql.DB
 	_GORM_PG *gorm.DB

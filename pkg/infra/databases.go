@@ -77,9 +77,6 @@ func NewRedisClient(vp *viper.Viper) (client *redis.Client, err error) {
 		// ConnMaxLifetime: -1,
 	})
 
-	// ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
-	// defer cancel()
-
 	if err = client.Ping(ctx).Err(); err != nil {
 		return nil, fmt.Errorf("Redis.Ping: %w", err)
 	}

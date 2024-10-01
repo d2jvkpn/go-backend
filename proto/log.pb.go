@@ -27,8 +27,8 @@ type LogData struct {
 
 	AppName    string `protobuf:"bytes,1,opt,name=appName,proto3" json:"appName,omitempty"`
 	AppVersion string `protobuf:"bytes,2,opt,name=appVersion,proto3" json:"appVersion,omitempty"`
-	RequestId  string `protobuf:"bytes,3,opt,name=requestId,proto3" json:"requestId,omitempty"`
-	RequestAt  string `protobuf:"bytes,4,opt,name=requestAt,proto3" json:"requestAt,omitempty"`
+	RequestId  string `protobuf:"bytes,3,opt,name=requestId,proto3" json:"requestId,omitempty"` // uuid
+	RequestAt  string `protobuf:"bytes,4,opt,name=requestAt,proto3" json:"requestAt,omitempty"` // RFC3339Milli
 	// google.protobuf.Timestamp requestAt = 4;
 	Ip           string            `protobuf:"bytes,5,opt,name=ip,proto3" json:"ip,omitempty"`
 	Msg          string            `protobuf:"bytes,6,opt,name=msg,proto3" json:"msg,omitempty"`
@@ -37,7 +37,7 @@ type LogData struct {
 	Error        string            `protobuf:"bytes,9,opt,name=error,proto3" json:"error,omitempty"`
 	LatencyMilli int64             `protobuf:"varint,10,opt,name=latency_milli,json=latencyMilli,proto3" json:"latency_milli,omitempty"`
 	Identity     map[string]string `protobuf:"bytes,11,rep,name=identity,proto3" json:"identity,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
-	Data         []byte            `protobuf:"bytes,12,opt,name=data,proto3" json:"data,omitempty"`
+	Data         []byte            `protobuf:"bytes,12,opt,name=data,proto3" json:"data,omitempty"` // json bytes
 }
 
 func (x *LogData) Reset() {

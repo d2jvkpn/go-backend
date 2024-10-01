@@ -70,11 +70,18 @@ func RunCrons(project *viper.Viper, args []string) {
 		return
 	}
 
+	// 4. up
 	if err = crons.Run(project); err != nil {
 		return
 	}
 
-	// 4. exit
+	logger.Info(
+		"crons is up",
+		"config", config,
+		"app_version", project.GetString("meta.app_version"),
+	)
+
+	// 5. exit
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM) // linux: syscall.SIGUSR2
 

@@ -7,6 +7,7 @@ import (
 	"net"
 	"time"
 
+	"github.com/d2jvkpn/go-backend/internal/rpc"
 	"github.com/d2jvkpn/go-backend/internal/settings"
 	"github.com/d2jvkpn/go-backend/pkg/infra"
 
@@ -33,7 +34,7 @@ func Load(project *viper.Viper) (err error) {
 	config.SetDefault("opentelemetry", map[string]any{})
 
 	// 1. Log
-	if err = SetupLog(release, project.GetString("app_name")); err != nil {
+	if err = SetupLog(appName, release); err != nil {
 		return err
 	}
 
@@ -82,7 +83,8 @@ func Load(project *viper.Viper) (err error) {
 	}
 
 	// 6. grpc server
-	if err = SetupGrpc(config); err != nil {
+	_RPCServer, err = rpc.NewRPCServer(config, config.GetBool("opentelemetry.trace"))
+	if err != nil {
 		return err
 	}
 

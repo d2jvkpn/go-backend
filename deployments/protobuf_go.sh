@@ -6,10 +6,7 @@ export PATH="$HOME/Apps/bin:$(go env GOPATH)/bin:$PATH"
 
 # go get google/protobuf/timestamp.proto
 
-#### 1. create proto
-mkdir -p proto
-
-cat > proto/log.proto << EOF
+cat > proto/log.proto <<EOF
 syntax = "proto3";
 package proto;
 
@@ -20,8 +17,8 @@ message LogData {
 	string appName = 1;
 	string appVersion = 2;
 
-	string requestId = 3;
-	string requestAt = 4;
+	string requestId = 3; // uuid
+	string requestAt = 4; // RFC3339Milli
 	// google.protobuf.Timestamp requestAt = 4;
 	string ip = 5;
 	string msg = 6;
@@ -31,7 +28,7 @@ message LogData {
 
 	int64 latency_milli = 10;
 	map<string, string> identity = 11;
-	bytes data = 12;
+	bytes data = 12; // json bytes
 }
 
 message LogId {
@@ -43,11 +40,11 @@ service LogService {
 }
 EOF
 
-#### 2. generate
-protoc --go-grpc_out=./ --go_out=./ --proto_path=./proto proto/*.proto
-
 ls -al proto/
+
+protoc --go-grpc_out=./ --go_out=./ --proto_path=./proto proto/*.proto
 
 sed -i '/^\tmustEmbedUnimplemented/s#\t#\t// #' proto/*_grpc.pb.go
 
-go fmt ./... && go vet ./...
+go fmt ./...
+go vet ./...
