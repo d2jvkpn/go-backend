@@ -9,7 +9,8 @@ import (
 
 	grpcMdlw "github.com/grpc-ecosystem/go-grpc-middleware"
 	"github.com/spf13/viper"
-	// "go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
+	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
+	"go.opentelemetry.io/otel"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/health"
@@ -22,21 +23,44 @@ type RPCServer struct {
 
 func NewRPCServer(config *viper.Viper) (server *RPCServer, err error) {
 	var (
-		options []grpc.ServerOption
-		uIntes  []grpc.UnaryServerInterceptor
-		sIntes  []grpc.StreamServerInterceptor
+		serverOpts []grpc.ServerOption
+		otelOpts   []otelgrpc.Option
+		uIntes     []grpc.UnaryServerInterceptor
+		sIntes     []grpc.StreamServerInterceptor
 	)
 
-	options = make([]grpc.ServerOption, 0)
+	serverOpts = make([]grpc.ServerOption, 0)
+	otelOpts = make([]otelgrpc.Option, 0)
 	uIntes = make([]grpc.UnaryServerInterceptor, 0)
 	sIntes = make([]grpc.StreamServerInterceptor, 0)
 
-	// TODO: otel metrics and tracing: otelgrpc.NewServerHandler(options ...otelgrpc.Option)
+	// TODO: uIntes, sIntes
+	if len(uIntes) > 0 {
+		serverOpts = append(serverOpts,
+			grpc.UnaryInterceptor(grpcMdlw.ChainUnaryServer(uIntes...)),
+		)
+	}
 
-	options = append(options,
-		grpc.UnaryInterceptor(grpcMdlw.ChainUnaryServer(uIntes...)),
-		grpc.StreamInterceptor(grpcMdlw.ChainStreamServer(sIntes...)),
-	)
+	if len(sIntes) > 0 {
+		serverOpts = append(serverOpts,
+			grpc.StreamInterceptor(grpcMdlw.ChainStreamServer(sIntes...)),
+		)
+	}
+
+	if config.GetBool("trace") {
+		otelOpts = append(otelOpts, otelgrpc.WithTracerProvider(otel.GetTracerProvider()))
+	}
+
+	if config.GetBool("metrics") {
+		otelOpts = append(otelOpts, otelgrpc.WithMeterProvider(otel.GetMeterProvider()))
+	}
+
+	if len(otelOpts) > 0 {
+		serverOpts = append(
+			serverOpts,
+			grpc.StatsHandler(otelgrpc.NewServerHandler(otelOpts...)),
+		)
+	}
 
 	//
 	if config.GetBool("tls") {
@@ -49,11 +73,11 @@ func NewRPCServer(config *viper.Viper) (server *RPCServer, err error) {
 		if err != nil {
 			return nil, err
 		}
-		options = append(options, grpc.Creds(creds))
+		serverOpts = append(serverOpts, grpc.Creds(creds))
 	}
 
 	server = new(RPCServer)
-	server.Server = grpc.NewServer(options...)
+	server.Server = grpc.NewServer(serverOpts...)
 
 	return server, nil
 }

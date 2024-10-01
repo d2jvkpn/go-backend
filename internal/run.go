@@ -30,8 +30,13 @@ func Load(project *viper.Viper) (err error) {
 	if err != nil {
 		return err
 	}
+
 	config.SetDefault("prometheus", map[string]any{})
 	config.SetDefault("opentelemetry", map[string]any{})
+
+	grpcConfig := config.Sub("grpc")
+	grpcConfig.Set("trace", config.GetBool("opentelemetry.trace"))
+	grpcConfig.Set("metrics", config.GetBool("opentelemetry.metrics"))
 
 	// 1. Log
 	if err = SetupLog(appName, release); err != nil {

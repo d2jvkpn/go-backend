@@ -76,11 +76,12 @@ func testGrpcClient(args []string) {
 	client = NewGrpcClient(conn)
 
 	input = &proto.LogData{
-		AppName:    "go-backend/tests",
+		AppName:    "go-backend.tests",
 		AppVersion: "0.1.0",
 
-		RequestId: uuid.New().String(),
-		RequestAt: time.Now().Format(gotk.RFC3339Milli),
+		RequestId:  uuid.New().String(),
+		RequestAt:  time.Now().Format(gotk.RFC3339Milli),
+		StatusCode: 200,
 
 		LatencyMilli: 42,
 		Identity:     map[string]string{"account": "test"},
