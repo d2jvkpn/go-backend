@@ -105,8 +105,8 @@ func Load(project *viper.Viper) (err error) {
 func Run(project *viper.Viper) (errch chan error, err error) {
 	var (
 		httpListener     net.Listener
-		grpcListener     net.Listener
 		internalListener net.Listener
+		grpcListener     net.Listener
 	)
 
 	defer func() {
