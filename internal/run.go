@@ -7,100 +7,12 @@ import (
 	"net"
 	"time"
 
-	"github.com/d2jvkpn/go-backend/internal/rpc"
 	"github.com/d2jvkpn/go-backend/internal/settings"
-	"github.com/d2jvkpn/go-backend/pkg/infra"
 
 	"github.com/d2jvkpn/gotk"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
 )
-
-func Load(project *viper.Viper) (err error) {
-	var (
-		appName string
-		release bool
-		config  *viper.Viper
-	)
-
-	appName = project.GetString("app_name") + ".api"
-	release = project.GetBool("meta.release")
-
-	config, err = gotk.LoadYamlConfig(project.GetString("meta.config"), "config")
-	if err != nil {
-		return err
-	}
-
-	config.SetDefault("prometheus", map[string]any{})
-	config.SetDefault("opentelemetry", map[string]any{})
-
-	grpcConfig := config.Sub("grpc")
-	grpcConfig.Set("trace", config.GetBool("opentelemetry.trace"))
-	grpcConfig.Set("metrics", config.GetBool("opentelemetry.metrics"))
-
-	// 1. Log
-	if err = SetupLog(appName, release); err != nil {
-		return err
-	}
-
-	defer func() {
-		if err != nil {
-			Exit()
-		}
-	}()
-
-	// 2. databases: postgres, redis
-	err = gotk.ConcRunErr(
-		func() (err error) {
-			_SLogger.Debug("connect to postgres")
-			_GORM_PG, _DB, err = infra.PgConnect(config.Sub("postgres"), release)
-			return err
-		},
-		func() (err error) {
-			_SLogger.Debug("connect to redis")
-			_Redis, err = infra.NewRedisClient(config.Sub("redis"))
-			return err
-		},
-	)
-	if err != nil {
-		return err
-	}
-
-	// 3. cloud
-	err = gotk.ConcRunErr(
-		func() (err error) {
-			_SLogger.Debug("setup otel metrics")
-			return SetupOtelMetrics(appName, config)
-		},
-		func() (err error) {
-			_SLogger.Debug("setup otel trace")
-			return SetupOtelTrace(appName, config)
-		},
-	)
-	if err != nil {
-		return err
-	}
-
-	// 4. http server
-	_SLogger.Debug("setup http")
-	if err = SetupHttp(release, config); err != nil {
-		return err
-	}
-
-	// 5. internal server
-	_SLogger.Debug("setup internal")
-	if err = SetupInternal(config, project.GetStringMap("meta")); err != nil {
-		return err
-	}
-
-	// 6. grpc server
-	_SLogger.Debug("setup grpc")
-	if _RPCServer, err = rpc.NewRPCServer(config); err != nil {
-		return err
-	}
-
-	return nil
-}
 
 func Run(project *viper.Viper) (errch chan error, err error) {
 	var (

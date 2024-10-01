@@ -3,10 +3,10 @@ module github.com/d2jvkpn/go-backend
 go 1.23
 
 require (
-	github.com/d2jvkpn/gotk v0.0.0-20240930074344-a71486ae47e1
-	github.com/d2jvkpn/gotk/cloud v0.0.0-20240930074344-a71486ae47e1
-	github.com/d2jvkpn/gotk/ginx v0.0.0-20240930074344-a71486ae47e1
-	github.com/d2jvkpn/gotk/trace_error v0.0.0-20240930074344-a71486ae47e1
+	github.com/d2jvkpn/gotk v0.0.0-20241001111917-3a4c0250394e
+	github.com/d2jvkpn/gotk/cloud v0.0.0-20241001111917-3a4c0250394e
+	github.com/d2jvkpn/gotk/ginx v0.0.0-20241001111917-3a4c0250394e
+	github.com/d2jvkpn/gotk/trace_error v0.0.0-20241001111917-3a4c0250394e
 	github.com/gin-contrib/cors v1.7.2
 	github.com/gin-gonic/gin v1.10.0
 	github.com/google/uuid v1.6.0
