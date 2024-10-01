@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/d2jvkpn/go-backend/internal"
+	"github.com/d2jvkpn/go-backend/pkg/utils"
 
 	"github.com/d2jvkpn/gotk"
 	"github.com/spf13/viper"
@@ -51,10 +52,12 @@ func RunApi(project *viper.Viper, args []string, migrations embed.FS) {
 		return
 	}
 
-	//logger = slog.New(slog.NewJSONHandler(
-	//	os.Stderr, &slog.HandlerOptions{AddSource: true},
-	//).WithGroup("api"))
-	logger = slog.New(slog.NewJSONHandler(os.Stderr, nil))
+	// logger = slog.New(slog.NewJSONHandler(os.Stderr, nil))
+	if release {
+		logger = utils.NewJSONLogger(os.Stderr, slog.LevelInfo)
+	} else {
+		logger = utils.NewJSONLogger(os.Stderr, slog.LevelDebug)
+	}
 
 	defer func() {
 		if err != nil {

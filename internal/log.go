@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 
 	"github.com/d2jvkpn/go-backend/internal/settings"
+	"github.com/d2jvkpn/go-backend/pkg/utils"
 
 	"github.com/d2jvkpn/gotk"
 	"go.uber.org/zap"
@@ -24,8 +25,13 @@ func SetupLog(appName string, release bool) (err error) {
 		return fmt.Errorf("NewLogger: %w", err)
 	}
 
-	_SLogger = slog.New(slog.NewJSONHandler(os.Stderr, nil))
 	_Logger = settings.Logger.Named("internal")
+
+	if release {
+		_SLogger = utils.NewJSONLogger(os.Stderr, slog.LevelInfo)
+	} else {
+		_SLogger = utils.NewJSONLogger(os.Stderr, slog.LevelDebug)
+	}
 
 	return nil
 }

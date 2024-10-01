@@ -4,13 +4,20 @@ import (
 	// "context"
 	// "fmt"
 	"net"
+
+	"go.uber.org/zap"
 )
 
 func ServeGrpc(listener net.Listener, errch chan<- error) {
-	_SLogger.Info("grpc server is up")
+	_SLogger.Debug("grpc server is up")
 
 	var e error
 
-	e = _RPCServer.Run(listener)
-	errch <- e
+	if e = _RPCServer.Run(listener); e != nil {
+		_Logger.Error("grpc server has been shutdown", zap.String("error", e.Error()))
+		errch <- e
+	} else {
+		_Logger.Info("grpc server has been shutdown")
+		errch <- nil
+	}
 }

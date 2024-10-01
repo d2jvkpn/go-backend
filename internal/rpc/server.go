@@ -9,7 +9,7 @@ import (
 
 	grpcMdlw "github.com/grpc-ecosystem/go-grpc-middleware"
 	"github.com/spf13/viper"
-	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
+	// "go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/health"
@@ -20,7 +20,7 @@ type RPCServer struct {
 	*grpc.Server
 }
 
-func NewRPCServer(config *viper.Viper, enableOtel bool) (server *RPCServer, err error) {
+func NewRPCServer(config *viper.Viper) (server *RPCServer, err error) {
 	var (
 		options []grpc.ServerOption
 		uIntes  []grpc.UnaryServerInterceptor
@@ -31,17 +31,7 @@ func NewRPCServer(config *viper.Viper, enableOtel bool) (server *RPCServer, err 
 	uIntes = make([]grpc.UnaryServerInterceptor, 0)
 	sIntes = make([]grpc.StreamServerInterceptor, 0)
 
-	if enableOtel {
-		uIntes = append(
-			uIntes,
-			otelgrpc.UnaryServerInterceptor( /*opts ...Option*/ ),
-		)
-
-		sIntes = append(
-			sIntes,
-			otelgrpc.StreamServerInterceptor( /*opts ...Option*/ ),
-		)
-	}
+	// TODO: otel metrics and tracing: otelgrpc.NewServerHandler(options ...otelgrpc.Option)
 
 	options = append(options,
 		grpc.UnaryInterceptor(grpcMdlw.ChainUnaryServer(uIntes...)),

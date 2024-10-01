@@ -114,7 +114,7 @@ func SetupHttp(release bool, config *viper.Viper) (err error) {
 }
 
 func ServeHTTP(listener net.Listener, errch chan<- error) {
-	_SLogger.Info("http server is up")
+	_SLogger.Debug("http server is up")
 
 	var e error
 

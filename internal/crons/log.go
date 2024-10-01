@@ -10,14 +10,10 @@ import (
 	"go.uber.org/zap"
 )
 
-func SetupLog(appName string, release bool) (err error) {
+func SetupLog(appName string) (err error) {
 	log_file := filepath.Join("logs", appName+".log")
 
-	if release {
-		_Logger, err = gotk.NewZapLogger(log_file, zap.InfoLevel, 1024)
-	} else {
-		_Logger, err = gotk.NewZapLogger("", zap.DebugLevel, 1024)
-	}
+	_Logger, err = gotk.NewZapLogger(log_file, zap.InfoLevel, 1024)
 	if err != nil {
 		return fmt.Errorf("NewLogger: %w", err)
 	}

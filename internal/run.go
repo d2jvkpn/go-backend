@@ -83,8 +83,7 @@ func Load(project *viper.Viper) (err error) {
 	}
 
 	// 6. grpc server
-	_RPCServer, err = rpc.NewRPCServer(config, config.GetBool("opentelemetry.trace"))
-	if err != nil {
+	if _RPCServer, err = rpc.NewRPCServer(config); err != nil {
 		return err
 	}
 
@@ -165,51 +164,73 @@ func Exit() (err error) {
 	}
 
 	// 1. stop http.server
-	if _HttpServer != nil {
-		_SLogger.Warn("shutdown http server")
+	shutdownHttp := func() (e error) {
+		if _HttpServer == nil {
+			return nil
+		}
+
+		_SLogger.Debug("shutdown http server")
 		if e = _HttpServer.Shutdown(ctx); e != nil {
 			_Logger.Error("shutdown http server", zap.String("error", e.Error()))
-			joinErr(e)
 		}
+		return e
 	}
 
-	// 2. stop internal server
-	if _InternalServer != nil {
-		_SLogger.Warn("shutdown internal server")
+	shutdownInternal := func() (e error) {
+		if _InternalServer == nil {
+			return
+		}
+
+		_SLogger.Debug("shutdown internal server")
 		if e = _InternalServer.Shutdown(ctx); e != nil {
 			_Logger.Error("shutdown internal server", zap.String("error", e.Error()))
-			joinErr(e)
 		}
+		return e
 	}
 
-	// 3. stop grpc sever
-	if _RPCServer != nil {
-		_SLogger.Warn("shutdown grpc server")
+	shutdownGrpc := func() (e error) {
+		if _RPCServer == nil {
+			return nil
+		}
+		_SLogger.Debug("shutdown grpc server")
 		_RPCServer.Server.GracefulStop()
+		return nil
 	}
 
-	// 4. close otel
+	joinErr(gotk.ConcRunErr(shutdownHttp, shutdownInternal, shutdownGrpc))
+
+	// 2. close otel
 	e = gotk.ConcRunErr(
-		func() error { return _CloseOtelTracing(ctx) },
-		func() error { return _CloseOtelMetrics(ctx) },
+		func() error {
+			_SLogger.Debug("shutdown tracing")
+			return _CloseOtelTracing(ctx)
+		},
+		func() error {
+			_SLogger.Debug("shutdown metrics")
+			return _CloseOtelMetrics(ctx)
+		},
 	)
 	if e != nil {
 		_Logger.Error("close otel", zap.String("error", e.Error()))
 		joinErr(e)
 	}
 
-	// 5. close databases: postgres and redis
+	// 3. close databases: postgres and redis
 	e = gotk.ConcRunErr(
 		func() error {
 			if _Redis == nil {
 				return nil
 			}
+
+			_SLogger.Debug("shutdown redis")
 			return _Redis.Close()
 		},
 		func() error {
 			if _DB == nil {
 				return nil
 			}
+
+			_SLogger.Debug("shutdown postgres")
 			return _DB.Close()
 		},
 	)
@@ -218,8 +239,10 @@ func Exit() (err error) {
 		joinErr(e)
 	}
 
-	// 6. close logger
+	// 4. close logger
 	if settings.Logger != nil {
+		_SLogger.Debug("shutdown logger")
+
 		if err == nil {
 			_Logger.Info("exit")
 		} else {

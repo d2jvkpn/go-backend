@@ -15,7 +15,6 @@ require (
 	github.com/redis/go-redis/v9 v9.6.1
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/spf13/viper v1.19.0
-	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.55.0
 	go.opentelemetry.io/otel/metric v1.30.0
 	go.uber.org/zap v1.27.0
 	google.golang.org/grpc v1.67.0

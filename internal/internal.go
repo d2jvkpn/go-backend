@@ -61,7 +61,7 @@ func SetupInternal(config *viper.Viper, meta map[string]any) (err error) {
 }
 
 func ServeInternal(listener net.Listener, errch chan<- error) {
-	_SLogger.Info("internal server is up")
+	_SLogger.Debug("internal server is up")
 
 	var e error
 

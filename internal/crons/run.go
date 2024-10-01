@@ -26,7 +26,7 @@ func Load(project *viper.Viper) (err error) {
 		return err
 	}
 
-	if err = SetupLog(appName, true); err != nil {
+	if err = SetupLog(appName); err != nil {
 		return err
 	}
 
