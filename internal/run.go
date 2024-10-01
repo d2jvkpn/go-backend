@@ -52,10 +52,12 @@ func Load(project *viper.Viper) (err error) {
 	// 2. databases: postgres, redis
 	err = gotk.ConcRunErr(
 		func() (err error) {
+			_SLogger.Debug("connect to postgres")
 			_GORM_PG, _DB, err = infra.PgConnect(config.Sub("postgres"), release)
 			return err
 		},
 		func() (err error) {
+			_SLogger.Debug("connect to redis")
 			_Redis, err = infra.NewRedisClient(config.Sub("redis"))
 			return err
 		},
@@ -67,9 +69,11 @@ func Load(project *viper.Viper) (err error) {
 	// 3. cloud
 	err = gotk.ConcRunErr(
 		func() (err error) {
+			_SLogger.Debug("setup otel metrics")
 			return SetupOtelMetrics(appName, config)
 		},
 		func() (err error) {
+			_SLogger.Debug("setup otel trace")
 			return SetupOtelTrace(appName, config)
 		},
 	)
@@ -78,16 +82,19 @@ func Load(project *viper.Viper) (err error) {
 	}
 
 	// 4. http server
+	_SLogger.Debug("setup http")
 	if err = SetupHttp(release, config); err != nil {
 		return err
 	}
 
 	// 5. internal server
+	_SLogger.Debug("setup internal")
 	if err = SetupInternal(config, project.GetStringMap("meta")); err != nil {
 		return err
 	}
 
 	// 6. grpc server
+	_SLogger.Debug("setup grpc")
 	if _RPCServer, err = rpc.NewRPCServer(config); err != nil {
 		return err
 	}
@@ -124,22 +131,29 @@ func Run(project *viper.Viper) (errch chan error, err error) {
 
 	err = gotk.ConcRunErr(
 		func() (err error) {
-			httpListener, err = net.Listen("tcp", project.GetString("meta.http_addr"))
-			if err != nil {
+			addr := project.GetString("meta.http_addr")
+			_SLogger.Debug("http listen", "address", addr)
+
+			if httpListener, err = net.Listen("tcp", addr); err != nil {
 				return fmt.Errorf("http net.Listen: %w", err)
 			}
 			return nil
 		},
 		func() (err error) {
-			internalListener, err = net.Listen("tcp", project.GetString("meta.internal_addr"))
+			addr := project.GetString("meta.internal_addr")
+			_SLogger.Debug("internal listen", "address", addr)
+
+			internalListener, err = net.Listen("tcp", addr)
 			if err != nil {
 				return fmt.Errorf("internal net.Listen: %w", err)
 			}
 			return nil
 		},
 		func() (err error) {
-			grpcListener, err = net.Listen("tcp", project.GetString("meta.grpc_addr"))
-			if err != nil {
+			addr := project.GetString("meta.grpc_addr")
+			_SLogger.Debug("grpc listen", "address", addr)
+
+			if grpcListener, err = net.Listen("tcp", addr); err != nil {
 				return fmt.Errorf("grpc net.Listen: %w", err)
 			}
 			return nil
@@ -150,6 +164,7 @@ func Run(project *viper.Viper) (errch chan error, err error) {
 		return nil, err
 	}
 
+	_SLogger.Debug("serve...")
 	errch = make(chan error, 3)
 	go ServeHTTP(httpListener, errch)
 	go ServeInternal(internalListener, errch)
