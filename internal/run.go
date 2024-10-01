@@ -115,14 +115,17 @@ func Run(project *viper.Viper) (errch chan error, err error) {
 		}
 
 		if httpListener != nil {
+			_SLogger.Info("close http listener")
 			err = errors.Join(err, httpListener.Close())
 		}
 
 		if internalListener != nil {
+			_SLogger.Info("close internal listener")
 			err = errors.Join(err, internalListener.Close())
 		}
 
 		if grpcListener != nil {
+			_SLogger.Info("close grpc listener")
 			err = errors.Join(err, grpcListener.Close())
 		}
 	}()
