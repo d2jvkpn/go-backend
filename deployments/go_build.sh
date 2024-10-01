@@ -43,8 +43,9 @@ GO_ldflags="\
 
 mkdir -p $target_dir
 
-# go build -trimpath -ldflags="-w -s $GO_ldflags" -o target/$app_name main.go
-go build -trimpath -ldflags="$GO_ldflags" -o $target_dir/$target_name main.go
+# -ldflags="-w -s"
+# note: -trimpath will remove -ldflags
+go build -ldflags="$GO_ldflags" -o $target_dir/$target_name main.go
 
 # go tool dist list
 # GOOS=windows GOARCH=amd64 go build -ldflags="$GO_ldflags" -o target/${app_name}.exe main.go

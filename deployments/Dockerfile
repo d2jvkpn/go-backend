@@ -23,7 +23,7 @@ ADD ./main.go ./go.mod ./go.sum ./project.yaml ./
 COPY ./internal ./internal
 COPY ./migrations ./migrations
 COPY ./pkg ./pkg
-# COPY ./proto ./proto
+COPY ./proto ./proto
 COPY ./bin ./bin
 
 COPY ./cache.local ./cache.local
@@ -42,10 +42,12 @@ RUN if [ -d ./bin/swagger-go/cache.local/vendor ]; then \
 # mkdir -p target && go build -o target/main -ldflags="-w -s ${GO_ldflags}" main.go
 RUN mkdir -p target
 
-RUN go build -trimpath -ldflags="-w -s ${GO_ldflags}" -o target/main main.go
+# note: -trimpath will remove -ldflags
+RUN go build -ldflags="-w -s ${GO_ldflags}" -o target/main main.go
 
+# note: -trimpath will remove -ldflags
 RUN cd bin/swagger-go && \
-  go build -trimpath -ldflags="-w -s ${GO_ldflags}" -o ../../target/swagger main.go
+  go build -ldflags="-w -s ${GO_ldflags}" -o ../../target/swagger main.go
 
 ####
 FROM alpine:3
