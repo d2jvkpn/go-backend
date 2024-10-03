@@ -45,11 +45,12 @@ mkdir -p $target_dir
 
 # go tool dist list
 # -ldflags="-w -s"
-
 # note: -trimpath will remove -ldflags
-go build -ldflags="$GO_ldflags" -o $target_dir/$target_name main.go
-# GOOS=windows GOARCH=amd64 go build -ldflags="$GO_ldflags" -o target/${target_name}.exe main.go
-# GOOS=darwin GOARCH=amd64 go build -ldflags="$GO_ldflags" -o target/${target_name}-amd64-darwin main.go
-# GOOS=linux GOARCH=arm go build -ldflags="$GO_ldflags" -o target/${target_name}-arm64-darwin main.go
+go build -ldflags="$GO_ldflags" -o $target_dir/${target_name} main.go
+
+# GOOS=linux GOARCH=amd64 go build -ldflags="$GO_ldflags" -o $target_dir/${target_name}.linux-amd64 main.go
+# GOOS=windows GOARCH=amd64 go build -ldflags="$GO_ldflags" -o target/${target_name}.windows-amd64.exe main.go
+# GOOS=darwin GOARCH=amd64 go build -ldflags="$GO_ldflags" -o target/${target_name}.amd64-darwin main.go
+# GOOS=darwin GOARCH=arm go build -ldflags="$GO_ldflags" -o target/${target_name}.arm64-darwin main.go
 
 ls -l $target_dir
