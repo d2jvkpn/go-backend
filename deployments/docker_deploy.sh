@@ -15,13 +15,8 @@ envsubst < ${_path}/docker_deploy.yaml > docker-compose.yaml
 
 ####
 exit 0
-dry_run=${dry_run:-"false"}
-
-[[ "$dry_run" == "true" ]] && { >&2 echo "exit"; exit 0; }
-# docker-compose pull
-
->&2 echo "==> docker up"
 docker-compose up -d
+docker-compose logs
 
 ####
 exit 0
