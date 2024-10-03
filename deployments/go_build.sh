@@ -14,6 +14,7 @@ app_name=$(yq .app_name project.yaml)
 app_version=$(yq .app_version project.yaml)
 image_name=$(yq .image_name project.yaml)
 target_name=${target_name:-${app_name}}
+release=${release:-"false"}
 
 # build_time=$(date +'%FT%T.%N%:z')
 build_time=$(date +'%FT%T%:z')
@@ -30,7 +31,9 @@ unpushed=$(git diff origin/$git_branch..HEAD --name-status)
 [[ ! -z "$uncommitted" ]] && git_tree_state="uncommitted"
 [[ ! -z "$unpushed" ]] && git_tree_state="unpushed"
 
-#  -X main.build_host=$build_host \
+# -X main.build_host=$build_host
+# -X main.git_repository=$git_repository
+# -X main.image=${image}:${git_branch}-${app_version}
 GO_ldflags="\
   -X main.build_time=$build_time \
   -X main.git_branch=$git_branch \
@@ -38,21 +41,22 @@ GO_ldflags="\
   -X main.git_commit_time=$git_commit_time \
   -X main.git_tree_state=$git_tree_state"
 
-#  -X main.git_repository=$git_repository
-#  -X main.image=${image}:${git_branch}-${app_version}
 
 mkdir -p $target_dir
 
-# go tool dist list
-# -ldflags="-w -s"
-# note: -trimpath will remove -ldflags
-go build -ldflags="$GO_ldflags" -o $target_dir/${target_name} main.go
+if [[ "$release" != "true" ]]; then
+    # go tool dist list
+    # -ldflags="-w -s"
+    # note: -trimpath will remove -ldflags
+    go build -ldflags="$GO_ldflags" -o $target_dir/${target_name} main.go
+else
+    GOOS=linux GOARCH=amd64 go build -ldflags="$GO_ldflags" -o $target_dir/${target_name}.linux-amd64 main.go
+    GOOS=linux GOARCH=arm64 go build -ldflags="$GO_ldflags" -o $target_dir/${target_name}.linux-arm64 main.go
+    GOOS=windows GOARCH=amd64 go build -ldflags="$GO_ldflags" -o $target_dir/${target_name}.windows-amd64.exe main.go
+    GOOS=darwin GOARCH=amd64 go build -ldflags="$GO_ldflags" -o $target_dir/${target_name}.darwin-amd64 main.go
+    GOOS=darwin GOARCH=arm64 go build -ldflags="$GO_ldflags" -o $target_dir/${target_name}.darwin-arm64 main.go
+
+    gzip -f $target_dir/*.{linux,windows,darwin}-*
+fi
 
 ls -l $target_dir
-exit
-
-GOOS=linux GOARCH=amd64 go build -ldflags="$GO_ldflags" -o $target_dir/${target_name}.linux-amd64 main.go
-GOOS=linux GOARCH=arm64 go build -ldflags="$GO_ldflags" -o $target_dir/${target_name}.linux-arm64 main.go
-GOOS=windows GOARCH=amd64 go build -ldflags="$GO_ldflags" -o $target_dir/${target_name}.windows-amd64.exe main.go
-GOOS=darwin GOARCH=amd64 go build -ldflags="$GO_ldflags" -o $target_dir/${target_name}.darwin-amd64 main.go
-GOOS=darwin GOARCH=arm64 go build -ldflags="$GO_ldflags" -o $target_dir/${target_name}.darwin-arm64 main.go

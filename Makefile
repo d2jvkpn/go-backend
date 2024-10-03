@@ -36,8 +36,7 @@ build:
 	target_name=main ./deployments/go_build.sh
 
 release:
-	target_name=go-backend.linux-amd ./deployments/go_build.sh
-	tar -C target/ -cvzf target/go-backend.linux-amd.tar.gz go-backend.linux-amd
+	target_name=go-backend release=true ./deployments/go_build.sh
 
 run-api:
 	target_name=main ./deployments/go_build.sh
