@@ -34,9 +34,11 @@ lint:
 
 build:
 	target_name=main ./deployments/go_build.sh
+	ls -al target
 
 release:
-	target_name=go-backend release=true ./deployments/go_build.sh
+	release=true ./deployments/go_build.sh
+	ls -al target
 
 run-api:
 	target_name=main ./deployments/go_build.sh
