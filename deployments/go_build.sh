@@ -56,5 +56,3 @@ GOOS=linux GOARCH=arm64 go build -ldflags="$GO_ldflags" -o $target_dir/${target_
 GOOS=windows GOARCH=amd64 go build -ldflags="$GO_ldflags" -o $target_dir/${target_name}.windows-amd64.exe main.go
 GOOS=darwin GOARCH=amd64 go build -ldflags="$GO_ldflags" -o $target_dir/${target_name}.darwin-amd64 main.go
 GOOS=darwin GOARCH=arm64 go build -ldflags="$GO_ldflags" -o $target_dir/${target_name}.darwin-arm64 main.go
-
-tar -C $target_dir -cvzf $target_dir/${target_name}.tar.gz $target_dir/${target_name}.*{-amd64,-arm64,.exe}

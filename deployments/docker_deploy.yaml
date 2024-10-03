@@ -4,7 +4,7 @@ services:
   api:
     image: ${IMAGE_Name}:${IMAGE_Tag}
     restart: always
-    container_name: go-backend-api
+    container_name: ${APP_Name}-api
     depends_on: ["postgres", "redis"]
     user: "${USER_UID}:${USER_GID}"
     networks: ["net"]
@@ -18,7 +18,7 @@ services:
     - ./site/:/app/site
     # - ./data/${APP_Name}:/app/data
     command:
-    - ./target/go-backend
+    - ./target/main
     - api
     - -release
     - -config=configs/prod.yaml
@@ -27,7 +27,7 @@ services:
   crons:
     image: ${IMAGE_Name}:${IMAGE_Tag}
     restart: always
-    container_name: go-backend-crons
+    container_name: ${APP_Name}-crons
     depends_on: ["postgres", "redis"]
     user: "${USER_UID}:${USER_GID}"
     networks: ["net"]
@@ -38,14 +38,14 @@ services:
     - ./configs/:/app/configs:ro
     - ./logs/:/app/logs
     command:
-    - ./target/go-backend
+    - ./target/${APP_Name}
     - crons
     - -config=configs/crons.yaml
 
   swagger:
     image: ${IMAGE_Name}:${IMAGE_Tag}
     restart: always
-    container_name: go-backend-swagger
+    container_name: ${APP_Name}-swagger
     user: "${USER_UID}:${USER_GID}"
     network_mode: bridge
     ports: ["9017:9017"]
@@ -61,7 +61,7 @@ services:
   postgres:
     image: postgres:16-alpine
     restart: always
-    container_name: go-backend-postgres
+    container_name: ${APP_Name}-postgres
     networks: ["net"]
     # ports: ["127.0.0.1:5432:5432"]
     environment:
@@ -80,7 +80,7 @@ services:
     user: "${USER_UID}:${USER_GID}"
     networks: ["net"]
     # ports: ['127.0.0.1:6379:6379']
-    container_name: go-backend-redis
+    container_name: ${APP_Name}-redis
     deploy:
       resources:
         limits:
@@ -104,4 +104,4 @@ services:
     - 10
 
 networks:
-  net: { name: "go-backend", driver: bridge, external: false }
+  net: { name: "local", driver: bridge, external: false }

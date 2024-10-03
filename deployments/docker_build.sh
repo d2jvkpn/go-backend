@@ -75,7 +75,7 @@ done
 #### 4. build image
 echo "==> Building image: $image..."
 
-mkdir -p cache.local
+mkdir -p cache.local proto
 
 cat > cache.local/build.yaml << EOF
 app_name: $app_name
