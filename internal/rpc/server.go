@@ -2,6 +2,7 @@ package rpc
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net"
 
@@ -12,9 +13,11 @@ import (
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"go.opentelemetry.io/otel"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/health"
 	"google.golang.org/grpc/health/grpc_health_v1"
+	"google.golang.org/grpc/status"
 )
 
 type RPCServer struct {
@@ -95,6 +98,10 @@ func (self *RPCServer) PushLog(ctx context.Context, record *proto.LogData) (*pro
 	// TODO: biz
 
 	fmt.Printf("<== PushLog: %+v\n", record)
+
+	if !json.Valid(record.Data) {
+		return nil, status.Error(codes.InvalidArgument, "invalid data: json bytes")
+	}
 
 	return &proto.LogId{Id: record.GetRequestId()}, nil
 }
