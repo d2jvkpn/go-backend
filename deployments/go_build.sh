@@ -58,5 +58,3 @@ else
 
     gzip -f $target_dir/*.{linux,windows,darwin}-*
 fi
-
-ls -l $target_dir
