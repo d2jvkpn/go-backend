@@ -28,22 +28,25 @@ COPY ./bin ./bin
 
 COPY ./cache.local ./cache.local
 
+####
+RUN mkdir -p target
+
 RUN if [ -d ./cache.local/vendor ]; then \
     echo "==> Found cache.local/vendor"; \
     mv ./cache.local/vendor vendor; \
   fi
 
+# in alpine, date doesn't parse %:z
+# mkdir -p target && go build -o target/main -ldflags="-w -s ${GO_ldflags}" main.go
+
+# note: -trimpath will remove -ldflags
+RUN go build -ldflags="-w -s ${GO_ldflags}" -o target/main main.go
+
+####
 RUN if [ -d ./bin/swagger-go/cache.local/vendor ]; then \
     echo "==> Found ./bin/swagger-go/cache.local/vendor"; \
     mv ./bin/swagger-go/cache.local/vendor bin/swagger-go/vendor; \
   fi
-
-# in alpine, date doesn't parse %:z
-# mkdir -p target && go build -o target/main -ldflags="-w -s ${GO_ldflags}" main.go
-RUN mkdir -p target
-
-# note: -trimpath will remove -ldflags
-RUN go build -ldflags="-w -s ${GO_ldflags}" -o target/main main.go
 
 # note: -trimpath will remove -ldflags
 RUN cd bin/swagger-go && \
