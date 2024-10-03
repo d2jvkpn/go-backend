@@ -37,6 +37,9 @@ func SetupInternal(config *viper.Viper, meta map[string]any) (err error) {
 
 	router.GET("/healthz", ginx.Healthz)
 	router.GET("/meta", ginx.JSONStatic(meta))
+	router.GET("/ip", func(ctx *gin.Context) {
+		ctx.String(http.StatusOK, ctx.ClientIP())
+	})
 
 	if promConfig != nil && promConfig.GetBool("enabled") { // !promConfig.GetBool("external")
 		router.GET(
