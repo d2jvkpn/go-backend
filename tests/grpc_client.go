@@ -87,6 +87,8 @@ func testGrpcClient(args []string) {
 		Identity:     map[string]string{"account": "test"},
 		Data:         []byte(`{"module":"biz_user"}`),
 	}
+
+	log.Printf("==> send: %#v\n", input)
 	if res, err = client.PushLog(_TestCtx, input); err != nil {
 		return
 	}
