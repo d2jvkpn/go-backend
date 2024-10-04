@@ -60,6 +60,8 @@ ARG APP_Version
 ARG BUILD_Time
 ARG BUILD_Region
 
+LABEL app=${APP_Name}
+
 ENV TZ=${TZ:-Asia/Shanghai}
 ENV APP_Name=${APP_Name}
 ENV BUILD_Time=${BUILD_Time}
