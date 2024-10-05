@@ -4,7 +4,7 @@ services:
   api:
     image: ${IMAGE_Name}:${IMAGE_Tag}
     restart: always
-    container_name: ${APP_Name}-api
+    depends_on: ["postgres", "redis"]
     #labels: { autoheal: true } # work with willfarrell/autoheal
     #healthcheck:
       #test: ["CMD", "curl", "-fI", "--connect-timeout", "2", "http://localhost:9015/healthz"]
@@ -12,8 +12,6 @@ services:
       #interval: 10s
       #timeout: 2s
       #retries: 3
-    depends_on: ["postgres", "redis"]
-    user: "${USER_UID}:${USER_GID}"
     #network_mode: host
     networks: ["net"]
     ports: ["127.0.0.1:${HTTP_Port}:${HTTP_Port}", "9015:9015", "9019:9016"]
@@ -30,6 +28,8 @@ services:
           #  count: 1
           #  count: all
           #  capabilities: [gpu]
+    user: "${USER_UID}:${USER_GID}"
+    container_name: ${APP_Name}-api
     environment: ["TZ=Asia/Shanghai"]
     working_dir: /app
     volumes:
@@ -47,11 +47,11 @@ services:
   crons:
     image: ${IMAGE_Name}:${IMAGE_Tag}
     restart: always
-    container_name: ${APP_Name}-crons
     depends_on: ["postgres", "redis"]
-    user: "${USER_UID}:${USER_GID}"
     #network_mode: host
     networks: ["net"]
+    user: "${USER_UID}:${USER_GID}"
+    container_name: ${APP_Name}-crons
     environment: ["TZ=Asia/Shanghai"]
     working_dir: /app
     volumes:
@@ -65,11 +65,11 @@ services:
   swagger:
     image: ${IMAGE_Name}:${IMAGE_Tag}
     restart: always
-    container_name: ${APP_Name}-swagger
-    user: "${USER_UID}:${USER_GID}"
     #network_mode: host
     network_mode: bridge
     ports: ["9017:9017"]
+    user: "${USER_UID}:${USER_GID}"
+    container_name: ${APP_Name}-swagger
     environment: ["TZ=Asia/Shanghai"]
     volumes:
     - ./configs/swagger.yaml:/app/configs/swagger.yaml:ro
@@ -82,10 +82,10 @@ services:
   postgres:
     image: postgres:16-alpine
     restart: always
-    container_name: ${APP_Name}-postgres
     #network_mode: host
     networks: ["net"]
     # ports: ["127.0.0.1:5432:5432"]
+    container_name: ${APP_Name}-postgres
     environment:
     - TZ=Asia/Shanghai
     - PGTZ=Asia/Shanghai
@@ -99,15 +99,15 @@ services:
   redis:
     image: redis:7-alpine
     restart: always
-    user: "${USER_UID}:${USER_GID}"
     #network_mode: host
     networks: ["net"]
     # ports: ['127.0.0.1:6379:6379']
-    container_name: ${APP_Name}-redis
     deploy:
       resources:
         limits:
           memory: 2.0G # 512M
+    user: "${USER_UID}:${USER_GID}"
+    container_name: ${APP_Name}-redis
     environment:
     - TZ=Asia/Shanghai
     # ALLOW_EMPTY_PASSWORD is recommended only for development.
