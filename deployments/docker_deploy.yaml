@@ -5,11 +5,31 @@ services:
     image: ${IMAGE_Name}:${IMAGE_Tag}
     restart: always
     container_name: ${APP_Name}-api
+    #labels: { autoheal: true } # work with willfarrell/autoheal
+    #healthcheck:
+      #test: ["CMD", "curl", "-fI", "--connect-timeout", "2", "http://localhost:9015/healthz"]
+      #start_period: 3s
+      #interval: 10s
+      #timeout: 2s
+      #retries: 3
     depends_on: ["postgres", "redis"]
     user: "${USER_UID}:${USER_GID}"
     #network_mode: host
     networks: ["net"]
     ports: ["127.0.0.1:${HTTP_Port}:${HTTP_Port}", "9015:9015", "9019:9016"]
+    deploy:
+      resources:
+        limits: { cpus: "0.5", memory: 2048M }
+        #limits: { cpus: "4", memory: 8g }
+        #reservations:
+          #cpus: "1"
+          #memory: 4g
+          #devices:
+          #- driver: nvidia
+          #  device_ids: ['0', '3']
+          #  count: 1
+          #  count: all
+          #  capabilities: [gpu]
     environment: ["TZ=Asia/Shanghai"]
     working_dir: /app
     volumes:
