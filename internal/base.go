@@ -11,7 +11,6 @@ import (
 	"github.com/d2jvkpn/go-backend/internal/rpc"
 
 	"github.com/d2jvkpn/gotk"
-	"github.com/d2jvkpn/gotk/trace_error"
 	"github.com/redis/go-redis/v9"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
@@ -35,7 +34,7 @@ var (
 	_Redis   *redis.Client
 	// _GORM_MySQL *gorm.DB
 	_Tickers    []*gotk.Ticker
-	_APIMetrics []func(string, float64, *trace_error.Error)
+	_APIMetrics []func(string, float64, []string)
 
 	_CloseOtelTracing = func(context.Context) error { return nil }
 	_CloseOtelMetrics = func(context.Context) error { return nil }

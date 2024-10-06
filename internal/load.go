@@ -9,7 +9,6 @@ import (
 
 	"github.com/d2jvkpn/gotk"
 	"github.com/d2jvkpn/gotk/cloud"
-	"github.com/d2jvkpn/gotk/trace_error"
 	"github.com/spf13/viper"
 	"go.opentelemetry.io/otel"
 	otelmetric "go.opentelemetry.io/otel/metric"
@@ -90,7 +89,7 @@ func Load(project *viper.Viper) (err error) {
 	if otelConfig.GetBool("metrics") {
 		var (
 			meter       otelmetric.Meter
-			otelMetrics func(string, float64, *trace_error.Error)
+			otelMetrics func(string, float64, []string)
 		)
 
 		meter = otel.GetMeterProvider().Meter(appName)
@@ -100,7 +99,8 @@ func Load(project *viper.Viper) (err error) {
 			return err
 		}
 
-		if otelMetrics, err = cloud.OtelMetricsAPI(meter); err != nil {
+		otelMetrics, err = cloud.OtelMetricsHttp(meter, []string{"code", "kind"})
+		if err != nil {
 			return err
 		}
 

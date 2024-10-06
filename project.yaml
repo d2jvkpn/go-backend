@@ -1,8 +1,9 @@
 app_name: go-backend
 app_version: 1.0.0
-image_name: registry.cn-shanghai.aliyuncs.com/d2jvkpn/go-backend
 authors: ["d2jvkpn <d2jvkpn@noreply.local>"]
+
 repository: git@github.com:d2jvkpn/go-backend.git
+image_name: registry.cn-shanghai.aliyuncs.com/d2jvkpn/go-backend
 
 api_config: |
   ##### location: configs/local.yaml

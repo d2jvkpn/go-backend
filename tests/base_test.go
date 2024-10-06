@@ -29,11 +29,11 @@ func TestMain(m *testing.M) {
 	_TestFlags.StringVar(&config, "config", "../configs/local.yaml", "config filepath")
 
 	_TestFlags.Parse(flag.Args())
-	fmt.Printf("==> load config: %q\n", config)
+	fmt.Fprintf(os.Stderr, "==> load config: %q\n", config)
 
 	defer func() {
 		if err != nil {
-			fmt.Printf("!!! TestMain: %v\n", err)
+			fmt.Fprintf(os.Stderr, "!!! TestMain: %v\n", err)
 			os.Exit(1)
 		}
 	}()
@@ -65,6 +65,6 @@ func TestClients(t *testing.T) {
 	case "grpc":
 		testGrpcClient(args[1:])
 	default:
-		t.Fatalf("unkonwn command: %s", cmd)
+		t.Fatalf("unknown command: %s", cmd)
 	}
 }
