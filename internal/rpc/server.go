@@ -8,6 +8,7 @@ import (
 
 	"github.com/d2jvkpn/go-backend/proto"
 
+	"github.com/google/uuid"
 	grpcMdlw "github.com/grpc-ecosystem/go-grpc-middleware"
 	"github.com/spf13/viper"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
@@ -94,7 +95,7 @@ func (self *RPCServer) Run(listener net.Listener) (err error) {
 }
 
 // biz
-func (self *RPCServer) PushLog(ctx context.Context, record *proto.LogData) (*proto.LogId, error) {
+func (self *RPCServer) Push(ctx context.Context, record *proto.LogRequest) (*proto.LogResponse, error) {
 	// TODO: biz
 
 	fmt.Printf("<== PushLog: %+v\n", record)
@@ -103,5 +104,5 @@ func (self *RPCServer) PushLog(ctx context.Context, record *proto.LogData) (*pro
 		return nil, status.Error(codes.InvalidArgument, "invalid data: json bytes")
 	}
 
-	return &proto.LogId{Id: record.GetRequestId()}, nil
+	return &proto.LogResponse{EventId: uuid.New().String(), Id: record.GetId()}, nil
 }

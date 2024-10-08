@@ -34,10 +34,10 @@ func testGrpcClient(args []string) {
 		err     error
 		flagSet *flag.FlagSet
 
-		conn   *grpc.ClientConn
-		client *GrpcClient
-		input  *proto.LogData
-		res    *proto.LogId
+		conn     *grpc.ClientConn
+		client   *GrpcClient
+		request  *proto.LogRequest
+		response *proto.LogResponse
 	)
 
 	flagSet = flag.NewFlagSet("testGrpcClient", flag.ContinueOnError)
@@ -75,23 +75,31 @@ func testGrpcClient(args []string) {
 
 	client = NewGrpcClient(conn)
 
-	input = &proto.LogData{
-		AppName:    "go-backend.tests",
+	request = &proto.LogRequest{
+		EventLevel: proto.EventLevel_info,
+		AppName:    "go-backend/tests",
 		AppVersion: "0.1.0",
 
-		RequestId:  uuid.New().String(),
-		RequestAt:  time.Now().Format(gotk.RFC3339Milli),
-		StatusCode: 200,
+		Service: "http",
+		Id:      uuid.New().String(),
+		At:      time.Now().Format(gotk.RFC3339Milli),
+		BizName: "POST@/api/v1/open/login",
+		BizData: map[string]string{
+			"query":  "region=cn&city=shanghai",
+			"status": "OK",
+			"client": "web",
+		},
+		Identities: map[string]string{"account": "test", "role": "normal"},
+		Code:       "ok",
 
 		LatencyMilli: 42,
-		Identity:     map[string]string{"account": "test"},
 		Data:         []byte(`{"module":"biz_user"}`),
 	}
 
-	log.Printf("==> send: %#v\n", input)
-	if res, err = client.PushLog(_TestCtx, input); err != nil {
+	log.Printf("==> send: %#v\n", request)
+	if response, err = client.Push(_TestCtx, request); err != nil {
 		return
 	}
 
-	log.Printf("<== response: %#v\n", res)
+	log.Printf("<== response: %#v\n", response)
 }

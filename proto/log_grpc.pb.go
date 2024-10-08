@@ -19,14 +19,14 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	LogService_PushLog_FullMethodName = "/proto.LogService/PushLog"
+	LogService_Push_FullMethodName = "/proto.LogService/Push"
 )
 
 // LogServiceClient is the client API for LogService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type LogServiceClient interface {
-	PushLog(ctx context.Context, in *LogData, opts ...grpc.CallOption) (*LogId, error)
+	Push(ctx context.Context, in *LogRequest, opts ...grpc.CallOption) (*LogResponse, error)
 }
 
 type logServiceClient struct {
@@ -37,10 +37,10 @@ func NewLogServiceClient(cc grpc.ClientConnInterface) LogServiceClient {
 	return &logServiceClient{cc}
 }
 
-func (c *logServiceClient) PushLog(ctx context.Context, in *LogData, opts ...grpc.CallOption) (*LogId, error) {
+func (c *logServiceClient) Push(ctx context.Context, in *LogRequest, opts ...grpc.CallOption) (*LogResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(LogId)
-	err := c.cc.Invoke(ctx, LogService_PushLog_FullMethodName, in, out, cOpts...)
+	out := new(LogResponse)
+	err := c.cc.Invoke(ctx, LogService_Push_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +51,7 @@ func (c *logServiceClient) PushLog(ctx context.Context, in *LogData, opts ...grp
 // All implementations must embed UnimplementedLogServiceServer
 // for forward compatibility.
 type LogServiceServer interface {
-	PushLog(context.Context, *LogData) (*LogId, error)
+	Push(context.Context, *LogRequest) (*LogResponse, error)
 	// mustEmbedUnimplementedLogServiceServer()
 }
 
@@ -62,8 +62,8 @@ type LogServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedLogServiceServer struct{}
 
-func (UnimplementedLogServiceServer) PushLog(context.Context, *LogData) (*LogId, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PushLog not implemented")
+func (UnimplementedLogServiceServer) Push(context.Context, *LogRequest) (*LogResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Push not implemented")
 }
 func (UnimplementedLogServiceServer) mustEmbedUnimplementedLogServiceServer() {}
 func (UnimplementedLogServiceServer) testEmbeddedByValue()                    {}
@@ -86,20 +86,20 @@ func RegisterLogServiceServer(s grpc.ServiceRegistrar, srv LogServiceServer) {
 	s.RegisterService(&LogService_ServiceDesc, srv)
 }
 
-func _LogService_PushLog_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(LogData)
+func _LogService_Push_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LogRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(LogServiceServer).PushLog(ctx, in)
+		return srv.(LogServiceServer).Push(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: LogService_PushLog_FullMethodName,
+		FullMethod: LogService_Push_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LogServiceServer).PushLog(ctx, req.(*LogData))
+		return srv.(LogServiceServer).Push(ctx, req.(*LogRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -112,8 +112,8 @@ var LogService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*LogServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "PushLog",
-			Handler:    _LogService_PushLog_Handler,
+			MethodName: "Push",
+			Handler:    _LogService_Push_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

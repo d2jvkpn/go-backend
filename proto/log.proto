@@ -4,28 +4,38 @@ package proto;
 option go_package = "./proto";
 // import "google/protobuf/timestamp.proto";
 
-message LogData {
-	string appName = 1;
-	string appVersion = 2;
-
-	string requestId = 3; // uuid
-	string requestAt = 4; // RFC3339Milli
-	// google.protobuf.Timestamp requestAt = 4;
-	string ip = 5;
-	string msg = 6;
-	string query = 7;
-	int32 status_code = 8;
-	string error = 9;
-
-	int64 latency_milli = 10;
-	map<string, string> identity = 11;
-	bytes data = 12; // json bytes
+enum event_level {
+	debug = 0;
+	info = 1;
+	warning = 2;
+	error = 3;
+	critical = 4;
 }
 
-message LogId {
-	string id = 1;
+message LogRequest {
+	string event_id = 1;
+	string event_at = 2;
+	event_level event_level = 3;
+	string appName = 4;
+	string appVersion = 5;
+
+	string Service = 6; // service name
+	string id = 7; // uuid
+	string at = 8; // RFC3339Milli
+	// google.protobuf.Timestamp at = 8;
+	string biz_name = 9;
+    map<string,string> biz_data = 10; // query, status, error, client
+	map<string,string> identities = 11; // accountId, tokenId, ip, role
+	string code = 12; // ok, warn, error, panic
+	double latency_milli = 13;
+	bytes data = 14; // json bytes
+}
+
+message LogResponse {
+    string event_id = 1;
+	string id = 2;
 }
 
 service LogService {
-	rpc PushLog(LogData) returns(LogId) {};
+	rpc Push(LogRequest) returns(LogResponse) {};
 }
