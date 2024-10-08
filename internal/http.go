@@ -11,7 +11,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/d2jvkpn/go-backend/internal/api"
+	"github.com/d2jvkpn/go-backend/internal/services"
 
 	"github.com/d2jvkpn/gotk/ginx"
 	"github.com/gin-contrib/cors"
@@ -106,7 +106,8 @@ func SetupHttp(release bool, config *viper.Viper) (err error) {
 
 	// 6. load api
 	// TODO:
-	api.LoadOpen(router)
+	services.LoadOpen(router)
+	services.LoadWebsocket(router)
 
 	_HttpServer.Handler = engine
 

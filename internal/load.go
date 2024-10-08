@@ -5,6 +5,8 @@ import (
 	// "fmt"
 
 	"github.com/d2jvkpn/go-backend/internal/rpc"
+	"github.com/d2jvkpn/go-backend/internal/settings"
+	"github.com/d2jvkpn/go-backend/internal/ws"
 	"github.com/d2jvkpn/go-backend/pkg/infra"
 
 	"github.com/d2jvkpn/gotk"
@@ -125,6 +127,8 @@ func Load(project *viper.Viper) (err error) {
 	if _RPCServer, err = rpc.NewRPCServer(config); err != nil {
 		return err
 	}
+
+	settings.WsServer = ws.NewServer()
 
 	return nil
 }

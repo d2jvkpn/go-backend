@@ -64,6 +64,8 @@ func TestClients(t *testing.T) {
 	switch cmd {
 	case "grpc":
 		testGrpcClient(args[1:])
+	case "ws":
+		testWSClient(args[1:])
 	default:
 		t.Fatalf("unknown command: %s", cmd)
 	}

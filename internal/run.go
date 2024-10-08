@@ -150,6 +150,15 @@ func Exit() (err error) {
 			_SLogger.Debug("shutdown metrics")
 			return _CloseOtelMetrics(ctx)
 		},
+		func() error {
+			if settings.WsServer == nil {
+				return nil
+			}
+
+			_SLogger.Debug("shutdown websocket")
+			settings.WsServer.Shutdown()
+			return nil
+		},
 	)
 	if e != nil {
 		_Logger.Error("close otel", zap.String("error", e.Error()))
