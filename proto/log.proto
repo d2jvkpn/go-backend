@@ -19,20 +19,22 @@ message LogRequest {
 	string appName = 4;
 	string appVersion = 5;
 
-	string Service = 6; // service name
+	string service = 6; // service name
 	string id = 7; // uuid
 	string at = 8; // RFC3339Milli
 	// google.protobuf.Timestamp at = 8;
-	string biz_name = 9;
-    map<string,string> biz_data = 10; // query, status, error, client
+	string biz_name = 9; // POST@/api/v1/open/login
+	map<string,string> biz_data = 10; // query, status, error, client
 	map<string,string> identities = 11; // accountId, tokenId, ip, role
-	string code = 12; // ok, warn, error, panic
+	string code = 12; // custom app code: ok, warn, error, panic
 	double latency_milli = 13;
-	bytes data = 14; // json bytes
+
+	repeated string labels = 14;
+	bytes data = 15; // json bytes
 }
 
 message LogResponse {
-    string event_id = 1;
+	string event_id = 1;
 	string id = 2;
 }
 
