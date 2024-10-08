@@ -36,7 +36,7 @@ func RunCrons(project *viper.Viper, args []string) {
 	}
 
 	if err = fSet.Parse(args); err != nil {
-		fmt.Fprintf(os.Stderr, "crons exit: %s\n", err)
+		fmt.Fprintf(os.Stderr, "Crons exit: %s\n", err)
 		os.Exit(1)
 		return
 	}
@@ -48,10 +48,10 @@ func RunCrons(project *viper.Viper, args []string) {
 
 	defer func() {
 		if err != nil {
-			logger.Error("crons exit", "error", err)
+			logger.Error("Crons exit", "error", err)
 			os.Exit(1)
 		} else {
-			logger.Info("crons exit")
+			logger.Info("Crons exit")
 		}
 	}()
 
@@ -76,7 +76,7 @@ func RunCrons(project *viper.Viper, args []string) {
 	}
 
 	logger.Info(
-		"crons is up",
+		"Crons is up",
 		"config", config,
 		"app_version", project.GetString("meta.app_version"),
 	)

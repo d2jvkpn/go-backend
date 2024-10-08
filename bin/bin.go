@@ -18,10 +18,10 @@ func RunBin(app string, args []string) {
 
 	defer func() {
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "%s exit: %v\n", app, err)
+			fmt.Fprintf(os.Stderr, "Run %s exit: %v\n", app, err)
 			os.Exit(1)
 		} else {
-			fmt.Fprintf(os.Stderr, "%s exit\n", app)
+			fmt.Fprintf(os.Stderr, "Run %s exit\n", app)
 		}
 	}()
 
@@ -33,7 +33,7 @@ func RunBin(app string, args []string) {
 	}
 
 	if !info.Mode().IsRegular() {
-		err = fmt.Errorf("not regular file: %s", p)
+		err = fmt.Errorf("Not a regular file: %s", p)
 		return
 	}
 	// info.Mode().Perm()

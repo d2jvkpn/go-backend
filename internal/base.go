@@ -36,6 +36,6 @@ var (
 	_Tickers    []*gotk.Ticker
 	_APIMetrics []func(string, float64, []string)
 
-	_CloseOtelTracing = func(context.Context) error { return nil }
-	_CloseOtelMetrics = func(context.Context) error { return nil }
+	_CloseOtelTracing func(context.Context) error = nil // func(context.Context) error { return nil }
+	_CloseOtelMetrics func(context.Context) error = nil // func(context.Context) error { return nil }
 )

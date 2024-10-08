@@ -28,17 +28,17 @@ func main() {
 
 	defer func() {
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "main exit: %s\n", err)
+			fmt.Fprintf(os.Stderr, "Main exit: %s\n", err)
 			os.Exit(1)
 		}
 	}()
 
 	if project, err = gotk.ProjectFromBytes(_Project); err != nil {
-		err = fmt.Errorf("settings.LoadProject: %w", err)
+		err = fmt.Errorf("Failed to load project: %w", err)
 		return
 	}
 	if project.GetString("app_name") == "" || project.GetString("app_version") == "" {
-		err = fmt.Errorf("either app_name or app_version is unset in project.yaml")
+		err = fmt.Errorf("Neither app_name nor app_version is set in project.yaml")
 		return
 	}
 
@@ -48,7 +48,7 @@ func main() {
 		"config",
 		"show configuration(api, crons, swagger)",
 		func(args []string) {
-			errMsg := "required: api | crons | swagger\n"
+			errMsg := "Subcommand is required: api | crons | swagger\n"
 
 			if len(args) == 0 {
 				fmt.Fprintf(os.Stderr, errMsg)

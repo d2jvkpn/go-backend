@@ -47,7 +47,7 @@ func RunApi(project *viper.Viper, args []string, migrations embed.FS) {
 	}
 
 	if err = fSet.Parse(args); err != nil {
-		fmt.Fprintf(os.Stderr, "api exit: %s\n", err)
+		fmt.Fprintf(os.Stderr, "API exit: %s\n", err)
 		os.Exit(1)
 		return
 	}
@@ -61,10 +61,10 @@ func RunApi(project *viper.Viper, args []string, migrations embed.FS) {
 
 	defer func() {
 		if err != nil {
-			logger.Error("api exit", "error", err)
+			logger.Error("API exit", "error", err)
 			os.Exit(1)
 		} else {
-			logger.Info("api exit")
+			logger.Info("API exit")
 		}
 	}()
 
@@ -84,18 +84,18 @@ func RunApi(project *viper.Viper, args []string, migrations embed.FS) {
 
 	// 3. load
 	if err = internal.Load(project); err != nil {
-		err = fmt.Errorf("internal.Load: %w", err)
+		err = fmt.Errorf("Faild to load: %w", err)
 		return
 	}
 
 	// 4. up
 	if errCh, err = internal.Run(project); err != nil {
-		err = fmt.Errorf("internal.Run: %w", err)
+		err = fmt.Errorf("Failed to run: %w", err)
 		return
 	}
 
 	logger.Info(
-		fmt.Sprintf("api is up"),
+		fmt.Sprintf("API is up"),
 		"config", config,
 		"release", release,
 		"app_version", project.GetString("meta.app_version"),

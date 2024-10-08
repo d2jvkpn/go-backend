@@ -137,10 +137,16 @@ func Exit() (err error) {
 	// 2. close otel
 	e = gotk.ConcRunErr(
 		func() error {
+			if _CloseOtelTracing == nil {
+				return nil
+			}
 			_SLogger.Debug("shutdown tracing")
 			return _CloseOtelTracing(ctx)
 		},
 		func() error {
+			if _CloseOtelMetrics == nil {
+				return nil
+			}
 			_SLogger.Debug("shutdown metrics")
 			return _CloseOtelMetrics(ctx)
 		},
