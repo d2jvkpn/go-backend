@@ -3,9 +3,9 @@ module github.com/d2jvkpn/go-backend
 go 1.23
 
 require (
-	github.com/d2jvkpn/gotk v0.0.0-20241006094914-e9cb8c445906
+	github.com/d2jvkpn/gotk v0.0.0-20241006120754-bce823705802
 	github.com/d2jvkpn/gotk/cloud v0.0.0-20241006120754-bce823705802
-	github.com/d2jvkpn/gotk/ginx v0.0.0-20241006094914-e9cb8c445906
+	github.com/d2jvkpn/gotk/ginx v0.0.0-20241006120754-bce823705802
 	github.com/gin-contrib/cors v1.7.2
 	github.com/gin-gonic/gin v1.10.0
 	github.com/google/uuid v1.6.0
@@ -20,7 +20,7 @@ require (
 	go.opentelemetry.io/otel/metric v1.30.0
 	go.uber.org/zap v1.27.0
 	google.golang.org/grpc v1.67.1
-	google.golang.org/protobuf v1.34.2
+	google.golang.org/protobuf v1.35.1
 	gorm.io/driver/postgres v1.5.9
 	gorm.io/gorm v1.25.12
 )
@@ -33,7 +33,7 @@ require (
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/cloudwego/base64x v0.1.4 // indirect
 	github.com/cloudwego/iasm v0.2.0 // indirect
-	github.com/d2jvkpn/gotk/trace_error v0.0.0-20241006094914-e9cb8c445906 // indirect
+	github.com/d2jvkpn/gotk/trace_error v0.0.0-20241006120754-bce823705802 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.5 // indirect
@@ -94,8 +94,8 @@ require (
 	golang.org/x/sync v0.8.0 // indirect
 	golang.org/x/sys v0.26.0 // indirect
 	golang.org/x/text v0.19.0 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20240930140551-af27646dc61f // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20240930140551-af27646dc61f // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20241007155032-5fefd90f89a9 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20241007155032-5fefd90f89a9 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect

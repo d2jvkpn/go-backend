@@ -92,13 +92,13 @@ func (self *Client) HandleMessage() (err error) {
 
 	if json.Unmarshal(bts, &data); err != nil {
 		res = map[string]any{"type": "error", "msg": "unmarshal message error"}
-		return
+		return nil
 	}
 	log.Printf("<== %s recv: %s\n", self.Id, bytes.TrimSpace(bts))
 
 	if typ, ok = data["type"].(string); !ok {
 		res = map[string]any{"type": "error", "messmsgage": "invalid field type"}
-		return
+		return nil
 	}
 
 	switch typ {

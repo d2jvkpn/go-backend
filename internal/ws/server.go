@@ -24,6 +24,7 @@ func NewServer() *Server {
 		broadcast: make(chan []byte),
 		Upgrader: &websocket.Upgrader{
 			EnableCompression: true,
+			HandshakeTimeout:  2 * time.Second,
 			ReadBufferSize:    1024,
 			WriteBufferSize:   1024,
 			// CheckOrigin: func(r *http.Request) bool { return true },
