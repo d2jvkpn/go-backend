@@ -15,6 +15,9 @@ var (
 	//go:embed project.yaml
 	_Project []byte
 
+	//go:embed deployments/docker_deploy.yaml
+	_Deployment []byte
+
 	//go:embed migrations/*.sql
 	_Migrations embed.FS
 )
@@ -46,9 +49,9 @@ func main() {
 
 	command.AddCmd(
 		"config",
-		"show configuration(api, crons, swagger)",
+		"show configuration(api, crons, swagger, deployment)",
 		func(args []string) {
-			errMsg := "Subcommand is required: api | crons | swagger\n"
+			errMsg := "Subcommand is required: api | crons | swagger | deployment\n"
 
 			if len(args) == 0 {
 				fmt.Fprintf(os.Stderr, errMsg)
@@ -58,6 +61,8 @@ func main() {
 			switch args[0] {
 			case "api", "crons", "swagger":
 				fmt.Printf("%s\n", project.GetString(args[0]+"_config"))
+			case "deployment":
+				fmt.Printf("%s\n", _Deployment)
 			default:
 				fmt.Fprintf(os.Stderr, errMsg)
 				os.Exit(1)
