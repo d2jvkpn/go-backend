@@ -4,12 +4,13 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"log"
+	// "log"
 	"sync"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
+	"go.uber.org/zap"
 )
 
 type Client struct {
@@ -19,9 +20,10 @@ type Client struct {
 	ClosedAt  time.Time `json:"closedAt"`
 	PingAt    time.Time `json:"pingAt"`
 
-	conn *websocket.Conn
-	quit chan struct{}
-	once *sync.Once
+	logger *zap.Logger
+	conn   *websocket.Conn
+	quit   chan struct{}
+	once   *sync.Once
 }
 
 func (self Client) String() string {
@@ -43,7 +45,7 @@ loop:
 				case *websocket.CloseError:
 					err = nil
 				default:
-					log.Printf("!!! %s HandleMessage error: %v\n", self.Id, err)
+					self.logger.Error("handle_message", zap.Any("error", &err))
 				}
 
 				break loop
@@ -59,6 +61,10 @@ loop:
 func (self *Client) Close() {
 	self.once.Do(func() {
 		self.ClosedAt = time.Now()
+		self.logger.Warn(
+			"self_close",
+			zap.String("pingAt", self.PingAt.Format(time.RFC3339)),
+		)
 		self.conn.Close()
 	})
 }
@@ -94,7 +100,7 @@ func (self *Client) HandleMessage() (err error) {
 		res = map[string]any{"type": "error", "msg": "unmarshal message error"}
 		return nil
 	}
-	log.Printf("<== %s recv: %s\n", self.Id, bytes.TrimSpace(bts))
+	self.logger.Debug("received_message", zap.ByteString("msg", bytes.TrimSpace(bts)))
 
 	if typ, ok = data["type"].(string); !ok {
 		res = map[string]any{"type": "error", "messmsgage": "invalid field type"}

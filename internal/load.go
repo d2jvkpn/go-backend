@@ -128,7 +128,7 @@ func Load(project *viper.Viper) (err error) {
 		return err
 	}
 
-	settings.WsServer = ws.NewServer()
+	settings.WsServer = ws.NewServer(settings.Logger.Named("websocket"))
 
 	return nil
 }

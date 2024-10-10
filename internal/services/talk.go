@@ -19,7 +19,7 @@ func talk(ctx *gin.Context) {
 
 	defer func() {
 		if err != nil {
-			log.Printf("!!! error: %v\n", err)
+			log.Printf("!!! talk error: %v\n", err)
 		}
 	}()
 

@@ -2,26 +2,28 @@ package ws
 
 import (
 	// "fmt"
-	"log"
+	// "log"
 	"sync"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
+	"go.uber.org/zap"
 )
 
 type Server struct {
-	clients   map[uuid.UUID]*Client
+	clients  map[uuid.UUID]*Client
+	mutex    sync.Mutex
+	Upgrader *websocket.Upgrader
+
 	broadcast chan []byte
-	mutex     sync.Mutex
-	Upgrader  *websocket.Upgrader
+	logger    *zap.Logger
 }
 
-func NewServer() *Server {
+func NewServer(logger *zap.Logger) *Server {
 	return &Server{
-		clients:   make(map[uuid.UUID]*Client),
-		broadcast: make(chan []byte),
+		clients: make(map[uuid.UUID]*Client),
 		Upgrader: &websocket.Upgrader{
 			EnableCompression: true,
 			HandshakeTimeout:  2 * time.Second,
@@ -29,6 +31,9 @@ func NewServer() *Server {
 			WriteBufferSize:   1024,
 			// CheckOrigin: func(r *http.Request) bool { return true },
 		},
+
+		broadcast: make(chan []byte),
+		logger:    logger,
 	}
 }
 
@@ -43,6 +48,15 @@ func (self *Server) NewClient(ctx *gin.Context, conn *websocket.Conn) *Client {
 		once: new(sync.Once),
 	}
 
+	self.logger.Info(
+		"new_client",
+		zap.String("id", client.Id.String()),
+		zap.String("ip", ctx.ClientIP()),
+	)
+	client.logger = self.logger.Named("client").With(
+		zap.String("id", client.Id.String()),
+	)
+
 	conn.SetPingHandler(func(data string) (err error) {
 		// log.Printf("~~~ %s ping: %q\n", client.Id, data)
 		client.PingAt = time.Now()
@@ -51,7 +65,13 @@ func (self *Server) NewClient(ctx *gin.Context, conn *websocket.Conn) *Client {
 	})
 
 	conn.SetCloseHandler(func(code int, text string) error {
-		log.Printf("<== %s closed: code=%d, text=%q\n", client.Id, code, text)
+		// log.Printf("<== %s closed: code=%d, text=%q\n", client.Id, code, text)
+		client.logger.Warn(
+			"close_handler",
+			zap.Int("code", code),
+			zap.String("text", text),
+			zap.String("pingAt", client.PingAt.Format(time.RFC3339)),
+		)
 		client.quit <- struct{}{}
 
 		return nil
