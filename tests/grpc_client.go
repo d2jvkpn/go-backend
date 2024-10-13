@@ -76,13 +76,13 @@ func testGrpcClient(args []string) {
 	client = NewGrpcClient(conn)
 
 	request = &proto.LogRequest{
-		EventLevel: proto.EventLevel_info,
+		Level:      proto.EventLevel_info,
 		AppName:    "go-backend/tests",
 		AppVersion: "0.1.0",
 
-		Service: "http",
-		Id:      uuid.New().String(),
-		At:      time.Now().Format(gotk.RFC3339Milli),
+		Module:  "http",
+		EventId: uuid.New().String(),
+		EventAt: time.Now().Format(gotk.RFC3339Milli),
 		BizName: "POST@/api/v1/open/login",
 		BizData: map[string]string{
 			"query":  "region=cn&city=shanghai",
@@ -93,6 +93,7 @@ func testGrpcClient(args []string) {
 		Code:       "ok",
 
 		LatencyMilli: 42,
+		Labels:       []string{"a=42"},
 		Data:         []byte(`{"module":"biz_user"}`),
 	}
 

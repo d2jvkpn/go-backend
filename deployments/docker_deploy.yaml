@@ -57,10 +57,7 @@ services:
     volumes:
     - ./configs/:/app/configs:ro
     - ./logs/:/app/logs
-    command:
-    - ./target/${APP_Name}
-    - crons
-    - -config=configs/crons.yaml
+    command: [./target/${APP_Name}, crons, -config=configs/crons.yaml]
 
   swagger:
     image: ${IMAGE_Name}:${IMAGE_Tag}

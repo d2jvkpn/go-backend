@@ -22,22 +22,22 @@ enum event_level {
 }
 
 message LogRequest {
-	string event_id = 1;
-	string event_at = 2;
-	event_level event_level = 3;
+	string id = 1; // id
+	string at = 2;
+	event_level level = 3;
 	string appName = 4;
 	string appVersion = 5;
 
-	string service = 6; // service name
-	string id = 7; // uuid
-	string at = 8; // RFC3339Milli
+	string module = 6; // module or service name
+	string event_id = 7; // uuid
+	string event_at = 8; // RFC3339Milli
 	// google.protobuf.Timestamp at = 8;
 	string biz_name = 9; // POST@/api/v1/open/login
 	map<string,string> biz_data = 10; // query, status, error, client
 	map<string,string> identities = 11; // accountId, tokenId, ip, role
 	string code = 12; // custom app code: ok, warn, error, panic
-	double latency_milli = 13;
 
+	double latency_milli = 13;
 	repeated string labels = 14;
 	bytes data = 15; // json bytes
 }

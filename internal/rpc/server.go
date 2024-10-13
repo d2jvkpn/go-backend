@@ -104,5 +104,5 @@ func (self *RPCServer) Push(ctx context.Context, record *proto.LogRequest) (*pro
 		return nil, status.Error(codes.InvalidArgument, "invalid data: json bytes")
 	}
 
-	return &proto.LogResponse{EventId: uuid.New().String(), Id: record.GetId()}, nil
+	return &proto.LogResponse{Id: uuid.New().String(), EventId: record.GetEventId()}, nil
 }
