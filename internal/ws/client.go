@@ -39,17 +39,19 @@ loop:
 			break loop
 		default:
 			// this can block the loop
-			if err = self.HandleMessage(); err != nil {
-				switch err.(type) {
-				// close 1006 (abnormal closure): unexpected EOF
-				case *websocket.CloseError:
-					err = nil
-				default:
-					self.logger.Error("handle_message", zap.Any("error", &err))
-				}
-
-				break loop
+			if err = self.HandleMessage(); err == nil {
+				continue
 			}
+
+			switch err.(type) {
+			// close 1006 (abnormal closure): unexpected EOF
+			case *websocket.CloseError:
+				err = nil
+			default:
+				self.logger.Error("handle_message", zap.Any("error", &err))
+			}
+
+			break loop
 		}
 	}
 
