@@ -52,7 +52,7 @@ api_config: |
     tls: false
     address: 127.0.0.1:4317
     trace: false
-    metrics: false
+    meter: false
 
 crons_config: |
   ##### location: configs/crons.yaml

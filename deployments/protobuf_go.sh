@@ -43,8 +43,8 @@ message LogRequest {
 }
 
 message LogResponse {
-	string event_id = 1;
-	string id = 2;
+	string id = 1;
+	string event_id = 2;
 }
 
 service LogService {

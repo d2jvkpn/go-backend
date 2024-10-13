@@ -36,7 +36,7 @@ func Load(project *viper.Viper) (err error) {
 
 	grpcConfig := config.Sub("grpc")
 	grpcConfig.Set("trace", config.GetBool("opentelemetry.trace"))
-	grpcConfig.Set("metrics", config.GetBool("opentelemetry.metrics"))
+	grpcConfig.Set("meter", config.GetBool("opentelemetry.meter"))
 
 	// 1. Log
 	if err = SetupLog(appName, release); err != nil {
@@ -69,16 +69,16 @@ func Load(project *viper.Viper) (err error) {
 			}
 
 			_SLogger.Debug("setup otel trace")
-			_CloseOtelTracing, err = cloud.OtelTracingGrpc(appName, otelConfig)
+			_CloseOtelTrace, err = cloud.OtelTraceGrpc(appName, otelConfig)
 			return err
 		},
 		func() (err error) {
-			if !otelConfig.GetBool("metrics") {
+			if !otelConfig.GetBool("meter") {
 				return nil
 			}
 
-			_SLogger.Debug("setup otel metrics")
-			_CloseOtelMetrics, err = cloud.OtelMetricsGrpc(appName, otelConfig, false)
+			_SLogger.Debug("setup otel meter")
+			_CloseOtelMeter, err = cloud.OtelMeterGrpc(appName, otelConfig, false)
 
 			return err
 		},
@@ -88,10 +88,10 @@ func Load(project *viper.Viper) (err error) {
 	}
 
 	// 4. metrcs
-	if otelConfig.GetBool("metrics") {
+	if otelConfig.GetBool("meter") {
 		var (
-			meter       otelmetric.Meter
-			otelMetrics func(string, float64, []string)
+			meter     otelmetric.Meter
+			otelMeter func(string, float64, []string)
 		)
 
 		meter = otel.GetMeterProvider().Meter(appName)
@@ -101,12 +101,12 @@ func Load(project *viper.Viper) (err error) {
 			return err
 		}
 
-		otelMetrics, err = cloud.OtelMetricsHttp(meter, []string{"code", "kind"})
+		otelMeter, err = cloud.OtelMeterHttp(meter, []string{"code", "kind"})
 		if err != nil {
 			return err
 		}
 
-		_APIMetrics = append(_APIMetrics, otelMetrics)
+		_APIMeters = append(_APIMeters, otelMeter)
 	}
 
 	// 5. servers

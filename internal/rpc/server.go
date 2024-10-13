@@ -55,7 +55,7 @@ func NewRPCServer(config *viper.Viper) (server *RPCServer, err error) {
 		otelOpts = append(otelOpts, otelgrpc.WithTracerProvider(otel.GetTracerProvider()))
 	}
 
-	if config.GetBool("metrics") {
+	if config.GetBool("meter") {
 		otelOpts = append(otelOpts, otelgrpc.WithMeterProvider(otel.GetMeterProvider()))
 	}
 
@@ -95,7 +95,8 @@ func (self *RPCServer) Run(listener net.Listener) (err error) {
 }
 
 // biz
-func (self *RPCServer) Push(ctx context.Context, record *proto.LogRequest) (*proto.LogResponse, error) {
+func (self *RPCServer) Push(ctx context.Context, record *proto.LogRequest) (
+	*proto.LogResponse, error) {
 	// TODO: biz
 
 	fmt.Printf("<== PushLog: %+v\n", record)

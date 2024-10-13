@@ -33,9 +33,9 @@ var (
 	_GORM_PG *gorm.DB
 	_Redis   *redis.Client
 	// _GORM_MySQL *gorm.DB
-	_Tickers    []*gotk.Ticker
-	_APIMetrics []func(string, float64, []string)
+	_Tickers   []*gotk.Ticker
+	_APIMeters []func(string, float64, []string)
 
-	_CloseOtelTracing func(context.Context) error = nil // func(context.Context) error { return nil }
-	_CloseOtelMetrics func(context.Context) error = nil // func(context.Context) error { return nil }
+	_CloseOtelTrace func(context.Context) error = nil // func(context.Context) error { return nil }
+	_CloseOtelMeter func(context.Context) error = nil // func(context.Context) error { return nil }
 )
