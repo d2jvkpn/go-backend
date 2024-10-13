@@ -29,8 +29,8 @@ github.com/d2jvkpn/gotk/cloud v0.0.0-20241013092003-855076e3e09e h1:O5SBOiMEr37m
 github.com/d2jvkpn/gotk/cloud v0.0.0-20241013092003-855076e3e09e/go.mod h1:LdtYdEtEm4DmIFinPm7dvL35oIWnP54MQgfPepmb1GM=
 github.com/d2jvkpn/gotk/ginx v0.0.0-20241013092003-855076e3e09e h1:ZInOxxB2Aoaaa3fNuBTYbR34XxnQKxlEL+tQB8O3kxU=
 github.com/d2jvkpn/gotk/ginx v0.0.0-20241013092003-855076e3e09e/go.mod h1:3cSOM9SGAyD7qMA3uZtwXS4C3A2YLHp4NIL+8ysmpVE=
-github.com/d2jvkpn/gotk/trace_error v0.0.0-20241013090635-1e93d894bc86 h1:2T/gcWirj3mP35/9o5HO5Z/tpTNHT6bulGpPV9ZiwwI=
-github.com/d2jvkpn/gotk/trace_error v0.0.0-20241013090635-1e93d894bc86/go.mod h1:QTDmR0nH2j5hIJo1ElLm0Ulb2olUftg9qDVYDoNxnT8=
+github.com/d2jvkpn/gotk/trace_error v0.0.0-20241013092003-855076e3e09e h1:ptSveKXcW5OhmNQ6PshPyob3RxeZECX58VA3gaOcfuQ=
+github.com/d2jvkpn/gotk/trace_error v0.0.0-20241013092003-855076e3e09e/go.mod h1:QTDmR0nH2j5hIJo1ElLm0Ulb2olUftg9qDVYDoNxnT8=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc h1:U9qPSI2PIWSS1VwoXQT9A3Wy9MM3WgvqSxFWenqJduM=

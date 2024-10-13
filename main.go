@@ -71,20 +71,17 @@ func main() {
 	)
 
 	command.AddCmd(
-		"api",
-		"api service",
+		"api", "api service",
 		func(args []string) { bin.RunApi(project, args, _Migrations) },
 	)
 
 	command.AddCmd(
-		"crons",
-		"cron deamon",
+		"crons", "cron deamon",
 		func(args []string) { bin.RunCrons(project, args) },
 	)
 
 	command.AddCmd(
-		"swagger",
-		"swagger service",
+		"swagger", "swagger service",
 		func(args []string) { bin.RunBin("swagger", args) },
 	)
 
