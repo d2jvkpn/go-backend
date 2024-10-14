@@ -49,8 +49,8 @@ api_config: |
     path: /metrics
 
   opentelemetry:
-    tls: false
     address: 127.0.0.1:4317
+    tls: false
     trace: false
     meter: false
 

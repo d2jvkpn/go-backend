@@ -33,7 +33,7 @@ message LogRequest {
 	string event_at = 8; // RFC3339Milli
 	// google.protobuf.Timestamp at = 8;
 	string biz_name = 9; // POST@/api/v1/open/login
-	map<string,string> biz_data = 10; // query, status, error, client
+	map<string,string> biz_data = 10; // query, status, error
 	map<string,string> identities = 11; // accountId, tokenId, ip, role
 	string code = 12; // custom app code: ok, warn, error, panic
 
