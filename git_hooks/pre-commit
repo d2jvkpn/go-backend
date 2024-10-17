@@ -1,7 +1,5 @@
 #!/bin/bash
 
-#### path .git/hooks/
-#### ln -rs ./git_hooks/pre-commit .git/hooks/
 >&2 echo "==> git hooks: pre-commit"
 
 make lint
