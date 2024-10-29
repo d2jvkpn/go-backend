@@ -1,0 +1,4 @@
+DROP TABLE IF EXISTS user_accounts CASCADE;
+
+DROP TYPE IF EXISTS user_status;
+DROP TYPE IF EXISTS user_role;

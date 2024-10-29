@@ -18,6 +18,7 @@ check:
 	command -v yq
 	command -v swag
 	command -v docker
+	command -v migrate
 	command -v protoc
 	command -v protoc-gen-go
 	command -v protoc-gen-go-grpc

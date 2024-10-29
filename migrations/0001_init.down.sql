@@ -1,1 +1,3 @@
--- TODO
+DROP TYPE IF EXISTS ok;
+
+DROP FUNCTION IF EXISTS update_now;

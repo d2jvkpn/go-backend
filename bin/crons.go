@@ -65,7 +65,7 @@ func RunCrons(project *viper.Viper, args []string) {
 		},
 	)
 
-	// 3.
+	// 3. load
 	if err = crons.Load(project); err != nil {
 		return
 	}

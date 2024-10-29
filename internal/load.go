@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"embed"
 	// "context"
 	// "fmt"
 
@@ -16,7 +17,7 @@ import (
 	otelmetric "go.opentelemetry.io/otel/metric"
 )
 
-func Load(project *viper.Viper) (err error) {
+func Load(project *viper.Viper, migrations embed.FS) (err error) {
 	var (
 		appName string
 		release bool
@@ -53,6 +54,13 @@ func Load(project *viper.Viper) (err error) {
 
 	// 2. databases(postgres, redis) and otel(tracer and meter)
 	err = gotk.ConcRunErr(
+		func() (err error) {
+			_SLogger.Debug("migration")
+			// err = infra.MigratePgDir(dsn, "./migrations")
+
+			err = infra.MigratePgFs(config.GetString("postgres.dsn"), migrations, "migrations")
+			return err
+		},
 		func() (err error) {
 			_SLogger.Debug("connect to postgres")
 			_GORM_PG, _DB, err = infra.PgConnect(config.Sub("postgres"), release)
