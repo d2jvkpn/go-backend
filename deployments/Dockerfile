@@ -25,6 +25,7 @@ COPY ./migrations ./migrations
 COPY ./pkg ./pkg
 COPY ./proto ./proto
 COPY ./bin ./bin
+COPY ./deployments ./deployments
 
 COPY ./cache.local ./cache.local
 
