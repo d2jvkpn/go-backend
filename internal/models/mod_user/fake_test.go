@@ -1,0 +1,36 @@
+package mod_user
+
+import (
+	"fmt"
+	"testing"
+
+	. "github.com/d2jvkpn/go-backend/internal/models"
+
+	"github.com/brianvoe/gofakeit/v7"
+	"github.com/stretchr/testify/require"
+	"gorm.io/gorm"
+)
+
+func TestFake01_Accounts(t *testing.T) {
+	var (
+		e        error
+		accounts []Account
+		tx       *gorm.DB
+	)
+
+	// 1.
+	tx = Table(_TestCtx, TABLE_UserAccounts).
+		Where("'fake' = any(labels)").Delete(nil)
+
+	require.Nil(t, tx.Error)
+	fmt.Printf("==> deleted fake account(s): %d\n", tx.RowsAffected)
+
+	// 2.
+	num := 10
+	accounts = make([]Account, num)
+	gofakeit.Slice(&accounts)
+	fmt.Printf("==> fake accounts: %v\n", accounts)
+
+	e = Table(_TestCtx, TABLE_UserAccounts).Create(&accounts).Error
+	require.Nil(t, e)
+}

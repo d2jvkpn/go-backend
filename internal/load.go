@@ -1,10 +1,12 @@
 package internal
 
 import (
+	"context"
 	"embed"
-	// "context"
 	// "fmt"
+	"time"
 
+	"github.com/d2jvkpn/go-backend/internal/models/mod_user"
 	"github.com/d2jvkpn/go-backend/internal/rpc"
 	"github.com/d2jvkpn/go-backend/internal/settings"
 	"github.com/d2jvkpn/go-backend/internal/ws"
@@ -21,11 +23,15 @@ func Load(project *viper.Viper, migrations embed.FS) (err error) {
 	var (
 		appName string
 		release bool
+		ctx     context.Context
+		cancel  func()
 		config  *viper.Viper
 	)
 
 	appName = project.GetString("app_name") + ".api"
 	release = project.GetBool("meta.release")
+	ctx, cancel = context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
 
 	config, err = gotk.LoadYamlConfig(project.GetString("meta.config"), "config")
 	if err != nil {
@@ -52,7 +58,7 @@ func Load(project *viper.Viper, migrations embed.FS) (err error) {
 
 	otelConfig := config.Sub("opentelemetry")
 
-	// 2. databases(postgres, redis) and otel(tracer and meter)
+	// 2. databases(postgres & redis) and otel(tracer & meter)
 	err = gotk.ConcRunErr(
 		func() (err error) {
 			_SLogger.Debug("migration")
@@ -64,6 +70,11 @@ func Load(project *viper.Viper, migrations embed.FS) (err error) {
 		func() (err error) {
 			_SLogger.Debug("connect to postgres")
 			_GORM_PG, _DB, err = infra.PgConnect(config.Sub("postgres"), release)
+
+			if err = mod_user.Init(ctx, _GORM_PG); err != nil {
+				return err
+			}
+
 			return err
 		},
 		func() (err error) {
@@ -95,7 +106,7 @@ func Load(project *viper.Viper, migrations embed.FS) (err error) {
 		return err
 	}
 
-	// 4. metrcs
+	// 4. metrics
 	if otelConfig.GetBool("meter") {
 		var (
 			meter     otelmetric.Meter
