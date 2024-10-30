@@ -156,7 +156,7 @@ func (self *CreateAccount) Do(ctx context.Context) (err *errx.ErrX) {
 		case strings.Contains(errStr, "_email_key\""):
 			err.WithMsg("email already exists")
 		case strings.Contains(errStr, "_phone_key\""):
-			err.WithMsg("email phone exists")
+			err.WithMsg("email already exists")
 		default:
 			// TODO:
 		}
