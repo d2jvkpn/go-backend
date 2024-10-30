@@ -71,27 +71,27 @@ func (self *CreateAccount) Validate() *errx.ErrX {
 	var e error
 
 	if e = ValidateName(self.Firstname, false); e != nil {
-		return erri.Validation(e, "fristname")
+		return erri.Invalid(e, "fristname")
 	}
 
 	if e = ValidateName(self.Lastname, false); e != nil {
-		return erri.Validation(e, "lastname")
+		return erri.Invalid(e, "lastname")
 	}
 
 	if self.Phone == "" && self.Email == "" {
 		e = fmt.Errorf("phone or email is unset")
-		return erri.Validation(e, "phone or email is unset")
+		return erri.Invalid(e, "phone or email is unset")
 	}
 	if e = ValidatePhone(self.Phone, true); e != nil {
-		return erri.Validation(e, "phone")
+		return erri.Invalid(e, "phone")
 	}
 
 	if e = ValidateEmail(self.Email, true); e != nil {
-		return erri.Validation(e, "email")
+		return erri.Invalid(e, "email")
 	}
 
 	if e = ValidatePassword(self.Password); e != nil {
-		return erri.Validation(e, "password")
+		return erri.Invalid(e, "password")
 	}
 
 	if e = _Validate.Struct(self); e != nil {
@@ -101,7 +101,7 @@ func (self *CreateAccount) Validate() *errx.ErrX {
 				fields[i] = errs[i].Error()
 			}
 
-			return erri.Validation(e, "invalid fields: %v", fields)
+			return erri.Invalid(e, strings.Join(fields, ","))
 		} else {
 			return erri.InternalErr(e, "validator")
 		}
