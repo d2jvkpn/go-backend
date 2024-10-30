@@ -96,10 +96,15 @@ func (self *CreateAccount) Validate() *errx.ErrX {
 
 	if e = _Validate.Struct(self); e != nil {
 		if errs, ok := e.(validator.ValidationErrors); ok {
-			return erri.Validation(e, errs[0].Field())
-		}
+			fields := make([]string, len(errs))
+			for i := range errs {
+				fields[i] = errs[i].Error()
+			}
 
-		return erri.Validation(e, "unknown validator error")
+			return erri.Validation(e, "invalid fields: %v", fields)
+		} else {
+			return erri.InternalErr(e, "validator")
+		}
 	}
 
 	return nil
