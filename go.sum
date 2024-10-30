@@ -29,6 +29,8 @@ github.com/cloudwego/base64x v0.1.4/go.mod h1:0zlkT4Wn5C6NdauXdJRhSKRlJvmclQ1hhJ
 github.com/cloudwego/iasm v0.2.0 h1:1KNIy1I1H9hNNFEEH3DVnI4UujN+1zjpuk6gwHLTssg=
 github.com/cloudwego/iasm v0.2.0/go.mod h1:8rXZaNYT2n95jn+zTI1sDr+IgcD2GVs0nlbbQPiEFhY=
 github.com/cncf/udpa/go v0.0.0-20191209042840-269d4d468f6f/go.mod h1:M8M6+tZqaGXZJjfX53e64911xZQV5JYwmTeXPW+k8Sc=
+github.com/d2jvkpn/errx v0.0.0-20241029120234-30f6f5301f3b h1:T0ioM1Vltj9xBEJvnQNWGAUSpu2HUmKz3weflrcwwZA=
+github.com/d2jvkpn/errx v0.0.0-20241029120234-30f6f5301f3b/go.mod h1:cmiutrzviE8qzyftij8bsQlM5co6VAC6yaUed387G2s=
 github.com/d2jvkpn/gotk v0.0.0-20241013092003-855076e3e09e h1:zmIOkeYRfWinZHhMNbQ4DItAD0ik0Yir43dRLOK9Kic=
 github.com/d2jvkpn/gotk v0.0.0-20241013092003-855076e3e09e/go.mod h1:bPFZQ2nEjlpBAFQEIfiddSQLUHvAN8gtOSL1fFwHQBs=
 github.com/d2jvkpn/gotk/cloud v0.0.0-20241013092003-855076e3e09e h1:O5SBOiMEr37m6eWUDNdnXW3pAjzSy0GP7ReRGmrUr+I=

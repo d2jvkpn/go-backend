@@ -4,6 +4,7 @@ import (
 	"context"
 	// "fmt"
 
+	"github.com/go-playground/validator/v10"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -11,6 +12,8 @@ import (
 var (
 	_DB *gorm.DB
 	// _Logger *zap.Logger
+
+	_Validate *validator.Validate = validator.New()
 )
 
 func Init(ctx context.Context, db *gorm.DB) (err error) {

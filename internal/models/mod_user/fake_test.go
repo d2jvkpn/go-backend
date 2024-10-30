@@ -14,7 +14,7 @@ import (
 func TestFake01_Accounts(t *testing.T) {
 	var (
 		e        error
-		accounts []Account
+		accounts []CreateAccount
 		tx       *gorm.DB
 	)
 
@@ -27,8 +27,11 @@ func TestFake01_Accounts(t *testing.T) {
 
 	// 2.
 	num := 10
-	accounts = make([]Account, num)
+	accounts = make([]CreateAccount, num)
 	gofakeit.Slice(&accounts)
+	for i := range accounts {
+		accounts[i].Password = gofakeit.Password(true, true, true, true, false, 16)
+	}
 	fmt.Printf("==> fake accounts: %v\n", accounts)
 
 	e = Table(_TestCtx, TABLE_UserAccounts).Create(&accounts).Error
