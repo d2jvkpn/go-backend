@@ -35,10 +35,11 @@ message LogRequest {
 	string biz_name = 9; // POST@/api/v1/open/login
 	map<string,string> biz_data = 10; // query, status, error
 	map<string,string> identities = 11; // accountId, tokenId, ip, role
-	string code = 12; // custom app code: ok, warn, error, panic
 
-	double latency_milli = 13;
+	string code = 12; // custom app code: ok, warn, error, panic
+	double value = 13;
 	repeated string labels = 14;
+
 	bytes data = 15; // json bytes
 }
 

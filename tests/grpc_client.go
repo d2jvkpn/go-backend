@@ -90,11 +90,12 @@ func testGrpcClient(args []string) {
 			"client": "web",
 		},
 		Identities: map[string]string{"account": "test", "role": "normal"},
-		Code:       "ok",
 
-		LatencyMilli: 42,
-		Labels:       []string{"a=42"},
-		Data:         []byte(`{"module":"biz_user"}`),
+		Code:   "ok",
+		Value:  42,
+		Labels: []string{"a=42"},
+
+		Data: []byte(`{"module":"biz_user"}`),
 	}
 
 	log.Printf("==> send: %#v\n", request)
