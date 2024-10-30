@@ -40,6 +40,6 @@ func TestFake01_Accounts(t *testing.T) {
 	}
 	fmt.Printf("==> fake accounts: %v\n", accounts)
 
-	e = Table(_TestCtx, TABLE_UserAccounts).Create(&accounts).Error
+	e = Table(_TestCtx, TABLE_UserAccounts).CreateInBatches(accounts, len(accounts)).Error
 	require.Nil(t, e)
 }

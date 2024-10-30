@@ -61,7 +61,7 @@ type CreateAccount struct {
 	// role
 	Role string `json:"role" gorm:"column:role" validate:"oneof=manager employee customer contractor" fake:"{randomstring:[manager,employee,customer,contractor]}" extensions:"x-order=09"`
 	// labels
-	Labels pq.StringArray `json:"labels" gorm:"column:labels" fake:"fake" fakesize:"1" extensions:"x-order=10"`
+	Labels pq.StringArray `json:"labels" gorm:"column:labels;type:varchar[]" fake:"fake" fakesize:"1" extensions:"x-order=10"`
 
 	// password: [a-z][A-Z][0-9][!@.-_*]
 	Password string `json:"password" gorm:"column:password" binding:"required,min=8,max=32" fake:"-" extensions:"x-order=11"`
