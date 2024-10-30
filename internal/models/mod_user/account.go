@@ -1,18 +1,25 @@
 package mod_user
 
 import (
-	// "context"
+	"context"
 	// "errors"
 	"fmt"
+	"strings"
 	"time"
 
+	. "github.com/d2jvkpn/go-backend/internal/models"
 	"github.com/d2jvkpn/go-backend/pkg/erri"
+	"github.com/d2jvkpn/go-backend/pkg/infra"
 
 	// "gorm.io/gorm"
 	"github.com/d2jvkpn/errx"
 	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
 	"github.com/lib/pq"
+	"golang.org/x/crypto/bcrypt"
+	// "go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/trace"
 )
 
 type Account struct {
@@ -41,6 +48,7 @@ type Account struct {
 }
 
 type CreateAccount struct {
+	Status string `json:"status,omitempty" gorm:"column:status;->;<-:create" validate:"oneof=created activated" fake:"created" extensions:"x-order=04"`
 	// firstname
 	Firstname string `json:"firstname" gorm:"column:firstname" binding:"required" example:"John" fake:"{firstname}" extensions:"x-order=05"`
 	// lastname
@@ -93,4 +101,67 @@ func (self *CreateAccount) Validate() *errx.ErrX {
 	}
 
 	return nil
+}
+
+func (self *CreateAccount) hashPassword() (err *errx.ErrX) {
+	var (
+		bts []byte
+		e   error
+	)
+
+	bts, e = bcrypt.GenerateFromPassword([]byte(self.Password), bcrypt.DefaultCost)
+	if e != nil {
+		return erri.InternalErr(e, "bcrypt")
+	}
+	self.Password = string(bts)
+
+	return nil
+}
+
+func (self *CreateAccount) Do(ctx context.Context) (err *errx.ErrX) {
+	var (
+		bts []byte
+		e   error
+
+		tracer trace.Tracer
+		span   trace.Span
+	)
+
+	tracer = otel.Tracer("mod_user.CreateAccount")
+
+	if err = self.Validate(); err != nil {
+		return err
+	}
+
+	_, span = tracer.Start(ctx, "bcrypt.GenerateFromPassword")
+	bts, e = bcrypt.GenerateFromPassword([]byte(self.Password), bcrypt.DefaultCost)
+	span.End()
+	if e != nil {
+		return erri.InternalErr(e, "bcrypt")
+	}
+	self.Password = string(bts)
+
+	_, span = tracer.Start(ctx, "Create")
+	e = Table(ctx, TABLE_UserAccounts, "id").Create(self).Error
+	span.End()
+	if e == nil {
+		return nil
+	}
+
+	if infra.PgUniqueViolation(e) {
+		errStr := e.Error()
+
+		err = erri.BizErr(e, "already_exists")
+		switch {
+		case strings.Contains(errStr, "_email_key\""):
+			err.WithMsg("email already exists")
+		case strings.Contains(errStr, "_phone_key\""):
+			err.WithMsg("email phone exists")
+		default:
+			// TODO:
+		}
+		return err
+	}
+
+	return erri.InternalErr(e, "database")
 }

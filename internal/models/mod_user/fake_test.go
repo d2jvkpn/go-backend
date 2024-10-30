@@ -31,6 +31,12 @@ func TestFake01_Accounts(t *testing.T) {
 	gofakeit.Slice(&accounts)
 	for i := range accounts {
 		accounts[i].Password = gofakeit.Password(true, true, true, true, false, 16)
+		accounts[i].Labels = append(
+			accounts[i].Labels,
+			"passowrd="+accounts[i].Password,
+		)
+		e = accounts[i].hashPassword()
+		require.Nil(t, e)
 	}
 	fmt.Printf("==> fake accounts: %v\n", accounts)
 
