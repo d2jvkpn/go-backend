@@ -141,7 +141,7 @@ func (self *CreateAccount) Do(ctx context.Context) (err *errx.ErrX) {
 	}
 	self.Password = string(bts)
 
-	_, span = tracer.Start(ctx, "Create")
+	_, span = tracer.Start(ctx, "gorm.Create")
 	e = Table(ctx, TABLE_UserAccounts, "id").Create(self).Error
 	span.End()
 	if e == nil {
