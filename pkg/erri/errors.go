@@ -14,43 +14,42 @@ func NoRoute() *errx.ErrX {
 }
 
 // invalid
-func Invalid(e error, msg string, args ...any) *errx.ErrX {
+// func Invalid(e error, msg string, args ...any) *errx.ErrX {
+func Invalid(e error) *errx.ErrX {
 	return errx.New(e).
 		WithKind("invalid").
 		WithCode("invalid").
-		WithMsg(msg, args...).
 		WithCaller(2)
 }
 
 // incorrect
-func Incorrect(e error, msg string, args ...any) *errx.ErrX {
+func Incorrect(e error) *errx.ErrX {
 	return errx.New(e).
 		WithKind("incorrect").
 		WithCode("incorrect").
-		WithMsg(msg, args...).
 		WithCaller(2)
 }
 
 // bind error
-func BindErr(e error, kind string) *errx.ErrX {
+func BindErr(e error, code string) *errx.ErrX {
 	return errx.New(e).
 		WithKind("bind_error").
-		WithCode(kind).
+		WithCode(code).
 		WithCaller(2)
 }
 
 // authorization error
-func AuthErr(e error, kind string) *errx.ErrX {
+func AuthErr(e error, code string) *errx.ErrX {
 	return errx.New(e).
 		WithKind("authorization_error").
-		WithCode(kind)
+		WithCode(code)
 }
 
 // not permited
-func NotPermited(e error, kind string) *errx.ErrX {
+func NotPermited(e error, code string) *errx.ErrX {
 	return errx.New(e).
 		WithKind("not_permited").
-		WithCode(kind)
+		WithCode(code)
 }
 
 // biz error
@@ -67,5 +66,14 @@ func InternalErr(e error, kind string) *errx.ErrX {
 		WithKind("internal_error").
 		WithCode(kind).
 		WithMsg("an internal error occured").
+		WithCaller(2)
+}
+
+// unavailable
+func Unavailable(e error, kind string) *errx.ErrX {
+	return errx.New(e).
+		WithKind("unavailable").
+		WithCode(kind).
+		WithMsg("an service is unavailable").
 		WithCaller(2)
 }
