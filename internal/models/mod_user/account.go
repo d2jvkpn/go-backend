@@ -103,7 +103,7 @@ func (self *CreateAccount) Validate() *errx.ErrX {
 
 			return erri.Invalid(e).WithMsg(strings.Join(fields, ","))
 		} else {
-			return erri.InternalErr(e, "validator")
+			return erri.InternalErr(e).WithCode("validator")
 		}
 	}
 
@@ -118,7 +118,7 @@ func (self *CreateAccount) hashPassword() (err *errx.ErrX) {
 
 	bts, e = bcrypt.GenerateFromPassword([]byte(self.Password), bcrypt.DefaultCost)
 	if e != nil {
-		return erri.InternalErr(e, "bcrypt")
+		return erri.InternalErr(e).WithCode("bcrypt")
 	}
 	self.Password = string(bts)
 
@@ -144,7 +144,7 @@ func (self *CreateAccount) Do(ctx context.Context) (err *errx.ErrX) {
 	bts, e = bcrypt.GenerateFromPassword([]byte(self.Password), bcrypt.DefaultCost)
 	span.End()
 	if e != nil {
-		return erri.InternalErr(e, "bcrypt")
+		return erri.InternalErr(e).WithCode("bcrypt")
 	}
 	self.Password = string(bts)
 
@@ -158,7 +158,7 @@ func (self *CreateAccount) Do(ctx context.Context) (err *errx.ErrX) {
 	if infra.PgUniqueViolation(e) {
 		errStr := e.Error()
 
-		err = erri.BizErr(e, "already_exists")
+		err = erri.BizErr(e).WithCode("already_exists")
 		switch {
 		case strings.Contains(errStr, "_email_key\""):
 			err.WithMsg("email already exists")
@@ -170,5 +170,5 @@ func (self *CreateAccount) Do(ctx context.Context) (err *errx.ErrX) {
 		return err
 	}
 
-	return erri.InternalErr(e, "database")
+	return erri.InternalErr(e).WithKind("database")
 }
