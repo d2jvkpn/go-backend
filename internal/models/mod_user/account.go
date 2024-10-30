@@ -41,7 +41,8 @@ type Account struct {
 	// email address
 	Email string `json:"email,omitempty" gorm:"column:email;default:null" minLength:"5" maxLength:"128"  example:"john@noreply.local" fake:"{email}" extensions:"x-order=08"`
 	// role
-	Role   string         `json:"role" gorm:"column:role" fake:"{randomstring:[manager,employee,customer,contractor]}" extensions:"x-order=09"`
+	Role string `json:"role" gorm:"column:role" fake:"{randomstring:[manager,employee,customer,contractor]}" extensions:"x-order=09"`
+	// labels
 	Labels pq.StringArray `json:"labels" gorm:"column:labels" fake:"fake" fakesize:"1" extensions:"x-order=10"`
 
 	Password string `json:"-" gorm:"column:password" fake:"-" swaggerignore:"true"`
@@ -58,7 +59,8 @@ type CreateAccount struct {
 	// email address
 	Email string `json:"email,omitempty" gorm:"column:email;default:null" binding:"max=128" minLength:"5" maxLength:"128"  example:"john@noreply.local" fake:"{email}" extensions:"x-order=08"`
 	// role
-	Role   string         `json:"role" gorm:"column:role" validate:"oneof=manager employee customer contractor" fake:"{randomstring:[manager,employee,customer,contractor]}" extensions:"x-order=09"`
+	Role string `json:"role" gorm:"column:role" validate:"oneof=manager employee customer contractor" fake:"{randomstring:[manager,employee,customer,contractor]}" extensions:"x-order=09"`
+	// labels
 	Labels pq.StringArray `json:"labels" gorm:"column:labels" fake:"fake" fakesize:"1" extensions:"x-order=10"`
 
 	// password: [a-z][A-Z][0-9][!@.-_*]
