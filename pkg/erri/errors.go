@@ -1,3 +1,4 @@
+// default: ErrX.Kind == ErrX.Code
 package erri
 
 import (
