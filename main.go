@@ -15,8 +15,8 @@ var (
 	//go:embed project.yaml
 	_Project []byte
 
-	//go:embed deployments/docker_deploy.yaml
-	_Deployment []byte
+	//go:embed deployments/compose.template.yaml
+	_Compose []byte
 
 	//go:embed migrations/*.sql
 	_Migrations embed.FS
@@ -61,8 +61,8 @@ func main() {
 			switch args[0] {
 			case "api", "crons", "swagger":
 				fmt.Printf("%s\n", project.GetString(args[0]+"_config"))
-			case "deployment":
-				fmt.Printf("%s\n", _Deployment)
+			case "compose":
+				fmt.Printf("%s\n", _Compose)
 			default:
 				fmt.Fprintf(os.Stderr, errMsg)
 				os.Exit(1)
