@@ -71,16 +71,16 @@ run-swag:
 #### image, image-api-dev
 image-local:
 	BUILD_Region=cn DOCKER_Pull=false DOCKER_Push=false DOCKER_Tag=local GIT=false \
-	  bash deployments/build_image.sh dev
+	  bash deployments/build.sh dev
 
 image-dev:
 	BUILD_Region=cn DOCKER_Pull=false DOCKER_Tag=dev \
-	  bash deployments/build_image.sh dev
+	  bash deployments/build.sh dev
 
 image-test:
 	BUILD_Region=cn DOCKER_Pull=false DOCKER_Tag=test \
-	  bash deployments/build_image.sh test
+	  bash deployments/build.sh test
 
 image-main:
 	BUILD_Region=cn DOCKER_Pull=false DOCKER_Tag=main \
-	  bash deployments/build_image.sh main
+	  bash deployments/build.sh main
