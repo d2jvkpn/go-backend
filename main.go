@@ -31,7 +31,7 @@ func main() {
 
 	defer func() {
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Main exit: %s\n", err)
+			fmt.Fprintf(os.Stderr, "Exit: %s\n", err)
 			os.Exit(1)
 		}
 	}()
@@ -72,17 +72,23 @@ func main() {
 
 	command.AddCmd(
 		"api", "api service",
-		func(args []string) { bin.RunApi(project, args, _Migrations) },
+		func(args []string) {
+			bin.RunApi(project, args, _Migrations)
+		},
 	)
 
 	command.AddCmd(
 		"crons", "cron deamon",
-		func(args []string) { bin.RunCrons(project, args) },
+		func(args []string) {
+			bin.RunCrons(project, args)
+		},
 	)
 
 	command.AddCmd(
 		"swagger", "swagger service",
-		func(args []string) { bin.RunBin("swagger", args) },
+		func(args []string) {
+			bin.RunBin("swagger", args)
+		},
 	)
 
 	command.Execute(os.Args[1:])
