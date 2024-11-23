@@ -30,7 +30,8 @@ services:
           #  capabilities: [gpu]
     user: "${USER_UID}:${USER_GID}"
     container_name: ${APP_Name}-api
-    environment: ["TZ=Asia/Shanghai"]
+    environment:
+      TZ: Asia/Shanghai
     working_dir: /app
     volumes:
     - ./configs/:/app/configs:ro
@@ -52,7 +53,8 @@ services:
     networks: ["net"]
     user: "${USER_UID}:${USER_GID}"
     container_name: ${APP_Name}-crons
-    environment: ["TZ=Asia/Shanghai"]
+    environment:
+      TZ: Asia/Shanghai
     working_dir: /app
     volumes:
     - ./configs/:/app/configs:ro
@@ -84,12 +86,12 @@ services:
     # ports: ["127.0.0.1:5432:5432"]
     container_name: ${APP_Name}-postgres
     environment:
-    - TZ=Asia/Shanghai
-    - PGTZ=Asia/Shanghai
-    - POSTGRES_USER=account
-    - POSTGRES_DB=db
-    - POSTGRES_PASSWORD=password
-    - PGDATA=/var/lib/postgresql/data
+      TZ: Asia/Shanghai
+      PGTZ: Asia/Shanghai
+      PGDATA: /var/lib/postgresql/data
+      POSTGRES_USER: account
+      POSTGRES_DB: db
+      POSTGRES_PASSWORD: password
     volumes:
     - ./data/postgres:/var/lib/postgresql/data
 
@@ -106,10 +108,10 @@ services:
     user: "${USER_UID}:${USER_GID}"
     container_name: ${APP_Name}-redis
     environment:
-    - TZ=Asia/Shanghai
-    # ALLOW_EMPTY_PASSWORD is recommended only for development.
-    - ALLOW_EMPTY_PASSWORD=yes
-    - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
+      TZ: Asia/Shanghai
+      # ALLOW_EMPTY_PASSWORD is recommended only for development.
+      ALLOW_EMPTY_PASSWORD: yes
+      REDIS_DISABLE_COMMANDS: FLUSHDB,FLUSHALL
     working_dir: /app
     volumes:
     - ./configs/redis.conf:/app/configs/redis.conf
