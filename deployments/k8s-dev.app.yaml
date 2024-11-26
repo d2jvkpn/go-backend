@@ -54,19 +54,15 @@ spec:
         env:
         # https://kubernetes.io/docs/tasks/inject-data-application/environment-variable-expose-pod-information/
         - name: K8S_Namespace
-          valueFrom:
-            fieldRef: { fieldPath: metadata.namespace }
+          valueFrom: { fieldRef: { fieldPath: metadata.namespace } }
         - name: K8S_NodeName
-          valueFrom:
-            fieldRef: { apiVersion: "v1", fieldPath: "spec.nodeName" }
+          valueFrom: { fieldRef: { apiVersion: "v1", fieldPath: "spec.nodeName" } }
         - name: TZ
           value: Asia/Shanghai
         - name: K8S_PodName
-          valueFrom:
-            fieldRef: { apiVersion: "v1", fieldPath: "metadata.name" }
+          valueFrom: { fieldRef: { apiVersion: "v1", fieldPath: "metadata.name" } }
         - name: K8S_PodIP
-          valueFrom:
-            fieldRef: { fieldPath: status.podIP }
+          valueFrom: { fieldRef: { fieldPath: status.podIP } }
         # - name: MongoPassword
         #   valueFrom: { secretKeyRef: {name: "mongo-secret", key: password} }
         # envFrom:

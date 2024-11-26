@@ -39,12 +39,10 @@ spec:
       paths:
       - pathType: Prefix
         path: /
-        backend:
-          service: { name: http, port: { number: 9011 } }
+        backend: { service: { name: http, port: { number: 9011 } } }
       - pathType: ImplementationSpecific
         path: /
-        backend:
-          service: { name: grpc, port: { number: 9021 } }
+        backend: { service: { name: grpc, port: { number: 9021 } } }
 
 ---
 ## Horizontal Pod Autoscaler, https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/

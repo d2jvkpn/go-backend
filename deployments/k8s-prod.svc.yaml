@@ -39,7 +39,7 @@ spec:
       - pathType: Prefix
         path: /api/
         backend:
-          service: { name: htto, port: { number: 9010 } }
+          service: { name: http, port: { number: 9010 } }
       - pathType: ImplementationSpecific
         path: /
         backend:
