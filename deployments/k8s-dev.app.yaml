@@ -29,7 +29,7 @@ spec:
       - name: local
         hostPath: { path: "/data/k8s/local", type: "DirectoryOrCreate" }
       - name: pvc
-        persistentVolumeClaim: { claimName: "nfs-vol01" }
+        persistentVolumeClaim: { claimName: "go-backend" }
       containers:
       - name: go-backend
         # image: registry.cn-shanghai.aliyuncs.com/d2jvkpn/go-backend:dev@sha256xxxx
@@ -56,7 +56,7 @@ spec:
           grpc: { port: 9021 }
           #httpGet: # HTTP Status >= 200 and < 400
           #  path: "/healthz"
-          #  port: 5032
+          #  port: 9021
           #  httpHeaders:
           #  - { name: Custom-Header, value: Awesome }
           #exec: { command: [cat, /tmp/healthy] }
@@ -87,6 +87,6 @@ spec:
         - { name: "http", containerPort: 9011, protocol: "TCP" }
         - { name: "rpc", containerPort: 9021, protocol: "TCP" }
         # command: [ tail, -f, /etc/hosts ]
-        # workingDir: /app
+        workingDir: /apps
         command: ["./target/main", "api"]
         args: [-release, -config=configs/dev.yaml, -http.addr=:9011, -rpc.addr=:9021]

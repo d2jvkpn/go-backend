@@ -35,12 +35,13 @@ services:
     container_name: ${APP_Name}-api
     environment:
       TZ: Asia/Shanghai
-    working_dir: /app
+    working_dir: /apps
     volumes:
-    - ./configs/:/app/configs:ro
-    - ./logs/:/app/logs
-    - ./site/:/app/site
-    # - ./data/${APP_Name}:/app/data
+    - ./configs/:/apps/configs:ro
+    - ./logs/:/apps/logs
+    - ./site/:/apps/site
+    - ./data/:/apps/data
+    # - ./data/${APP_Name}:/apps/data
     command:
     - ./target/main
     - api
@@ -58,10 +59,10 @@ services:
     container_name: ${APP_Name}-crons
     environment:
       TZ: Asia/Shanghai
-    working_dir: /app
+    working_dir: /apps
     volumes:
-    - ./configs/:/app/configs:ro
-    - ./logs/:/app/logs
+    - ./configs/:/apps/configs:ro
+    - ./logs/:/apps/logs
     command: [./target/${APP_Name}, crons, -config=configs/crons.yaml]
 
   swagger:
@@ -72,9 +73,10 @@ services:
     ports: ["9017:9017"]
     user: "${USER_UID}:${USER_GID}"
     container_name: ${APP_Name}-swagger
-    environment: ["TZ=Asia/Shanghai"]
+    environment:
+      TZ: Asia/Shanghai
     volumes:
-    - ./configs/swagger.yaml:/app/configs/swagger.yaml:ro
+    - ./configs/swagger.yaml:/apps/configs/swagger.yaml:ro
     command:
     - ./target/main
     - swagger
@@ -115,13 +117,11 @@ services:
       # ALLOW_EMPTY_PASSWORD is recommended only for development.
       ALLOW_EMPTY_PASSWORD: yes
       REDIS_DISABLE_COMMANDS: FLUSHDB,FLUSHALL
-    working_dir: /app
     volumes:
-    - ./configs/redis.conf:/app/configs/redis.conf
-    - ./data/redis:/app/data
+    - ./data/redis:/data
     command:
     - redis-server
-    - /app/configs/redis.conf
+    - /data/redis.conf
     - --loglevel
     - warning
     - --save

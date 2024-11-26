@@ -17,7 +17,7 @@ RUN if [ "$BUILD_Region" = "cn" ]; then \
 RUN apk --no-cache update && \
   apk --no-cache upgrade
 
-WORKDIR /app
+WORKDIR /apps
 
 ADD ./main.go ./go.mod ./go.sum ./project.yaml ./
 COPY ./internal ./internal
@@ -79,11 +79,11 @@ RUN apk --no-cache update && \
   apk --no-cache add tzdata
   # curl gcompat
 
-RUN mkdir -p /app/target
-WORKDIR /app
+RUN mkdir -p /apps/target /apps/data /apps/logs
+WORKDIR /apps
 
-COPY --from=builder /app/target/ /app/target/
-COPY --from=builder /app/cache.local/build.yaml /app/
+COPY --from=builder /apps/target/ /apps/target/
+COPY --from=builder /apps/cache.local/build.yaml /apps/
 # COPY ./migrations ./migrations
 
 # http server
