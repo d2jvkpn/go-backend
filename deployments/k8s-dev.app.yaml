@@ -39,18 +39,29 @@ spec:
         resources:
           requests: { cpu: "200m", memory: "128Mi", ephemeral-storage: "2Gi" }
           limits: { cpu: "1000m", memory: "512Mi", ephemeral-storage: "4Gi" }
+
+        #readinessProbe:
+        #  initialDelaySeconds: 5
+        #  periodSeconds: 10
+        #  successThreshold: 3
+        #  httpGet: { path: /healthz, port: 9011 }
+        #  tcpSocket: { port: 9011 }
+        #  exec: { command: {cat, /tmp/healthy} }
+
         livenessProbe:
-          grpc: { port: 9021 }
           initialDelaySeconds: 5
           timeoutSeconds: 1
           periodSeconds: 10
           failureThreshold: 3
-          ## HTTP Status >= 200 and < 400
-          # httpGet:
-          #   path: "/healthz"
-          #   port: 5032
-          #   httpHeaders:
-          #   - { name: Custom-Header, value: Awesome }
+          grpc: { port: 9021 }
+          #httpGet: # HTTP Status >= 200 and < 400
+          #  path: "/healthz"
+          #  port: 5032
+          #  httpHeaders:
+          #  - { name: Custom-Header, value: Awesome }
+          #exec: { command: [cat, /tmp/healthy] }
+          #tcpSocket: { port: 9021 }
+
         env:
         # https://kubernetes.io/docs/tasks/inject-data-application/environment-variable-expose-pod-information/
         - name: K8S_Namespace
