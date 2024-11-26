@@ -1,5 +1,8 @@
 version: '3'
 
+networks:
+  net: { name: "local", driver: bridge, external: true }
+
 services:
   api:
     image: ${IMAGE_Name}:${IMAGE_Tag}
@@ -7,14 +10,14 @@ services:
     depends_on: ["postgres", "redis"]
     #labels: { autoheal: true } # work with willfarrell/autoheal
     #healthcheck:
-      #test: ["CMD", "curl", "-fI", "--connect-timeout", "2", "http://localhost:9015/healthz"]
+      #test: ["CMD", "curl", "-fI", "--connect-timeout", "2", "http://localhost:9011/healthz"]
       #start_period: 3s
       #interval: 10s
       #timeout: 2s
       #retries: 3
     #network_mode: host
     networks: ["net"]
-    ports: ["127.0.0.1:${HTTP_Port}:${HTTP_Port}", "9015:9015", "9019:9016"]
+    ports: ["127.0.0.1:${HTTP_Port}:${HTTP_Port}", "127.0.0.1:9019:9019", "127.0.0.1:9020:9020"]
     deploy:
       resources:
         limits: { cpus: "0.5", memory: 2048M }
@@ -124,6 +127,3 @@ services:
     - --save
     - 30
     - 10
-
-networks:
-  net: { name: "local", driver: bridge, external: false }

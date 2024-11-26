@@ -48,7 +48,7 @@ func TestMain(m *testing.M) {
 	m.Run()
 }
 
-// go test -- --config=../configs/local.yaml grpc -addr=localhost:9016
+// go test -- --config=../configs/local.yaml grpc -addr=localhost:9021
 func TestClients(t *testing.T) {
 	var (
 		cmd  string

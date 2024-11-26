@@ -47,7 +47,7 @@ release:
 run-api:
 	target_name=main ./deployments/go_build.sh
 	./target/main api --config=configs/local.yaml \
-	  -http.addr=:9011 -internal.addr=:9015 -grpc.addr=:9016
+	  -http.addr=:9011 -internal.addr=:9019 -grpc.addr=:9021
 
 run-crons:
 	target_name=main ./deployments/go_build.sh

@@ -1,0 +1,104 @@
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  namespace: prod
+  name: go-backend
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: go-backend
+  minReplicas: 3
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 80
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: prod
+  name: go-backend
+  labels: { app: "go-backend" }
+spec:
+  replicas: 3
+  selector:
+    matchLabels: { app: "go-backend" }
+  revisionHistoryLimit: 5
+  progressDeadlineSeconds: 60
+  minReadySeconds: 10
+  strategy:
+    rollingUpdate: { maxSurge: 1, maxUnavailable: 0 }
+    type: RollingUpdate
+  template:
+    metadata:
+      labels: { app: "go-backend" }
+    spec:
+      restartPolicy: Always
+      # nodeSelector:
+      #   node-role: worker
+      terminationGracePeriodSeconds: 5
+      volumes:
+      - name: config
+        configMap: { name: go-backend }
+      - name: local
+        hostPath: { path: "/data/k8s/local", type: "DirectoryOrCreate" }
+      - name: pvc
+        persistentVolumeClaim: { claimName: "k8s-cp01" }
+      containers:
+      - name: go-backend
+        # image: registry.cn-shanghai.aliyuncs.com/d2jvkpn/go-backend:1.0.0@sha256xxxx
+        image: registry.cn-shanghai.aliyuncs.com/d2jvkpn/go-backend:1.0.0
+        ## imagePullPolicy: IfNotPresent, Always, Never
+        imagePullPolicy: "IfNotPresent"
+        resources:
+          requests: { cpu: "200m", memory: "128Mi", ephemeral-storage: "2Gi" }
+          limits: { cpu: "1000m", memory: "512Mi", ephemeral-storage: "4Gi" }
+        livenessProbe:
+          grpc: { port: 9020 }
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+          periodSeconds: 10
+          failureThreshold: 3
+          ## HTTP Status >= 200 and < 400
+          # httpGet:
+          #   path: "/healthz"
+          #   port: 9010
+          #   httpHeaders:
+          #   - { name: Custom-Header, value: Awesome }
+        env:
+        # https://kubernetes.io/docs/tasks/inject-data-application/environment-variable-expose-pod-information/
+        - name: K8S_Namespace
+          valueFrom:
+            fieldRef: { fieldPath: metadata.namespace }
+        - name: K8S_NodeName
+          valueFrom:
+            fieldRef: { apiVersion: "v1", fieldPath: "spec.nodeName" }
+        - { name: TZ, value: Asia/Shanghai }
+        - name: K8S_PodName
+          valueFrom:
+            fieldRef: { apiVersion: "v1", fieldPath: "metadata.name" }
+        - name: K8S_PodIP
+          valueFrom:
+            fieldRef: { fieldPath: status.podIP }
+        - name: TZ
+          value: Asia/Shanghai
+        # envFrom:
+        # - configMapRef: { name: postgres-config }
+        volumeMounts:
+        ## not /apps/configs/prod.yaml
+        - { name: config, mountPath: /apps/configs, readOnly: true }
+        - { name: local, subPathExpr: "$(K8S_PodName)/logs", mountPath: "/apps/logs" }
+        - { name: pvc, subPathExpr: "$(K8S_PodName)/data", mountPath: "/apps/data" }
+        ports:
+        - { name: "http", containerPort: 9010, protocol: "TCP" }
+        - { name: "rpc", containerPort: 9020, protocol: "TCP" }
+        # command: [ tail, -f, /etc/hosts ]
+        command: ["./target/main", "api"]
+        args: ["-release", "-config=configs/prod.yaml", "-http.addr=:9010", "-rpc.addr=:9020"]
