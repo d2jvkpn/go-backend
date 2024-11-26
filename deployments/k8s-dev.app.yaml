@@ -81,8 +81,8 @@ spec:
         volumeMounts:
         ## not /apps/configs/dev.yaml
         - { name: config, mountPath: /apps/configs, readOnly: true }
-        # - { name: local, subPathExpr: "$(K8S_PodName)/logs", mountPath: "/apps/logs" }
-        # - { name: pvc, subPathExpr: "$(K8S_PodName)/data", mountPath: "/apps/data" }
+        # - { name: local, subPathExpr: "go-backend/$(K8S_PodName)/logs", mountPath: "/apps/logs" }
+        # - { name: pvc, subPathExpr: "go-backend/$(K8S_PodName)/data", mountPath: "/apps/data" }
         - { name: local, subPathExpr: "go-backend/logs", mountPath: "/apps/logs" }
         - { name: pvc, subPathExpr: "go-backend/data", mountPath: "/apps/data" }
         ports:

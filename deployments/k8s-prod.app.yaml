@@ -84,8 +84,8 @@ spec:
         volumeMounts:
         ## not /apps/configs/prod.yaml
         - { name: config, mountPath: /apps/configs, readOnly: true }
-        - { name: local, subPathExpr: "$(K8S_PodName)/logs", mountPath: "/apps/logs" }
-        # - { name: pvc, subPathExpr: "$(K8S_PodName)/data", mountPath: "/apps/data" }
+        - { name: local, subPathExpr: "go-backend/$(K8S_PodName)/logs", mountPath: "/apps/logs" }
+        # - { name: pvc, subPathExpr: "go-backend/$(K8S_PodName)/data", mountPath: "/apps/data" }
         ports:
         - { name: "http", containerPort: 9010, protocol: "TCP" }
         - { name: "rpc", containerPort: 9020, protocol: "TCP" }
