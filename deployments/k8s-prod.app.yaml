@@ -50,7 +50,7 @@ spec:
       - name: local
         hostPath: { path: "/data/k8s/local", type: "DirectoryOrCreate" }
       - name: pvc
-        persistentVolumeClaim: { claimName: "k8s-cp01" }
+        persistentVolumeClaim: { claimName: "nfs-vol01" }
       containers:
       - name: go-backend
         # image: registry.cn-shanghai.aliyuncs.com/d2jvkpn/go-backend:1.0.0@sha256xxxx
