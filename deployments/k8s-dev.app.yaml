@@ -5,7 +5,7 @@ metadata:
   name: go-backend
   labels: { app: "go-backend" }
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels: { app: "go-backend" }
   revisionHistoryLimit: 5
@@ -29,7 +29,7 @@ spec:
       - name: local
         hostPath: { path: "/data/k8s/local", type: "DirectoryOrCreate" }
       - name: pvc
-        persistentVolumeClaim: { claimName: "go-backend" }
+        persistentVolumeClaim: { claimName: "nfs01" }
       containers:
       - name: go-backend
         # image: registry.cn-shanghai.aliyuncs.com/d2jvkpn/go-backend:dev@sha256xxxx
@@ -38,7 +38,7 @@ spec:
         imagePullPolicy: "Always"
         resources:
           requests: { cpu: "200m", memory: "128Mi", ephemeral-storage: "2Gi" }
-          limits: { cpu: "1000m", memory: "512Mi", ephemeral-storage: "4Gi" }
+          limits: { cpu: "1000m", memory: "512Mi", ephemeral-storage: "10Gi" }
 
         #readinessProbe:
         #  initialDelaySeconds: 5
@@ -81,8 +81,10 @@ spec:
         volumeMounts:
         ## not /apps/configs/dev.yaml
         - { name: config, mountPath: /apps/configs, readOnly: true }
-        - { name: local, subPathExpr: "$(K8S_PodName)/logs", mountPath: "/apps/logs" }
-        - { name: pvc, subPathExpr: "$(K8S_PodName)/data", mountPath: "/apps/data" }
+        # - { name: local, subPathExpr: "$(K8S_PodName)/logs", mountPath: "/apps/logs" }
+        # - { name: pvc, subPathExpr: "$(K8S_PodName)/data", mountPath: "/apps/data" }
+        - { name: local, subPathExpr: "go-backend/logs", mountPath: "/apps/logs" }
+        - { name: pvc, subPathExpr: "go-backend/data", mountPath: "/apps/data" }
         ports:
         - { name: "http", containerPort: 9011, protocol: "TCP" }
         - { name: "rpc", containerPort: 9021, protocol: "TCP" }

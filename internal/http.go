@@ -102,7 +102,7 @@ func SetupHttp(release bool, config *viper.Viper) (err error) {
 	static := router.Group("/static", ginx.CacheControl(60))
 	static.StaticFS("/", http.FS(fsys))
 
-	ginx.ServeStaticDir("/site", "./site", false)(router)
+	ginx.ServeStaticDir("/site", "./data/site", false)(router)
 
 	// 6. load api
 	services.LoadOpen(router)

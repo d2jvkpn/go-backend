@@ -49,8 +49,8 @@ spec:
         configMap: { name: go-backend }
       - name: local
         hostPath: { path: "/data/k8s/local", type: "DirectoryOrCreate" }
-      - name: pvc
-        persistentVolumeClaim: { claimName: "go-backend" }
+      # - name: pvc
+      #   persistentVolumeClaim: { claimName: "go-backend" }
       containers:
       - name: go-backend
         # image: registry.cn-shanghai.aliyuncs.com/d2jvkpn/go-backend:1.0.0@sha256xxxx
@@ -58,25 +58,18 @@ spec:
         ## imagePullPolicy: IfNotPresent, Always, Never
         imagePullPolicy: "IfNotPresent"
         resources:
-          requests: { cpu: "200m", memory: "128Mi", ephemeral-storage: "2Gi" }
-          limits: { cpu: "1000m", memory: "512Mi", ephemeral-storage: "4Gi" }
+          requests: { cpu: "200m", memory: "128Mi" }
+          limits: { cpu: "1000m", memory: "512Mi" }
         livenessProbe:
           grpc: { port: 9020 }
           initialDelaySeconds: 5
           timeoutSeconds: 1
           periodSeconds: 10
           failureThreshold: 3
-          ## HTTP Status >= 200 and < 400
-          # httpGet:
-          #   path: "/healthz"
-          #   port: 9010
-          #   httpHeaders:
-          #   - { name: Custom-Header, value: Awesome }
         env:
         # https://kubernetes.io/docs/tasks/inject-data-application/environment-variable-expose-pod-information/
         - name: K8S_Namespace
-          valueFrom:
-            fieldRef: { fieldPath: metadata.namespace }
+          valueFrom: { fieldRef: { fieldPath: metadata.namespace } }
         - name: K8S_NodeName
           valueFrom: { fieldRef: { apiVersion: "v1", fieldPath: "spec.nodeName" } }
         - { name: TZ, value: Asia/Shanghai }
@@ -92,7 +85,7 @@ spec:
         ## not /apps/configs/prod.yaml
         - { name: config, mountPath: /apps/configs, readOnly: true }
         - { name: local, subPathExpr: "$(K8S_PodName)/logs", mountPath: "/apps/logs" }
-        - { name: pvc, subPathExpr: "$(K8S_PodName)/data", mountPath: "/apps/data" }
+        # - { name: pvc, subPathExpr: "$(K8S_PodName)/data", mountPath: "/apps/data" }
         ports:
         - { name: "http", containerPort: 9010, protocol: "TCP" }
         - { name: "rpc", containerPort: 9020, protocol: "TCP" }
