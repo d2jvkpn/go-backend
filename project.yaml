@@ -21,7 +21,7 @@ api_config: |
     key: configs/site.key
 
   jwt:
-    key: "abcABC123"
+    key: "abcABC123_length_ge_32"
     interval: 30m
     duration: 0
     method: 256
@@ -29,8 +29,8 @@ api_config: |
   postgres:
     # dsn: "host=127.0.0.1 port=5432 user=account password=password dbname=database sslmode=disable"
     dsn: postgres://account:password@127.0.0.1:5432/database?sslmode=disable
-    max_idle_conns: 4
-    max_open_conns: 32
+    max_idle_conns: 8
+    max_open_conns: 256
     conn_max_idle_time: 15m
     conn_max_lifetime: 30m
 
@@ -44,10 +44,12 @@ api_config: |
     max_idle_conns: 8
     max_active_conns: 32
 
+  # optional
   prometheus:
     enabled: true
     path: /metrics
 
+   # optional
   opentelemetry:
     address: 127.0.0.1:4317
     tls: false

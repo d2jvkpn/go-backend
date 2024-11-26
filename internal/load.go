@@ -14,6 +14,7 @@ import (
 
 	"github.com/d2jvkpn/gotk"
 	"github.com/d2jvkpn/gotk/cloud"
+	"github.com/d2jvkpn/gotk/ginx"
 	"github.com/spf13/viper"
 	"go.opentelemetry.io/otel"
 	otelmetric "go.opentelemetry.io/otel/metric"
@@ -55,6 +56,11 @@ func Load(project *viper.Viper, migrations embed.FS) (err error) {
 			Exit()
 		}
 	}()
+
+	settings.JwtHMAC, err = ginx.NewJwtHMAC(config.Sub("jwt"), appName)
+	if err != nil {
+		return err
+	}
 
 	otelConfig := config.Sub("opentelemetry")
 
@@ -120,7 +126,7 @@ func Load(project *viper.Viper, migrations embed.FS) (err error) {
 			return err
 		}
 
-		otelMeter, err = cloud.OtelMeterHttp(meter, []string{"code", "kind"})
+		otelMeter, err = cloud.OtelMeterHttp(meter, []string{"kind", "code"})
 		if err != nil {
 			return err
 		}

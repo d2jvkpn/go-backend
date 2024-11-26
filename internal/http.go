@@ -105,8 +105,8 @@ func SetupHttp(release bool, config *viper.Viper) (err error) {
 	ginx.ServeStaticDir("/site", "./site", false)(router)
 
 	// 6. load api
-	// TODO:
 	services.LoadOpen(router)
+	services.LoadAuth(router, Auth(AllowRoles()))
 	services.LoadWebsocket(router)
 
 	_HttpServer.Handler = engine

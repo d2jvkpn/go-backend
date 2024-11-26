@@ -2,7 +2,7 @@ package mod_user
 
 import (
 	"context"
-	// "errors"
+	"errors"
 	"fmt"
 	"strings"
 	"time"
@@ -67,6 +67,14 @@ type CreateAccount struct {
 	Password string `json:"password" gorm:"column:password" binding:"required,min=8,max=32" fake:"-" extensions:"x-order=11"`
 }
 
+func (self *Account) IsOK() (err *errx.ErrX) {
+	if self.Status != "activated" {
+		return erri.BizErr(errors.New("account hasn't been actived")).WithCode("not_activated")
+	}
+
+	return nil
+}
+
 func (self *CreateAccount) Validate() *errx.ErrX {
 	var e error
 
@@ -90,8 +98,13 @@ func (self *CreateAccount) Validate() *errx.ErrX {
 		return erri.Invalid(e).WithMsg("email")
 	}
 
-	if e = ValidatePassword(self.Password); e != nil {
-		return erri.Invalid(e).WithMsg("password")
+	if self.Password != "" {
+		if e = ValidatePassword(self.Password); e != nil {
+			return erri.Invalid(e).WithMsg("password")
+		}
+		self.Status = "activated"
+	} else {
+		self.Status = "created"
 	}
 
 	if e = _Validate.Struct(self); e != nil {

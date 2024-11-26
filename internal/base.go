@@ -25,16 +25,16 @@ var (
 	_SLogger *slog.Logger
 	_Logger  *zap.Logger
 
-	_InternalServer *http.Server
-	_HttpServer     *http.Server
-	_RPCServer      *rpc.RPCServer
-
 	_DB      *sql.DB
 	_GORM_PG *gorm.DB
 	_Redis   *redis.Client
 	// _GORM_MySQL *gorm.DB
 	_Tickers   []*gotk.Ticker
 	_APIMeters []func(string, float64, []string)
+
+	_InternalServer *http.Server
+	_HttpServer     *http.Server
+	_RPCServer      *rpc.RPCServer
 
 	_CloseOtelTrace func(context.Context) error = nil // func(context.Context) error { return nil }
 	_CloseOtelMeter func(context.Context) error = nil // func(context.Context) error { return nil }
