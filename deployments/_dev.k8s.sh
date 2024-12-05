@@ -23,11 +23,11 @@ kubectl -n dev create configmap go-backend \
 kubectl get configmap go-backend -o yaml
 
 ##### Deployment, ClusterIP, Ingress(http) and HPA
-kubectl apply -f k8s-dev.app.yaml
+kubectl apply -f dev.k8s-app.yaml
 # kubectl get deploy/go-backend
 # kubectl describe deploy/go-backend
 
-kubectl apply -f k8s-dev.svc.yaml
+kubectl apply -f dev.k8s-svc.yaml
 
 kubectl -n dev get svc
 # kubectl -n dev patch svc go-backend -p '{"spec":{"type":"LoadBalancer"}}'

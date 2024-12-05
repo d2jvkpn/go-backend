@@ -26,6 +26,9 @@ api_config: |
     duration: 0
     method: 256
 
+  storage:
+    provider: local
+
   postgres:
     # dsn: "host=127.0.0.1 port=5432 user=account password=password dbname=database sslmode=disable"
     dsn: postgres://account:password@127.0.0.1:5432/database?sslmode=disable
