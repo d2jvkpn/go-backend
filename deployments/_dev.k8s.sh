@@ -27,7 +27,7 @@ kubectl apply -f dev.k8s-app.yaml
 # kubectl get deploy/go-backend
 # kubectl describe deploy/go-backend
 
-kubectl apply -f dev.k8s-svc.yaml
+kubectl apply -f dev.k8s-ctrl.yaml
 
 kubectl -n dev get svc
 # kubectl -n dev patch svc go-backend -p '{"spec":{"type":"LoadBalancer"}}'
