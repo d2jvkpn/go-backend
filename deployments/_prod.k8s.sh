@@ -23,7 +23,7 @@ kubectl create secret docker-registry k8s.domain \
   --docker-password=PASSWORD
 
 kubectl apply -f go-backend/prod.k8s-apps.yaml
-kubectl apply -f go-backend/prod.k8s-svc.yaml
+kubectl apply -f go-backend/prod.k8s-ctrl.yaml
 
 #### get image sha256 of containers
 kubectl get pods -l app=go-backend -o json |
