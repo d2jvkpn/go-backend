@@ -59,13 +59,13 @@ spec:
           requests: { cpu: "200m", memory: "128Mi", ephemeral-storage: "2Gi" }
           limits: { cpu: "1000m", memory: "512Mi", ephemeral-storage: "10Gi" }
 
-        #readinessProbe:
-        #  initialDelaySeconds: 5
-        #  periodSeconds: 10
-        #  successThreshold: 3
-        #  httpGet: { path: /healthz, port: 9011 }
-        #  tcpSocket: { port: 9011 }
-        #  exec: { command: {cat, /tmp/healthy} }
+        readinessProbe:
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          successThreshold: 3
+          httpGet: { path: /healthz, port: 9011 }
+          tcpSocket: { port: 9011 }
+          exec: { command: {cat, /tmp/healthy} }
 
         livenessProbe:
           initialDelaySeconds: 5
@@ -77,7 +77,7 @@ spec:
           #  path: "/healthz"
           #  port: 9021
           #  httpHeaders:
-          #  - { name: Custom-Header, value: Awesome }
+          #  - { name: X-Custom-Header, value: Awesome }
           #exec: { command: [cat, /tmp/healthy] }
           #tcpSocket: { port: 9021 }
 
