@@ -37,20 +37,20 @@ lint:
 	app_name=swagger bash bin/swagger-go/swag.sh false > /dev/null
 
 build:
-	target_name=main ./deployments/go_build.sh
+	target_name=main ./containers/go_build.sh
 	ls -al target
 
 release:
-	release=true ./deployments/go_build.sh
+	release=true ./containers/go_build.sh
 	ls -al target
 
 run-api:
-	target_name=main ./deployments/go_build.sh
+	target_name=main ./containers/go_build.sh
 	./target/main api --config=configs/local.yaml \
 	  -http.addr=:9011 -internal.addr=:9019 -grpc.addr=:9021
 
 run-crons:
-	target_name=main ./deployments/go_build.sh
+	target_name=main ./containers/go_build.sh
 	./target/main crons --config=configs/crons.yaml
 
 #### swagger
@@ -71,16 +71,16 @@ run-swag:
 #### image, image-api-dev
 image-local:
 	BUILD_Region=cn DOCKER_Pull=false DOCKER_Push=false DOCKER_Tag=local GIT=false \
-	  bash deployments/build.sh dev
+	  bash containers/build.sh dev
 
 image-dev:
 	BUILD_Region=cn DOCKER_Pull=false DOCKER_Tag=dev \
-	  bash deployments/build.sh dev
+	  bash containers/build.sh dev
 
 image-test:
 	BUILD_Region=cn DOCKER_Pull=false DOCKER_Tag=test \
-	  bash deployments/build.sh test
+	  bash containers/build.sh test
 
 image-main:
 	BUILD_Region=cn DOCKER_Pull=false DOCKER_Tag=main \
-	  bash deployments/build.sh main
+	  bash containers/build.sh main

@@ -6,7 +6,7 @@ _wd=$(pwd); _path=$(dirname $0 | xargs -i readlink -f {})
 exit
 
 #### copy go-backend to node k8s-cp01 and create /data/logs on all worker nodes
-ansible k8s-cp01 -m copy -a 'src=./deployments dest=./go-backend'
+ansible k8s-cp01 -m copy -a 'src=./mainfests dest=./go-backend'
 
 # ansible k8s_workers -m shell --become -a 'mkdir -p /data/local && chmod -R 777 /data/local'
 
@@ -14,7 +14,7 @@ ssh k8s-cp01
 
 #### Configmap
 # kubectl -n dev create configmap go-backend --from-file=dev.yaml
-# kubectl create configmap go-backend --from-file=deployments/dev.yaml
+# kubectl create configmap go-backend --from-file=mainfests/dev.yaml
 
 kubectl -n dev create configmap go-backend \
   --from-file=dev.yaml -o yaml --dry-run=client |
