@@ -93,7 +93,7 @@ RUN mkdir -p /apps/target /apps/data /apps/logs
 WORKDIR /apps
 
 COPY --from=builder /apps/target/ /apps/target/
-COPY --from=builder /apps/cache.local/build.yaml /apps/
+COPY --from=builder /apps/cache.local/build.yaml /apps/target/
 # COPY ./migrations ./migrations
 
 # http server
