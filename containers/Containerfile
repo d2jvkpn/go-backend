@@ -1,12 +1,13 @@
 FROM golang:1-alpine AS builder
 
-MAINTAINER d2jvkpn <d2jvkpn@noreply.local>
-LABEL go-backend=compile
-
 ARG APP_Name
 ARG APP_Version
 ARG BUILD_Region
 ARG GO_ldflags
+
+MAINTAINER github.com/d2jvkpn <d2jvkpn@noreply.local>
+LABEL app=${APP_Name}
+LABEL stage=build
 
 LABEL stage=${APP_Name}_builder
 
@@ -63,15 +64,14 @@ RUN cd bin/swagger-go && \
 ####
 FROM alpine:3
 
-MAINTAINER d2jvkpn <d2jvkpn@noreply.local>
-LABEL go-backend=run
-
 ARG APP_Name
 ARG APP_Version
 ARG BUILD_Time
 ARG BUILD_Region
 
+MAINTAINER github.com/d2jvkpn <d2jvkpn@noreply.local>
 LABEL app=${APP_Name}
+LABEL stage=run
 
 ENV TZ=${TZ:-Asia/Shanghai}
 ENV APP_Name=${APP_Name}
@@ -95,6 +95,8 @@ WORKDIR /apps
 COPY --from=builder /apps/target/ /apps/target/
 COPY --from=builder /apps/cache.local/build.yaml /apps/target/
 # COPY ./migrations ./migrations
+
+VOLUME ["/apps/configs", "/apps/data", "/apps/logs"]
 
 # http server
 EXPOSE 9011
