@@ -6,9 +6,14 @@ ARG GO_ldflags
 ARG region
 
 MAINTAINER github.com/d2jvkpn <d2jvkpn@noreply.local>
+
 LABEL app=${APP_Name}
-LABEL stage=${APP_Name}_build
+LABEL version=${APP_Version}
+LABEL stage=build
+
 #SHELL ["/bin/bash", "-c"]
+
+WORKDIR /apps
 
 RUN if [ "$region" = "cn" ]; then \
     echo "==> region: $region"; \
@@ -19,8 +24,6 @@ RUN if [ "$region" = "cn" ]; then \
 
 RUN apk --no-cache update && \
   apk --no-cache upgrade
-
-WORKDIR /apps
 
 ADD ./main.go ./go.mod ./go.sum ./project.yaml ./
 COPY ./internal ./internal
@@ -65,16 +68,17 @@ FROM alpine:3
 
 ARG APP_Name
 ARG APP_Version
-ARG BUILD_Time
-ARG BUILD_Region
+ARG region
 
 MAINTAINER github.com/d2jvkpn <d2jvkpn@noreply.local>
 LABEL app=${APP_Name}
+LABEL version=${APP_Version}
 LABEL stage=running
 #SHELL ["/bin/bash", "-c"]
 
-ENV TZ=${TZ:-Asia/Shanghai}
 ENV APP_Name=${APP_Name}
+ENV APP_Version=${APP_Version}
+ENV TZ=${TZ:-Asia/Shanghai}
 
 RUN if [ "$region" = "cn" ]; then \
     echo "==> region: $region"; \
