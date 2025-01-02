@@ -7,9 +7,8 @@ ARG GO_ldflags
 
 MAINTAINER github.com/d2jvkpn <d2jvkpn@noreply.local>
 LABEL app=${APP_Name}
-LABEL stage=build
-
-LABEL stage=${APP_Name}_builder
+LABEL stage=${APP_Name}_build
+SHELL ["/bin/bash", "-c"]
 
 RUN if [ "$BUILD_Region" = "cn" ]; then \
     echo "==> BUILD_Region: $BUILD_Region"; \
@@ -71,7 +70,8 @@ ARG BUILD_Region
 
 MAINTAINER github.com/d2jvkpn <d2jvkpn@noreply.local>
 LABEL app=${APP_Name}
-LABEL stage=run
+LABEL stage=running
+SHELL ["/bin/bash", "-c"]
 
 ENV TZ=${TZ:-Asia/Shanghai}
 ENV APP_Name=${APP_Name}
