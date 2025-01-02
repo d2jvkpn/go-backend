@@ -2,16 +2,16 @@ FROM golang:1-alpine AS builder
 
 ARG APP_Name
 ARG APP_Version
-ARG BUILD_Region
 ARG GO_ldflags
+ARG region
 
 MAINTAINER github.com/d2jvkpn <d2jvkpn@noreply.local>
 LABEL app=${APP_Name}
 LABEL stage=${APP_Name}_build
-SHELL ["/bin/bash", "-c"]
+#SHELL ["/bin/bash", "-c"]
 
-RUN if [ "$BUILD_Region" = "cn" ]; then \
-    echo "==> BUILD_Region: $BUILD_Region"; \
+RUN if [ "$region" = "cn" ]; then \
+    echo "==> region: $region"; \
     cp /etc/apk/repositories /etc/apk/repositories.bk; \
     sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories; \
     go env -w GOPROXY="https://goproxy.cn,direct"; \
@@ -71,15 +71,13 @@ ARG BUILD_Region
 MAINTAINER github.com/d2jvkpn <d2jvkpn@noreply.local>
 LABEL app=${APP_Name}
 LABEL stage=running
-SHELL ["/bin/bash", "-c"]
+#SHELL ["/bin/bash", "-c"]
 
 ENV TZ=${TZ:-Asia/Shanghai}
 ENV APP_Name=${APP_Name}
-ENV BUILD_Time=${BUILD_Time}
-ENV BUILD_Region=${BUILD_Region}
 
-RUN if [ "$BUILD_Region" = "cn" ]; then \
-    echo "==> BUILD_Region: $BUILD_Region"; \
+RUN if [ "$region" = "cn" ]; then \
+    echo "==> region: $region"; \
     cp /etc/apk/repositories /etc/apk/repositories.bk; \
     sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories; \
   fi
@@ -107,7 +105,6 @@ EXPOSE 9019
 
 # grpc server
 EXPOSE 9020
-
 
 CMD [./target/main, api, -release, -config=configs/prod.yaml, -http.addr=:9011, --grpc.addr=:9021, --internal.addr=:9019]
 # CMD [./target/main, crons, -config=configs/crons.yaml]

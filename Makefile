@@ -72,17 +72,17 @@ run-swag:
 
 #### image, image-api-dev
 image-local:
-	BUILD_Region=cn DOCKER_Pull=false DOCKER_Push=false DOCKER_Tag=local GIT_Pull=false \
+	region=cn DOCKER_Pull=false DOCKER_Push=false DOCKER_Tag=local GIT_Pull=false \
 	  bash containers/build.sh dev
 
 image-dev:
-	BUILD_Region=cn DOCKER_Pull=false DOCKER_Tag=dev \
+	region=cn DOCKER_Pull=false DOCKER_Tag=dev \
 	  bash containers/build.sh dev
 
 image-test:
-	BUILD_Region=cn DOCKER_Pull=false DOCKER_Tag=test \
+	region=cn DOCKER_Pull=false DOCKER_Tag=test \
 	  bash containers/build.sh test
 
 image-main:
-	BUILD_Region=cn DOCKER_Pull=false DOCKER_Tag=main \
+	region=cn DOCKER_Pull=false DOCKER_Tag=main \
 	  bash containers/build.sh main

@@ -30,7 +30,7 @@ build_host=$(hostname)
 GIT_Pull=${GIT_Pull:-"true"}
 DOCKER_Pull=${DOCKER_Pull:-"true"}
 DOCKER_Push=${DOCKER_Push:-"true"}
-BUILD_Region=${BUILD_Region:-""}
+region=${region:-""}
 
 [ -s .env ] && { 2>&1 echo "==> load .env"; . .env; }
 
@@ -100,11 +100,10 @@ GO_ldflags="\
 #???  -X main.build_host=$build_host
 
 docker build --no-cache --file ${_path}/Containerfile \
-  --build-arg=BUILD_Time="$build_time" \
-  --build-arg=BUILD_Region="$BUILD_Region" \
   --build-arg=APP_Name="$app_name" \
   --build-arg=APP_Version="$app_version" \
   --build-arg=GO_ldflags="$GO_ldflags" \
+  --build-arg=region="$region" \
   --tag $image ./
 
 #### 5. push image
