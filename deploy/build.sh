@@ -10,6 +10,13 @@ command -v yq > /dev/null
 
 git_branch=$1
 
+# env variables
+# GIT_Pull=$(printenv GIT_Pull || true)
+GIT_Pull=${GIT_Pull:-"true"}
+DOCKER_Pull=${DOCKER_Pull:-"true"}
+DOCKER_Push=${DOCKER_Push:-"true"}
+region=${region:-""}
+
 app_name=$(yq .app_name project.yaml)
 app_version=$(yq .app_version project.yaml)
 image_name=$(yq .image_name project.yaml)
@@ -23,13 +30,6 @@ image=$image_name:$image_tag
 # build_time=$(date +'%FT%T.%N%:z')
 build_time=$(date +'%FT%T%:z')
 build_host=$(hostname)
-
-# env variables
-# GIT_Pull=$(printenv GIT_Pull || true)
-GIT_Pull=${GIT_Pull:-"true"}
-DOCKER_Pull=${DOCKER_Pull:-"true"}
-DOCKER_Push=${DOCKER_Push:-"true"}
-region=${region:-""}
 
 [ -s .env ] && { 2>&1 echo "==> load .env"; . .env; }
 
@@ -112,7 +112,7 @@ docker build --no-cache --file ${_path}/Containerfile \
 docker image prune --force --filter label=app=${app_name} --filter label=stage=build &> /dev/null
 
 # docker images --filter "dangling=true" --quiet $image | xargs -i docker rmi {}
-for img in $(docker images -f "dangling=true" -f label=app=${app_name} --quiet); do
+for img in $(docker images --filter=dangling=true --filter=label=app=$app_name --quiet); do
     >&2 echo "==> remove image: $img"
     docker rmi $img || true
 done
