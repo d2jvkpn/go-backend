@@ -1,6 +1,5 @@
 #!/bin/bash
-set -eu -o pipefail # -x
-_wd=$(pwd); _path=$(dirname $0 | xargs -i readlink -f {})
+set -eu -o pipefail -x; _wd=$(pwd); _path=$(dirname $0 | xargs -i readlink -f {})
 
 command -v docker > /dev/null
 command -v git > /dev/null
@@ -110,7 +109,7 @@ docker build --no-cache --file ${_path}/Containerfile \
 [ "$DOCKER_Push" != "false" ] && docker push $image
 
 #### 6. remove dangling images
-docker image prune --force -f label=app=${app_name} -f label=stage=build &> /dev/null
+docker image prune --force --filter label=app=${app_name} --filter label=stage=build &> /dev/null
 
 # docker images --filter "dangling=true" --quiet $image | xargs -i docker rmi {}
 for img in $(docker images -f "dangling=true" -f label=app=${app_name} --quiet); do

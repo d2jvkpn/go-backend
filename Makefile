@@ -76,12 +76,10 @@ image-local:
 	  bash containers/build.sh dev
 
 image-dev:
-	region=cn DOCKER_Pull=false DOCKER_Tag=dev \
-	  bash containers/build.sh dev
+	region=cn DOCKER_Pull=false DOCKER_Tag=dev bash containers/build.sh dev
 
 image-test:
-	region=cn DOCKER_Pull=false DOCKER_Tag=test \
-	  bash containers/build.sh test
+	region=cn DOCKER_Pull=false DOCKER_Tag=test bash containers/build.sh test
 
 image-main:
 	region=cn DOCKER_Pull=false DOCKER_Tag=main \
