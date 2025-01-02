@@ -2,8 +2,7 @@
 # include envfile
 # export $(shell sed 's/=.*//' envfile)
 
-SHELL := /bin/bash
-
+SHELL = /bin/bash
 working_dir = $(shell pwd)
 build_host = $(shell hostname)
 
@@ -39,20 +38,20 @@ lint:
 	app_name=swagger bash bin/swagger-go/swag.sh false > /dev/null
 
 build:
-	target_name=main ./containers/go_build.sh
+	target_name=main ./deploy/go_build.sh
 	ls -al target
 
 release:
-	release=true ./containers/go_build.sh
+	release=true ./deploy/go_build.sh
 	ls -al target
 
 run-api:
-	target_name=main ./containers/go_build.sh
+	target_name=main ./deploy/go_build.sh
 	./target/main api --config=configs/local.yaml \
 	  -http.addr=:9011 -internal.addr=:9019 -grpc.addr=:9021
 
 run-crons:
-	target_name=main ./containers/go_build.sh
+	target_name=main ./deploy/go_build.sh
 	./target/main crons --config=configs/crons.yaml
 
 #### swagger
@@ -73,14 +72,13 @@ run-swag:
 #### image, image-api-dev
 image-local:
 	region=cn DOCKER_Pull=false DOCKER_Push=false DOCKER_Tag=local GIT_Pull=false \
-	  bash containers/build.sh dev
+	  bash deploy/build.sh dev
 
 image-dev:
-	region=cn DOCKER_Pull=false DOCKER_Tag=dev bash containers/build.sh dev
+	region=cn DOCKER_Pull=false DOCKER_Tag=dev bash deploy/build.sh dev
 
 image-test:
-	region=cn DOCKER_Pull=false DOCKER_Tag=test bash containers/build.sh test
+	region=cn DOCKER_Pull=false DOCKER_Tag=test bash deploy/build.sh test
 
 image-main:
-	region=cn DOCKER_Pull=false DOCKER_Tag=main \
-	  bash containers/build.sh main
+	region=cn DOCKER_Pull=false DOCKER_Tag=main bash deploy/build.sh main
