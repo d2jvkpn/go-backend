@@ -53,6 +53,8 @@ RUN if [ -d ./cache.local/vendor ]; then \
 # note: -trimpath will remove -ldflags
 RUN go build -ldflags="-w -s ${GO_ldflags}" -o target/main main.go
 
+COPY ./build.yaml /apps/target/
+
 ####
 RUN if [ -d ./bin/swagger-go/cache.local/vendor ]; then \
     echo "==> Found ./bin/swagger-go/cache.local/vendor"; \
@@ -95,7 +97,6 @@ RUN mkdir -p /apps/target /apps/data /apps/logs
 WORKDIR /apps
 
 COPY --from=builder /apps/target/ /apps/target/
-COPY --from=builder /apps/cache.local/build.yaml /apps/target/
 # COPY ./migrations ./migrations
 
 VOLUME ["/apps/configs", "/apps/data", "/apps/logs"]
