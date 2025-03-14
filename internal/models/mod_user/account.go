@@ -109,12 +109,15 @@ func (self *CreateAccount) Validate() *errx.ErrX {
 
 	if e = _Validate.Struct(self); e != nil {
 		if errs, ok := e.(validator.ValidationErrors); ok {
+			/* can't complie with go1.24
 			fields := make([]string, len(errs))
 			for i := range errs {
 				fields[i] = errs[i].Error()
 			}
 
 			return erri.Invalid(e).WithMsg(strings.Join(fields, ","))
+			*/
+			return erri.Invalid(e).WithMsg("%v", errs)
 		} else {
 			return erri.InternalErr(e).WithCode("validator")
 		}

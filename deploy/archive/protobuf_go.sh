@@ -1,8 +1,6 @@
 #!/bin/bash
-set -eu -o pipefail # -x
-_wd=$(pwd); _path=$(dirname $0 | xargs -i readlink -f {})
+set -eu -o pipefail; _wd=$(pwd); _path=$(dirname $0)
 
-export PATH="$HOME/Apps/bin:$(go env GOPATH)/bin:$PATH"
 
 # go get google/protobuf/timestamp.proto
 

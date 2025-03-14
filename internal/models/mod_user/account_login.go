@@ -28,7 +28,7 @@ func (self *AccountLogin) Validate() (password []byte, err *errx.ErrX) {
 	password = []byte(self.Password)
 
 	if self.Phone == "" && self.Email == "" {
-		msg := "no account info: phone, email"
+		const msg = "no account info: phone, email"
 		return nil, erri.Invalid(errors.New(msg)).WithMsg(msg)
 	}
 

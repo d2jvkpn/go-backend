@@ -51,7 +51,7 @@ func main() {
 		"config",
 		"show configuration(api, crons, swagger, deployment)",
 		func(args []string) {
-			errMsg := "Subcommand is required: api | crons | swagger | deployment\n"
+			const errMsg = "Subcommand is required: api | crons | swagger | deployment\n"
 
 			if len(args) == 0 {
 				fmt.Fprintf(os.Stderr, errMsg)

@@ -9,3 +9,9 @@ a classic backend service written in golang
 - base data(??version)
 - unit tests, integration tests, documentation tests
 - benchmark
+
+#### C02.
+1. swag
+```
+go install github.com/swaggo/swag/cmd/swag@latest
+```

@@ -25,13 +25,16 @@ go.work.sum
 .env
 
 # custom
-vendor/
-target/
-*.local
 configs/
-data/
 logs/
-site/
+data/
+target/
+local/
+
+*.local
+*.git
+
+vendor/
 docker-compose.yaml
 docker-compose.yml
 compose.yaml
