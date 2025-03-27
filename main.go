@@ -33,11 +33,13 @@ func main() {
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Exit: %s\n", err)
 			os.Exit(1)
+		} else {
+			fmt.Println("Exit")
 		}
 	}()
 
 	if project, err = gotk.ProjectFromBytes(_Project); err != nil {
-		err = fmt.Errorf("Failed to load project: %w", err)
+		err = fmt.Errorf("Failed to load project.yaml: %w", err)
 		return
 	}
 	if project.GetString("app_name") == "" || project.GetString("app_version") == "" {
