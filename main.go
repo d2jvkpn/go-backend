@@ -15,7 +15,7 @@ var (
 	//go:embed project.yaml
 	_Project []byte
 
-	//go:embed deploy/compose.template.yaml
+	//go:embed deploy/compose.app.yaml
 	_Compose []byte
 
 	//go:embed migrations/*.sql

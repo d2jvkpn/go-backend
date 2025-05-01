@@ -1,7 +1,5 @@
-version: '3'
-
 networks:
-  net: { name: "local", driver: bridge, external: true }
+  net: { name: "go-backend", driver: bridge, external: true }
 
 services:
   api:
@@ -35,13 +33,13 @@ services:
     container_name: ${APP_Name}-api
     environment:
       TZ: Asia/Shanghai
-    working_dir: /apps
+    working_dir: /opt
     volumes:
-    - ./configs/:/apps/configs:ro
-    - ./logs/:/apps/logs
-    - ./site/:/apps/site
-    - ./data/:/apps/data
-    # - ./data/${APP_Name}:/apps/data
+    - ./configs/:/opt/configs:ro
+    - ./logs/:/opt/logs
+    - ./site/:/opt/site
+    - ./data/:/opt/data
+    # - ./data/${APP_Name}:/opt/data
     command:
     - ./target/main
     - api
@@ -59,10 +57,10 @@ services:
     container_name: ${APP_Name}-crons
     environment:
       TZ: Asia/Shanghai
-    working_dir: /apps
+    working_dir: /opt
     volumes:
-    - ./configs/:/apps/configs:ro
-    - ./logs/:/apps/logs
+    - ./configs/:/opt/configs:ro
+    - ./logs/:/opt/logs
     command: [./target/${APP_Name}, crons, -config=configs/crons.yaml]
 
   swagger:
@@ -76,7 +74,7 @@ services:
     environment:
       TZ: Asia/Shanghai
     volumes:
-    - ./configs/swagger.yaml:/apps/configs/swagger.yaml:ro
+    - ./configs/swagger.yaml:/opt/configs/swagger.yaml:ro
     command:
     - ./target/main
     - swagger

@@ -98,16 +98,16 @@ spec:
         # envFrom:
         # - configMapRef: { name: postgres-config }
         volumeMounts:
-        ## not /apps/configs/dev.yaml
-        - { name: config, mountPath: /apps/configs, readOnly: true }
-        # - { name: local, subPathExpr: "go-backend/$(K8S_PodName)/logs", mountPath: "/apps/logs" }
-        # - { name: pvc, subPathExpr: "go-backend/$(K8S_PodName)/data", mountPath: "/apps/data" }
-        - { name: local, subPathExpr: "go-backend/logs", mountPath: "/apps/logs" }
-        - { name: pvc, subPathExpr: "go-backend/data", mountPath: "/apps/data" }
+        ## not /opt/configs/dev.yaml
+        - { name: config, mountPath: /opt/configs, readOnly: true }
+        # - { name: local, subPathExpr: "go-backend/$(K8S_PodName)/logs", mountPath: "/opt/logs" }
+        # - { name: pvc, subPathExpr: "go-backend/$(K8S_PodName)/data", mountPath: "/opt/data" }
+        - { name: local, subPathExpr: "go-backend/logs", mountPath: "/opt/logs" }
+        - { name: pvc, subPathExpr: "go-backend/data", mountPath: "/opt/data" }
         ports:
         - { name: "http", containerPort: 9011, protocol: "TCP" }
         - { name: "rpc", containerPort: 9021, protocol: "TCP" }
         # command: [ tail, -f, /etc/hosts ]
-        workingDir: /apps
+        workingDir: /opt
         command: ["./target/main", "api"]
         args: [-release, -config=configs/dev.yaml, -http.addr=:9011, -rpc.addr=:9021]

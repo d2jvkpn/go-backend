@@ -13,7 +13,7 @@ LABEL stage=build
 
 #SHELL ["/bin/bash", "-c"]
 
-WORKDIR /apps
+WORKDIR /opt
 
 RUN if [ "$region" = "cn" ]; then \
     echo "==> region: $region"; \
@@ -33,33 +33,22 @@ COPY ./proto ./proto
 COPY ./bin ./bin
 COPY ./deploy ./deploy
 
-COPY ./cache.local ./cache.local
 
 ####
 RUN mkdir -p target
-
-RUN if [ -d ./cache.local/vendor ]; then \
-    echo "==> Found cache.local/vendor"; \
-    mv ./cache.local/vendor vendor; \
-  fi
 
 # in alpine, date doesn't parse %:z
 # mkdir -p target && go build -o target/main -ldflags="-w -s ${GO_ldflags}" main.go
 
 # https://docs.docker.com/reference/dockerfile/
-# RUN --mount=type=cache,source=./cache.local/vendor,target=/apps/vendor \
-#  go mod tidy && go build -ldflags="-w -s ${GO_ldflags}" -o target/main main.go
+RUN --mount=type=bind,source=vendor,target=vendor \
+  go mod tidy && go build -ldflags="-w -s ${GO_ldflags}" -o target/main main.go
 
 # note: -trimpath will remove -ldflags
-RUN go build -ldflags="-w -s ${GO_ldflags}" -o target/main main.go
-ADD ./cache.local/build.yaml /apps/target/
+#RUN go build -ldflags="-w -s ${GO_ldflags}" -o target/main main.go
+ADD ./target/build.yaml /opt/target/
 
 ####
-RUN if [ -d ./bin/swagger-go/cache.local/vendor ]; then \
-    echo "==> Found ./bin/swagger-go/cache.local/vendor"; \
-    mv ./bin/swagger-go/cache.local/vendor bin/swagger-go/vendor; \
-  fi
-
 # note: -trimpath will remove -ldflags
 RUN cd bin/swagger-go && \
   go build -ldflags="-w -s ${GO_ldflags}" -o ../../target/swagger main.go
@@ -92,13 +81,13 @@ RUN apk --no-cache update && \
   apk --no-cache add tzdata
   # curl gcompat
 
-RUN mkdir -p /apps/target /apps/data /apps/logs
-WORKDIR /apps
+RUN mkdir -p /opt/target /opt/data /opt/logs
+WORKDIR /opt
 
-COPY --from=builder /apps/target/ /apps/target/
+COPY --from=builder /opt/target/ /opt/target/
 # COPY ./migrations ./migrations
 
-VOLUME ["/apps/configs", "/apps/data", "/apps/logs"]
+VOLUME ["/opt/configs", "/opt/data", "/opt/logs"]
 
 # http server
 EXPOSE 9011

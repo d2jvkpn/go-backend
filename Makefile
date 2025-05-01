@@ -24,10 +24,6 @@ check:
 	command -v protoc-gen-go
 	command -v protoc-gen-go-grpc
 
-#cache:
-#	go mod vendor
-#	mkdir -p cache.local
-#	mv vendor cache.local/
 
 lint:
 	go mod tidy
