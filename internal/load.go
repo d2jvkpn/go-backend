@@ -74,7 +74,7 @@ func Load(project *viper.Viper, migrations embed.FS) (err error) {
 			return err
 		},
 		func() (err error) {
-			_SLogger.Debug("connect to postgres")
+			_SLogger.Debug("connecting to postgres")
 			_GORM_PG, _DB, err = infra.PgConnect(config.Sub("postgres"), release)
 
 			if err = mod_user.Init(ctx, _GORM_PG); err != nil {
@@ -84,8 +84,13 @@ func Load(project *viper.Viper, migrations embed.FS) (err error) {
 			return err
 		},
 		func() (err error) {
-			_SLogger.Debug("connect to redis")
+			_SLogger.Debug("connecting to redis")
 			_Redis, err = infra.NewRedisClient(config.Sub("redis"))
+			return err
+		},
+		func() (err error) {
+			_SLogger.Debug("connecting to elasticsearch")
+			_ES, err = infra.NewEsClient(config.Sub("elasticsearch"))
 			return err
 		},
 		func() (err error) {

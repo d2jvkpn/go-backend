@@ -11,6 +11,7 @@ import (
 	"github.com/d2jvkpn/go-backend/internal/rpc"
 
 	"github.com/d2jvkpn/gotk"
+	es8 "github.com/elastic/go-elasticsearch/v8"
 	"github.com/redis/go-redis/v9"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
@@ -28,6 +29,7 @@ var (
 	_DB      *sql.DB
 	_GORM_PG *gorm.DB
 	_Redis   *redis.Client
+	_ES      *es8.Client
 	// _GORM_MySQL *gorm.DB
 	_Tickers   []*gotk.Ticker
 	_APIMeters []func(string, float64, []string)
