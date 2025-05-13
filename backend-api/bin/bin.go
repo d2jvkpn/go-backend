@@ -11,8 +11,8 @@ import (
 func RunBin(app string, args []string) {
 	var (
 		p    string
-		info fs.FileInfo
 		err  error
+		info fs.FileInfo
 		cmd  *exec.Cmd
 	)
 

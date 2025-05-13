@@ -11,8 +11,8 @@ export APP_Name=$(yq .app_name project.yaml) \
   USER_UID=$(id -u) \
   USER_GID=$(id -g)
 
-mkdir -p configs logs data/postgres data/redis data/$APP_Name
-envsubst < ${_dir}/compose.app.yaml > compose.yaml
+mkdir -p data/$APP_Name
+envsubst < ${_dir}/compose.backend-api.yaml > compose.backend-api.yaml
 
 ####
 exit 0
