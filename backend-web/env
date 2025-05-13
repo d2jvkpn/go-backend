@@ -1,0 +1,6 @@
+# path: .env
+PORT=3001
+
+VITE_ENV=local
+VITE_BASE_PATH=/local
+VITE_API_URL=http://localhost:3011
