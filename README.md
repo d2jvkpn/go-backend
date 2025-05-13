@@ -1,5 +1,5 @@
-# go-backend
-a classic backend service written in golang
+# fullstack-go-vue
+
 
 #### C01. Next
 1. docs
