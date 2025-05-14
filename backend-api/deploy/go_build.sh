@@ -48,6 +48,7 @@ if [[ "$release" != "true" ]]; then
     # go tool dist list
     # -ldflags="-w -s"
     # note: -trimpath will remove -ldflags
+    set -x
     go build -ldflags="$GO_ldflags" -o $target_dir/${target_name} main.go
 else
     GOOS=linux GOARCH=amd64 go build -ldflags="$GO_ldflags" -o $target_dir/${target_name}.linux-amd64 main.go

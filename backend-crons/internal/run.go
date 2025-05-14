@@ -1,10 +1,8 @@
-package crons
+package internal
 
 import (
 	"errors"
 	// "fmt"
-
-	"backend-api/pkg/infra"
 
 	"github.com/d2jvkpn/gotk"
 	"github.com/robfig/cron/v3"
@@ -39,11 +37,11 @@ func Load(project *viper.Viper) (err error) {
 	// 2. databases: postgres, redis
 	err = gotk.ConcRunErr(
 		func() (err error) {
-			_GORM_PG, _DB, err = infra.PgConnect(config.Sub("postgres"), true)
+			_GORM_PG, _DB, err = PgConnect(config.Sub("postgres"), true)
 			return err
 		},
 		func() (err error) {
-			_Redis, err = infra.NewRedisClient(config.Sub("redis"))
+			_Redis, err = NewRedisClient(config.Sub("redis"))
 			return err
 		},
 	)

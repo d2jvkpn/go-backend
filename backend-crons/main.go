@@ -1,6 +1,7 @@
-package bin
+package main
 
 import (
+	_ "embed"
 	"flag"
 	"fmt"
 	"log/slog"
@@ -9,37 +10,40 @@ import (
 	"syscall"
 	"time"
 
-	"backend-api/internal/crons"
+	"backend-crons/internal"
 
 	"github.com/d2jvkpn/gotk"
 	"github.com/spf13/viper"
 )
 
-func RunCrons(project *viper.Viper, args []string) {
+var (
+	//go:embed project.yaml
+	_Project []byte
+)
+
+func main() {
 	var (
-		fSet   *flag.FlagSet
-		config string
-		err    error
-		logger *slog.Logger
+		config  string
+		err     error
+		logger  *slog.Logger
+		project *viper.Viper
 	)
 
 	// 1. setup
-	// fmt.Println("~~~", args)
-	fSet = flag.NewFlagSet("crons", flag.ExitOnError)
-
-	fSet.StringVar(&config, "config", "configs/local.yaml", "configuration file(yaml)")
-
-	fSet.Usage = func() {
-		output := flag.CommandLine.Output()
-		fmt.Fprintf(output, "Usage crons:\n")
-		fSet.PrintDefaults()
-	}
-
-	if err = fSet.Parse(args); err != nil {
-		fmt.Fprintf(os.Stderr, "Crons exit: %s\n", err)
-		os.Exit(1)
+	if project, err = gotk.ProjectFromBytes(_Project); err != nil {
+		err = fmt.Errorf("Failed to load project.yaml: %w", err)
 		return
 	}
+
+	flag.StringVar(&config, "config", "configs/backend-crons.local.yaml", "configuration file(yaml)")
+
+	flag.Usage = func() {
+		output := flag.CommandLine.Output()
+		fmt.Fprintf(output, "Usage:\n")
+		flag.PrintDefaults()
+	}
+
+	flag.Parse()
 
 	//logger = slog.New(slog.NewJSONHandler(
 	//	os.Stderr, &slog.HandlerOptions{AddSource: true},
@@ -66,12 +70,12 @@ func RunCrons(project *viper.Viper, args []string) {
 	)
 
 	// 3. load
-	if err = crons.Load(project); err != nil {
+	if err = internal.Load(project); err != nil {
 		return
 	}
 
 	// 4. up
-	if err = crons.Run(project); err != nil {
+	if err = internal.Run(project); err != nil {
 		return
 	}
 
@@ -88,5 +92,13 @@ func RunCrons(project *viper.Viper, args []string) {
 	sig := <-quit
 	logger.Info("... received from channel quit", "signal", sig.String())
 
-	err = crons.Exit()
+	err = internal.Exit()
+}
+
+func updateMeta(project *viper.Viper, mp map[string]any) {
+	meta := project.GetStringMap("meta")
+
+	for k, v := range mp {
+		meta[k] = v
+	}
 }

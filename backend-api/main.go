@@ -1,11 +1,15 @@
 package main
 
 import (
-	"embed"
+	_ "embed"
+	"flag"
 	"fmt"
+	"log/slog"
 	"os"
+	"time"
 
-	"backend-api/bin"
+	"backend-api/internal"
+	"backend-api/pkg/utils"
 
 	"github.com/d2jvkpn/gotk"
 	"github.com/spf13/viper"
@@ -14,84 +18,105 @@ import (
 var (
 	//go:embed project.yaml
 	_Project []byte
-
-	//go:embed deploy/compose.app.yaml
-	_Compose []byte
-
-	//go:embed migrations/*.sql
-	_Migrations embed.FS
 )
 
 func main() {
 	var (
-		err     error
+		release      bool
+		config       string
+		httpAddr     string
+		internalAddr string
+		grpcAddr     string
+		err          error
+
 		project *viper.Viper
-		command *gotk.Command
+
+		errCh  chan error
+		logger *slog.Logger
 	)
 
-	defer func() {
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Exit: %s\n", err)
-			os.Exit(1)
-		} else {
-			fmt.Println("Exit")
-		}
-	}()
-
+	// 1. setup
 	if project, err = gotk.ProjectFromBytes(_Project); err != nil {
 		err = fmt.Errorf("Failed to load project.yaml: %w", err)
 		return
 	}
-	if project.GetString("app_name") == "" || project.GetString("app_version") == "" {
-		err = fmt.Errorf("Neither app_name nor app_version is set in project.yaml")
+
+	flag.BoolVar(&release, "release", false, "run in release mode")
+	flag.StringVar(&config, "config", "configs/backend-api.local.yaml", "configuration file(yaml)")
+
+	flag.StringVar(&httpAddr, "http.addr", ":9011", "http listening address")
+	flag.StringVar(&internalAddr, "internal.addr", ":9019", "internal listening address")
+	flag.StringVar(&grpcAddr, "grpc.addr", ":9021", "grpc listening address")
+
+	flag.Usage = func() {
+		output := flag.CommandLine.Output()
+		fmt.Fprintf(output, "Usage:\n")
+		flag.PrintDefaults()
+		fmt.Printf("\n\nConfig:\n```yaml\n%s\n```\n", project.GetString("config"))
+	}
+
+	flag.Parse()
+
+	// logger = slog.New(slog.NewJSONHandler(os.Stderr, nil))
+	if release {
+		logger = utils.NewJSONLogger(os.Stderr, slog.LevelInfo)
+	} else {
+		logger = utils.NewJSONLogger(os.Stderr, slog.LevelDebug)
+	}
+
+	defer func() {
+		if err != nil {
+			logger.Error("Exit", "error", err)
+			os.Exit(1)
+		} else {
+			logger.Info("Exit")
+		}
+	}()
+
+	// 2. configuration
+	updateMeta(
+		project,
+		map[string]any{
+			"config":        config,
+			"release":       release,
+			"http_addr":     httpAddr, // don't use http.addr as key here
+			"internal_addr": internalAddr,
+			"grpc_addr":     grpcAddr,
+			"command":       "api",
+			"startup_at":    time.Now().Format(gotk.RFC3339Milli),
+		},
+	)
+
+	// 3. load
+	if err = internal.Load(project); err != nil {
+		err = fmt.Errorf("Faild to load: %w", err)
 		return
 	}
 
-	command = gotk.NewCommand(project.GetString("meta.app_name"), project)
+	// 4. up
+	if errCh, err = internal.Run(project); err != nil {
+		err = fmt.Errorf("Failed to run: %w", err)
+		return
+	}
 
-	command.AddCmd(
-		"config",
-		"show configuration(api, crons, swagger, deployment)",
-		func(args []string) {
-			const errMsg = "Subcommand is required: api | crons | swagger | deployment\n"
-
-			if len(args) == 0 {
-				fmt.Fprintf(os.Stderr, errMsg)
-				os.Exit(1)
-			}
-
-			switch args[0] {
-			case "api", "crons", "swagger":
-				fmt.Printf("%s\n", project.GetString(args[0]+"_config"))
-			case "compose":
-				fmt.Printf("%s\n", _Compose)
-			default:
-				fmt.Fprintf(os.Stderr, errMsg)
-				os.Exit(1)
-			}
-		},
+	logger.Info(
+		fmt.Sprintf("Service is up"),
+		"config", config,
+		"release", release,
+		"app_version", project.GetString("meta.app_version"),
+		"http_addr", httpAddr,
+		"internal_addr", internalAddr,
+		"grpc_addr", grpcAddr,
 	)
 
-	command.AddCmd(
-		"api", "api service",
-		func(args []string) {
-			bin.RunApi(project, args, _Migrations)
-		},
-	)
+	// 5. exit
+	err = gotk.ExitChan(errCh, internal.Exit)
+}
 
-	command.AddCmd(
-		"crons", "cron deamon",
-		func(args []string) {
-			bin.RunCrons(project, args)
-		},
-	)
+func updateMeta(project *viper.Viper, mp map[string]any) {
+	meta := project.GetStringMap("meta")
 
-	command.AddCmd(
-		"swagger", "swagger service",
-		func(args []string) {
-			bin.RunBin("swagger", args)
-		},
-	)
-
-	command.Execute(os.Args[1:])
+	for k, v := range mp {
+		meta[k] = v
+	}
 }

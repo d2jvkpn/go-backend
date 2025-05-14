@@ -1,4 +1,4 @@
-package crons
+package internal
 
 import (
 	"fmt"

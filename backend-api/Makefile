@@ -31,8 +31,6 @@ lint:
 	go fmt ./...
 	go vet ./...
 
-	app_name=swagger bash bin/swagger-go/swag.sh false > /dev/null
-
 build:
 	target_name=main ./deploy/go_build.sh
 	ls -al target
@@ -50,31 +48,17 @@ run-crons:
 	target_name=main ./deploy/go_build.sh
 	./target/main crons --config=configs/crons.yaml
 
-#### swagger
-build-swag:
-	@if [ ! -d "bin/swagger-go" ]; then \
-	    git clone git@github.com:d2jvkpn/swagger-go.git /tmp/swagger-go; \
-	    mkdir -p bin; \
-	    rsync -arvP --exclude .git /tmp/swagger-go ./bin/; \
-	fi
-	app_name=swagger bash bin/swagger-go/swag.sh true > /dev/null
-	ls -al target
-
-run-swag:
-	app_name=swagger bash bin/swagger-go/swag.sh true > /dev/null
-	./target/swagger -swagger.title "go backend" \
-	  -config=configs/swagger.yaml -http.addr=:9017
 
 #### image, image-api-dev
 image-local:
 	region=cn DOCKER_Pull=false DOCKER_Push=false DOCKER_Tag=local GIT_Pull=false \
-	  bash deploy/build.sh dev
+	  bash deploy/container_build.sh dev
 
 image-dev:
-	region=cn DOCKER_Pull=false DOCKER_Tag=dev bash deploy/build.sh dev
+	region=cn DOCKER_Pull=false DOCKER_Tag=dev bash deploy/container_build.sh dev
 
 image-test:
-	region=cn DOCKER_Pull=false DOCKER_Tag=test bash deploy/build.sh test
+	region=cn DOCKER_Pull=false DOCKER_Tag=test bash deploy/container_build.sh test
 
 image-main:
-	region=cn DOCKER_Pull=false DOCKER_Tag=main bash deploy/build.sh main
+	region=cn DOCKER_Pull=false DOCKER_Tag=main bash deploy/container_build.sh main
