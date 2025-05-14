@@ -52,6 +52,7 @@ const submit = () => {
   <div v-if="visible" class="overlay">
     <div class="modal">
       <header class="modal-header"> 🔒 Change Password </header>
+      <hr style="color: #bbb">
 
       <el-form ref="formRef" :model="form" :rules="rules" label-width="10rem" class="modal-form">
         <el-form-item label="old password" prop="oldPassword">
@@ -59,11 +60,11 @@ const submit = () => {
         </el-form-item>
 
         <el-form-item label="new password" prop="newPassword">
-          <el-input v-model="form.newPassword" type="password" clearable />
+          <el-input v-model="form.newPassword" type="password" show-password />
         </el-form-item>
 
         <el-form-item label="confirm password" prop="confirmPassword">
-          <el-input v-model="form.confirmPassword" type="password" clearable />
+          <el-input v-model="form.confirmPassword" type="password" show-password />
         </el-form-item>
       </el-form>
 
