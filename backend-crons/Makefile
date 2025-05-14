@@ -19,7 +19,6 @@ check:
 	command -v yq
 	command -v docker
 
-
 lint:
 	go mod tidy
 	if [ -d vendor ]; then go mod vendor; fi
@@ -36,19 +35,4 @@ release:
 
 run:
 	target_name=main ../scripts/go_build.sh
-	./target/main api --config=configs/local.yaml \
-	  -http.addr=:3011 -internal.addr=:3019 -grpc.addr=:3021
-
-#### image, image-api-dev
-image-local:
-	region=cn DOCKER_Pull=false DOCKER_Push=false DOCKER_Tag=local GIT_Pull=false \
-	  bash deploy/container_build.sh dev
-
-image-dev:
-	region=cn DOCKER_Pull=false DOCKER_Tag=dev bash deploy/container_build.sh dev
-
-image-test:
-	region=cn DOCKER_Pull=false DOCKER_Tag=test bash deploy/container_build.sh test
-
-image-main:
-	region=cn DOCKER_Pull=false DOCKER_Tag=main bash deploy/container_build.sh main
+	./target/main --config=configs/backend-crons.local.yaml

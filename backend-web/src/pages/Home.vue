@@ -63,7 +63,7 @@ const toggleCollapse = () => {
 
 .home-main {
   display: flex;
-  flex: 1;
+  flex: 1; /* flex-grow: 1; flex-shrink: 1; flex-basis: 0%; */
   overflow: hidden;
 }
 

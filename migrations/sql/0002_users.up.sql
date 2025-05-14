@@ -1,6 +1,7 @@
-CREATE TYPE user_status AS ENUM('created', 'activated', 'blocked', 'deleted');
+CREATE TYPE account_status AS ENUM('created', 'activated', 'blocked', 'deleted');
 
-CREATE TYPE user_role AS ENUM('admin', 'manager', 'employee', 'customer', 'contractor');
+CREATE TYPE account_level AS ENUM('admin', 'editor', 'reviewer', 'user', 'guest');
+-- CREATE TYPE account_roles AS ENUM();
 
 CREATE TABLE user_accounts (
   id          uuid DEFAULT gen_random_uuid(),
@@ -12,7 +13,7 @@ CREATE TABLE user_accounts (
   lastname   varchar(24) NOT NULL,
   phone      varchar(20) DEFAULT NULL UNIQUE,
   email      varchar(128) DEFAULT NULL UNIQUE,
-  role       user_role NOT NULL,
+  level      account_level NOT NULL,
   labels     varchar[] NOT NULL DEFAULT array[]::varchar[],
 
   password  varchar NOT NULL, -- bcrypt(password)
@@ -27,5 +28,5 @@ CREATE TRIGGER updated_at BEFORE UPDATE ON user_accounts
   FOR EACH ROW EXECUTE PROCEDURE update_now();
 
 CREATE INDEX user_accounts_created_at ON user_accounts (created_at DESC, status);
-CREATE INDEX user_accounts_role ON user_accounts (role, created_at DESC);
+CREATE INDEX user_accounts_level ON user_accounts (level, created_at DESC);
 CREATE INDEX user_accounts_labels ON user_accounts (labels);

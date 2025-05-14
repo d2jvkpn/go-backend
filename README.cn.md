@@ -24,7 +24,16 @@ fullstack-go-vue 是使用 golang 和 vue 编写的一个前端、后端分离�
 - docker/docker-compose
 - kubernetes
 
-5. 其他
+5. 命令行工具
+- protoc
+- protoc-gen-go
+- protoc-gen-go-grpc
+- migrate
+- swag
+- yq
+- jq
+
+6. 其他
 - 配置文件 viper+yaml
 - 数据库自动迁移 migrate: https://github.com/golang-migrate/migrate
 - 可观测 opentelemetry + prometheus + jaeger + grafana

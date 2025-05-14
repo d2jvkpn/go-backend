@@ -38,7 +38,8 @@ const submit = () => {
       return
     }
 
-    emit('submit', { ...form })
+    // emit('submit', { ...form })
+    console.log(`--> change password: ${JSON.stringify(form)}`)
     ElMessage.success('The password has been successfully changed')
     emit('close')
   })
@@ -50,7 +51,7 @@ const submit = () => {
 <Teleport to="body">
   <div v-if="visible" class="overlay">
     <div class="modal">
-      <header class="modal-header">🔒 Change Password </header>
+      <header class="modal-header"> 🔒 Change Password </header>
 
       <el-form ref="formRef" :model="form" :rules="rules" label-width="10rem" class="modal-form">
         <el-form-item label="old password" prop="oldPassword">
@@ -74,7 +75,6 @@ const submit = () => {
   </div>
 </Teleport>
 </template>
-
 
 <style scoped>
 .overlay {
