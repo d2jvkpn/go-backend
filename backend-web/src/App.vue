@@ -10,7 +10,7 @@ console.log(`==> import.meta.env: ${JSON.stringify(import.meta.env)}`);
 const config = ref({});
 
 onBeforeMount(() => {
-  fetch('app.json')
+  fetch(`${import.meta.env.VITE_BASE_PATH}/app.json`)
     .then((response) => response.json())
     .then((data) => {
       config.value = data;

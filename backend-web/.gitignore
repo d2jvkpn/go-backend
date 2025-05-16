@@ -28,6 +28,7 @@ dist-ssr
 .env.*
 target/
 cache/
+public/app.json
 
 docker-compose.yaml
 docker-compose.yml
