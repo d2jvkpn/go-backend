@@ -75,7 +75,9 @@ const visibleRouteNames = computed(() => {
 
 
 <style scoped>
+aside {
   color: #001219;
   padding-top: 10px;
   overflow-y: auto;
+}
 </style>

@@ -1,9 +1,25 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, onBeforeMount } from 'vue'
 import { useRoute } from 'vue-router'
 
 import Home from './pages/Home.vue'
 
+//
+console.log(`==> import.meta.env: ${JSON.stringify(import.meta.env)}`);
+
+const config = ref({});
+
+onBeforeMount(() => {
+  fetch('config.json')
+    .then(response => response.json())
+    .then((data) => {
+      config.value = data;
+      console.log(`==> Got config: ${JSON.stringify(data)}`);
+    })
+    .catch(error => console.error(`!!! Error loading config: ${error}`));
+});
+
+//
 const route = useRoute()
 
 const layoutComponent = computed(() => {

@@ -3,6 +3,8 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 
+// console.log(`==> import.meta.env: ${JSON.stringify(import.meta.env)}`);
+
 const account = ref('')
 const password = ref('')
 const router = useRouter()
@@ -20,8 +22,6 @@ const login = () => {
     alert('Please enter acocunt and password!')
   }
 }
-
-console.log(`==> import.meta.env: ${JSON.stringify(import.meta.env)}`);
 </script>
 
 
