@@ -10,13 +10,13 @@ console.log(`==> import.meta.env: ${JSON.stringify(import.meta.env)}`);
 const config = ref({});
 
 onBeforeMount(() => {
-  fetch('config.json')
-    .then(response => response.json())
+  fetch('app.json')
+    .then((response) => response.json())
     .then((data) => {
       config.value = data;
-      console.log(`==> Got config: ${JSON.stringify(data)}`);
+      console.log(`==> Got app.json: ${JSON.stringify(data)}`);
     })
-    .catch(error => console.error(`!!! Error loading config: ${error}`));
+    .catch(error => console.error(`!!! Error loading app.json: ${error}`));
 });
 
 //
