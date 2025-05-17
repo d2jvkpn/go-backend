@@ -1,5 +1,0 @@
-# path: .env
-PORT=4001
-
-VITE_BASE_PATH=/local
-VITE_API_URL=http://localhost:4011
