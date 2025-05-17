@@ -24,11 +24,9 @@ dist-ssr
 *.sw?
 
 ####
-.env
 .env.*
 target/
 cache/
-public/app.json
 
 docker-compose.yaml
 docker-compose.yml

@@ -10,9 +10,4 @@ version: 0.1.0
 
 #### ch01. configurations
 1. app.json -> public/app.json
-```
-```
-
 2. env -> .env
-```
-```
