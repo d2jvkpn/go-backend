@@ -41,7 +41,7 @@ func SetupInternal(config *viper.Viper, meta map[string]any) (err error) {
 		ctx.String(http.StatusOK, ctx.ClientIP())
 	})
 
-	if promConfig != nil && promConfig.GetBool("enabled") { // !promConfig.GetBool("external")
+	if promConfig.GetBool("enabled") {
 		router.GET(
 			promConfig.GetString("path"),
 			// gin.WrapH(promhttp.Handler()),

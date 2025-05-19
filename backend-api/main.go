@@ -83,7 +83,6 @@ func main() {
 			"http_addr":     httpAddr, // don't use http.addr as key here
 			"internal_addr": internalAddr,
 			"grpc_addr":     grpcAddr,
-			"command":       "api",
 			"startup_at":    time.Now().Format(gotk.RFC3339Milli),
 		},
 	)
@@ -102,9 +101,9 @@ func main() {
 
 	logger.Info(
 		fmt.Sprintf("Service is up"),
-		"config", config,
 		"release", release,
 		"app_version", project.GetString("meta.app_version"),
+		"config", config,
 		"http_addr", httpAddr,
 		"internal_addr", internalAddr,
 		"grpc_addr", grpcAddr,
