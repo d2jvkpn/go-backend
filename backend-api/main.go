@@ -44,9 +44,10 @@ func main() {
 	flag.BoolVar(&release, "release", false, "run in release mode")
 	flag.StringVar(&config, "config", "configs/backend-api.local.yaml", "configuration file(yaml)")
 
-	flag.StringVar(&httpAddr, "http.addr", ":3011", "http listening address")
-	flag.StringVar(&internalAddr, "internal.addr", ":3019", "internal listening address")
-	flag.StringVar(&grpcAddr, "grpc.addr", ":3021", "grpc listening address")
+	flag.StringVar(&httpAddr, "http.addr", ":4011", "http listening address")
+	flag.StringVar(&internalAddr, "internal.addr", ":4021", "internal listening address")
+
+	flag.StringVar(&grpcAddr, "grpc.addr", ":4031", "grpc listening address")
 
 	flag.Usage = func() {
 		output := flag.CommandLine.Output()

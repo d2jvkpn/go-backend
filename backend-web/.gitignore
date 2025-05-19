@@ -25,10 +25,10 @@ dist-ssr
 
 ####
 .env
+public/app.json
 .env.*
 target/
 cache/
-public/app.json
 
 docker-compose.yaml
 docker-compose.yml

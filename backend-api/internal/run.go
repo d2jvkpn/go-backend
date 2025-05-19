@@ -91,7 +91,7 @@ func Run(project *viper.Viper) (errch chan error, err error) {
 func Exit() (err error) {
 	var e error
 
-	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	joinErr := func(e error) {
@@ -196,7 +196,7 @@ func Exit() (err error) {
 		if err == nil {
 			_Logger.Info("exit")
 		} else {
-			_Logger.Error("exit", zap.String("error", e.Error()))
+			_Logger.Error("exit", zap.String("error", err.Error()))
 		}
 
 		if e = settings.Logger.Down(); e != nil {

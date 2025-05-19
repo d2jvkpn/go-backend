@@ -57,12 +57,12 @@ config: |
 
   # optional
   prometheus:
-    enabled: true
+    enabled: false
     path: /metrics
 
    # optional
   opentelemetry:
-    address: 127.0.0.1:4317
-    tls: false
     trace: false
     meter: false
+    address: 127.0.0.1:4317
+    tls: false
