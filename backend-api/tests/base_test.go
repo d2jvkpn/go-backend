@@ -26,7 +26,7 @@ func TestMain(m *testing.M) {
 	_TestFlags = flag.NewFlagSet("tests", flag.ExitOnError)
 	flag.Parse() // must do
 
-	_TestFlags.StringVar(&config, "config", "../configs/local.yaml", "config filepath")
+	_TestFlags.StringVar(&config, "config", "../configs/backend-api.local.yaml", "config filepath")
 
 	_TestFlags.Parse(flag.Args())
 	fmt.Fprintf(os.Stderr, "==> load config: %q\n", config)

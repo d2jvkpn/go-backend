@@ -42,7 +42,7 @@ func testGrpcClient(args []string) {
 
 	flagSet = flag.NewFlagSet("testGrpcClient", flag.ContinueOnError)
 
-	flagSet.StringVar(&addr, "addr", "localhost:9021", "grpc address")
+	flagSet.StringVar(&addr, "addr", "localhost:4031", "grpc address")
 	flagSet.BoolVar(&tls, "tls", false, "enable tls")
 	flagSet.Parse(args)
 

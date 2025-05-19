@@ -30,9 +30,8 @@ func main() {
 		err          error
 
 		project *viper.Viper
-
-		errCh  chan error
-		logger *slog.Logger
+		errCh   chan error
+		logger  *slog.Logger
 	)
 
 	// 1. setup
