@@ -35,7 +35,7 @@ release:
 
 run:
 	target_name=main ../scripts/go_build.sh
-	./target/main api --config=configs/local.yaml -http.addr=:4011 -internal.addr=:4021 -grpc.addr=:4031
+	./target/main --config=configs/local.yaml -http.addr=:4011 -internal.addr=:4021 -grpc.addr=:4031
 
 #### image, image-api-dev
 image-local:

@@ -80,7 +80,7 @@ func (self *AccountLogin) Do(ctx context.Context) (account *Account, err *errx.E
 	}
 
 	account = new(Account)
-	// tx.Select("id", "name", "phone", "email", "status", "role", "status", "hashed_password", "expiration")
+	// tx.Select("id", "name", "phone", "email", "status", "level", "status", "password", "expiration")
 
 	_, span = tracer.Start(ctx, "GetAccount")
 	e = tx.Take(account).Error

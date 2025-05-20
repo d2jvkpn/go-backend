@@ -7,7 +7,7 @@ CREATE TABLE user_accounts (
   id          uuid DEFAULT gen_random_uuid(),
   created_at  timestamptz NOT NULL DEFAULT now(),
   updated_at  timestamptz NOT NULL DEFAULT now(),
-  status      user_status NOT NULL DEFAULT 'created',
+  status      account_status NOT NULL DEFAULT 'created',
 
   firstname  varchar(24) NOT NULL, -- UNIQUE,
   lastname   varchar(24) NOT NULL,

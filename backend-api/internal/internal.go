@@ -31,14 +31,16 @@ func SetupInternal(config *viper.Viper, meta map[string]any) (err error) {
 	// engine = gin.Default()
 	engine.RedirectTrailingSlash = true
 
-	// engine.NoRoute(...) // TODO
+	engine.NoRoute(func(ctx *gin.Context) {
+		ctx.String(http.StatusNotFound, "no_route\n")
+	})
 
 	router = &engine.RouterGroup
 
 	router.GET("/healthz", ginx.Healthz)
 	router.GET("/meta", ginx.JSONStatic(meta))
 	router.GET("/ip", func(ctx *gin.Context) {
-		ctx.String(http.StatusOK, ctx.ClientIP())
+		ctx.String(http.StatusOK, ctx.ClientIP()+"\n")
 	})
 
 	if promConfig.GetBool("enabled") {

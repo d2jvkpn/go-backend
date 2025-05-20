@@ -61,7 +61,7 @@ func Login(ctx context.Context, input *LoginRequest) (result *LoginResponse, err
 	data = ginx.JwtData{
 		ID:      input.TokenId,
 		Subject: account.Id.String(),
-		Data:    map[string]string{"role": account.Role},
+		Data:    map[string]string{"level": account.Level},
 	}
 
 	_, span = tracer.Start(ctx, "JwtHAC.Sign")
@@ -81,7 +81,7 @@ func Login(ctx context.Context, input *LoginRequest) (result *LoginResponse, err
 	// 3.
 	values = make(url.Values, 3)
 	values.Add("issuedAt", strconv.FormatInt(data.IssuedAt, 10))
-	values.Add("role", account.Role)
+	values.Add("level", account.Level)
 	values.Add("ip", input.IP)
 
 	_, span = tracer.Start(ctx, "CacheSetLogin")

@@ -6,7 +6,7 @@ repository: git@github.com:d2jvkpn/fullstack-go-vue.git
 image_name: local/fullstack-go-vue/backend-api
 
 config: |
-  # path: configs/backend-api.local.yaml
+  # path: configs/local.yaml
 
   http:
     path: ""

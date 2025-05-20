@@ -105,7 +105,7 @@ func (self *Client) HandleMessage() (err error) {
 	self.logger.Debug("received_message", zap.ByteString("msg", bytes.TrimSpace(bts)))
 
 	if typ, ok = data["type"].(string); !ok {
-		res = map[string]any{"type": "error", "messmsgage": "invalid field type"}
+		res = map[string]any{"type": "error", "message": "invalid field type"}
 		return nil
 	}
 

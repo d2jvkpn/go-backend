@@ -25,14 +25,10 @@ lint:
 	go fmt ./...
 	go vet ./...
 
-build:
-	target_name=main ../scripts/go_build.sh
-	ls -al target
+build-crons:
+	mkdir -p target
+	go build -o target/backend-crons bin/backend-crons/main.go
 
-release:
-	release=true ../scripts/go_build.sh
-	ls -al target
-
-run:
-	target_name=main ../scripts/go_build.sh
-	./target/main --config=configs/backend-crons.local.yaml
+build-migrations:
+	mkdir -p target
+	go build -o target/backend-migrations bin/backend-migrations/main.go

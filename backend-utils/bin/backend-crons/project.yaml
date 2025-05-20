@@ -6,7 +6,7 @@ repository: git@github.com:d2jvkpn/fullstack-go-vue.git
 image_name: local/fullstack-go-vue/backend-crons
 
 config: |
-  # path: configs/backend-crons.local.yaml
+  # path: configs/local.yaml
 
   postgres:
     # dsn: "host=127.0.0.1 port=5432 user=account password=password dbname=database sslmode=disable"

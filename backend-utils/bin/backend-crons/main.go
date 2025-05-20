@@ -10,7 +10,7 @@ import (
 	"syscall"
 	"time"
 
-	"backend-crons/internal"
+	"backend-utils/internal"
 
 	"github.com/d2jvkpn/gotk"
 	"github.com/spf13/viper"
@@ -35,7 +35,7 @@ func main() {
 		return
 	}
 
-	flag.StringVar(&config, "config", "configs/backend-crons.local.yaml", "configuration file(yaml)")
+	flag.StringVar(&config, "config", "configs/local.yaml", "configuration file(yaml)")
 
 	flag.Usage = func() {
 		output := flag.CommandLine.Output()

@@ -41,7 +41,7 @@ func main() {
 	}
 
 	flag.BoolVar(&release, "release", false, "run in release mode")
-	flag.StringVar(&config, "config", "configs/backend-api.local.yaml", "configuration file(yaml)")
+	flag.StringVar(&config, "config", "configs/local.yaml", "configuration file(yaml)")
 
 	flag.StringVar(&httpAddr, "http.addr", ":4011", "http listening address")
 	flag.StringVar(&internalAddr, "internal.addr", ":4021", "internal listening address")
