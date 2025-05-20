@@ -30,7 +30,7 @@ func AllowLevels(levels ...string) HandleJwt {
 	}
 }
 
-func AuthCacheUpdateToken(ctx context.Context, d *ginx.JwtData) (err *errx.ErrX) {
+func CacheUpdateToken(ctx context.Context, d *ginx.JwtData) (err *errx.ErrX) {
 	// check if cache token enabled or not internal
 	err = settings.CacheUpdateToken(ctx, fmt.Sprintf("%s/%s", d.Subject, d.ID))
 	// fmt.Printf("==> AuthCachedToken: %v\n", err)

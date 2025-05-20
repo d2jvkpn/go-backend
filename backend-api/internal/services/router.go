@@ -3,6 +3,8 @@ package services
 import (
 	// "fmt"
 
+	"backend-api/pkg/middlewares"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -13,7 +15,11 @@ func LoadOpen(router *gin.RouterGroup, handlers ...gin.HandlerFunc) {
 }
 
 func LoadAuth(router *gin.RouterGroup, handlers ...gin.HandlerFunc) {
-	_ = router.Group("/api/v1/atuh", handlers...)
+	group := router.Group("/api/v1/auth", handlers...)
+
+	group.GET("/hello", func(ctx *gin.Context) {
+		middlewares.JsonOK(ctx)
+	})
 }
 
 func LoadWebsocket(router *gin.RouterGroup, handlers ...gin.HandlerFunc) {
