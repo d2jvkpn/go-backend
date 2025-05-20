@@ -7,14 +7,31 @@ import (
 	"github.com/d2jvkpn/errx"
 )
 
-func CacheSetLogin(ctx context.Context, key, value string) (err *errx.ErrX) {
+func cacheTokenEnabled() bool {
+	// fmt.Printf("==> LoginTokenEnabled: %t\n", Config.GetDuration("jwt.interval") > 0)
+	return Config.GetDuration("jwt.interval") > 0
+}
+
+func CacheSetToken(ctx context.Context, key, value string) (err *errx.ErrX) {
+	if !cacheTokenEnabled() {
+		return nil
+	}
+
 	return nil
 }
 
-func CacheRemoveLogin(ctx context.Context, key string) (err *errx.ErrX) {
+func CacheRemoveToken(ctx context.Context, key string) (err *errx.ErrX) {
+	if !cacheTokenEnabled() {
+		return nil
+	}
+
 	return nil
 }
 
 func CacheUpdateToken(ctx context.Context, key string) (err *errx.ErrX) {
+	if !cacheTokenEnabled() {
+		return nil
+	}
+
 	return nil
 }

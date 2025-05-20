@@ -34,8 +34,7 @@ build-migrations:
 	go build -o target/backend-migrations bin/backend-migrations/main.go
 
 swag:
-	swag fmt --dir=../backend-api/
-	swag init --dir=../backend-api/ --output=bin/backend-swagger/docs
+	swag init --dir=../backend-api/ --packagePrefix=backend-api --output=bin/backend-swagger/docs
 
 build-swag:
 	mkdir -p target

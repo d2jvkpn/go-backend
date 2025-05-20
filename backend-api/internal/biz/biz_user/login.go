@@ -85,7 +85,7 @@ func Login(ctx context.Context, input *LoginRequest) (result *LoginResponse, err
 	values.Add("ip", input.IP)
 
 	_, span = tracer.Start(ctx, "CacheSetLogin")
-	err = settings.CacheSetLogin(
+	err = settings.CacheSetToken(
 		ctx,
 		fmt.Sprintf("%s/%s", data.Subject, data.ID),
 		values.Encode(),
@@ -99,7 +99,7 @@ func Login(ctx context.Context, input *LoginRequest) (result *LoginResponse, err
 }
 
 func AccountLogout(ctx context.Context, auth *structs.AuthAccount) (err *errx.ErrX) {
-	err = settings.CacheRemoveLogin(
+	err = settings.CacheRemoveToken(
 		ctx,
 		fmt.Sprintf("%s/%s", auth.AccountId, auth.TokenId),
 	)

@@ -40,6 +40,7 @@ func Load(project *viper.Viper) (err error) {
 
 	config.SetDefault("prometheus", map[string]any{})
 	config.SetDefault("opentelemetry", map[string]any{})
+	settings.Config = config
 
 	grpcConfig := config.Sub("grpc")
 	grpcConfig.Set("trace", config.GetBool("opentelemetry.trace"))
@@ -78,6 +79,7 @@ func Load(project *viper.Viper) (err error) {
 		func() (err error) {
 			_SLogger.Debug("connecting to redis")
 			_Redis, err = infra.NewRedisClient(config.Sub("redis"))
+			settings.Redis = _Redis
 			return err
 		},
 		func() (err error) {

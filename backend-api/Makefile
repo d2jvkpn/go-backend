@@ -25,6 +25,8 @@ lint:
 	go fmt ./...
 	go vet ./...
 
+	swag fmt --dir=internal/services
+
 build:
 	target_name=main ../scripts/go_build.sh
 	ls -al target
