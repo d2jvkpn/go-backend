@@ -18,14 +18,14 @@ import (
 	"go.opentelemetry.io/otel/trace"
 )
 
-//	@Summary		Account login
-//	@Description	login in with phone/email and password
-//	@Tags			account::login
-//	@Accept			json
-//	@Produces		json
-//	@Param			request						body		biz_user.LoginRequest	true	"login data"
-//	@Success		200							{object}	biz_user.LoginResponse
-//	@Router			/api/v1/open/account/login	[post]
+// @Summary		Account login
+// @Description	login in with phone/email and password
+// @Tags			account::login
+// @Accept			json
+// @Produces		json
+// @Param			request						body		biz_user.LoginRequest	true	"login data"
+// @Success		200							{object}	biz_user.LoginResponse
+// @Router			/api/v1/open/account/login	[post]
 func accountLogin(ctx *gin.Context) {
 	var (
 		err     *errx.ErrX
@@ -66,7 +66,7 @@ func accountLogin(ctx *gin.Context) {
 
 	ctx.Set("AuthAccount", auth)
 	structs.ContextSetData(ctx, "level", result.Level)
-	structs.ContextSetData(ctx, "userAgent", ctx.GetHeader("User-Agent"))
+	structs.ContextSetData(ctx, "User-Agent", ctx.GetHeader("User-Agent"))
 
 	// ctx.SetCookie("tokenId", tokenId.String(), 300, "/", "localhost", false, true)
 

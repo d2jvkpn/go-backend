@@ -82,14 +82,14 @@ func Auth(funcs ...HandleJwt) gin.HandlerFunc {
 			return
 		}
 
-		auth, e = structs.NewAuthAccount(data.Subject, data.Data["role"], data.ID)
+		auth, e = structs.NewAuthAccount(data.Subject, data.Data["level"], data.ID)
 		if e != nil {
 			err = erri.AuthErr(e).WithCode("invalid_token").WithMsg("invalid token")
 
 			handleError()
 			return
 		}
-		ctx.Set("Auth", auth)
+		ctx.Set("AuthAccount", auth)
 
 		structs.GinSetData(ctx, "accountId", auth.AccountId)
 		structs.GinSetData(ctx, "level", auth.Level)
