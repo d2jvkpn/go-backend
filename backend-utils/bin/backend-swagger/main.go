@@ -18,7 +18,7 @@ import (
 	"syscall"
 	"time"
 
-	"backend-utils/docs"
+	"backend-utils/bin/backend-swagger/docs"
 
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
