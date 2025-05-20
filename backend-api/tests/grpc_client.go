@@ -89,7 +89,7 @@ func testGrpcClient(args []string) {
 			"status": "OK",
 			"client": "web",
 		},
-		Identities: map[string]string{"account": "test", "role": "normal"},
+		Identities: map[string]string{"account": "test", "level": "normal"},
 
 		Code:   "ok",
 		Value:  42,

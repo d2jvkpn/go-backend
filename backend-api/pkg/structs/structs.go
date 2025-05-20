@@ -11,19 +11,18 @@ import (
 
 type AuthAccount struct {
 	AccountId uuid.UUID `json:"accountId"`
-	Role      string    `json:"role"`
+	Level     string    `json:"level"`
 	TokenId   uuid.UUID `json:"tokenId"`
 }
 
-func NewAuthAccount(id, role, tokenId string) (item *AuthAccount, err error) {
+func NewAuthAccount(id, level, tokenId string) (item *AuthAccount, err error) {
 	item = new(AuthAccount)
 
 	if item.AccountId, err = uuid.Parse(id); err != nil {
 		return nil, fmt.Errorf("invalid id: %w", err)
 	}
 
-	item.Role = role
-
+	item.Level = level
 	if item.TokenId, err = uuid.Parse(tokenId); err != nil {
 		return nil, fmt.Errorf("invalid tokenId: %w", err)
 	}

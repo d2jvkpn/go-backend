@@ -32,3 +32,11 @@ build-crons:
 build-migrations:
 	mkdir -p target
 	go build -o target/backend-migrations bin/backend-migrations/main.go
+
+swag:
+	swag init --dir=../backend-api/
+	swag fmt --dir=../backend-api/
+
+build-swag:
+	mkdir -p target
+	go build -o target/backend-swagger bin/backend-swagger/main.go

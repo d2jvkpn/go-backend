@@ -43,13 +43,13 @@ type Account struct {
 	// level
 	Level string `json:"level" gorm:"column:level" fake:"{randomstring:[admin,editor,reviewer,user,guest]}" extensions:"x-order=09"`
 	// labels
-	Labels pq.StringArray `json:"labels" gorm:"column:labels" fake:"fake" fakesize:"1" extensions:"x-order=10"`
+	Labels pq.StringArray `json:"labels" gorm:"column:labels;type:varchar[]" fake:"fake" fakesize:"1" extensions:"x-order=10" swaggertype:"array,string"`
 
 	Password string `json:"-" gorm:"column:password" fake:"-" swaggerignore:"true"`
 }
 
 type CreateAccount struct {
-	Status string `json:"status,omitempty" gorm:"column:status;->;<-:create" validate:"oneof=created activated" fake:"created" extensions:"x-order=04"`
+	Status string `json:"status,omitempty" gorm:"column:status;->;<-:create" validate:"oneof=created activated" fake:"activated" extensions:"x-order=04"`
 	// firstname
 	Firstname string `json:"firstname" gorm:"column:firstname" binding:"required" example:"John" fake:"{firstname}" extensions:"x-order=05"`
 	// lastname
@@ -59,7 +59,7 @@ type CreateAccount struct {
 	// email address
 	Email string `json:"email,omitempty" gorm:"column:email;default:null" binding:"max=128" minLength:"5" maxLength:"128"  example:"john@noreply.local" fake:"{email}" extensions:"x-order=08"`
 	// level
-	Level string `json:"level" gorm:"column:level" validate:"oneof=admin editor reviewer user guest" fake:"{randomstring:[admin,editor,reviewer,user,guest]}" extensions:"x-order=09"`
+	Level string `json:"level" gorm:"column:level" validate:"oneof=admin editor reviewer user guest" fake:"{randomstring:[admin,editor,reviewer,user,guest]}" extensions:"x-order=09" swaggertype:"array,string"`
 	// labels
 	Labels pq.StringArray `json:"labels" gorm:"column:labels;type:varchar[]" fake:"fake" fakesize:"1" extensions:"x-order=10"`
 

@@ -106,7 +106,7 @@ func SetupHttp(release bool, config *viper.Viper) (err error) {
 
 	// 6. load api
 	services.LoadOpen(router)
-	services.LoadAuth(router, Auth(AllowRoles()))
+	services.LoadAuth(router, Auth(AllowLevels()))
 	// services.LoadWebsocket(router)
 
 	_HttpServer.Handler = engine

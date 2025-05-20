@@ -91,7 +91,7 @@ type LogRequest struct {
 	// google.protobuf.Timestamp at = 8;
 	BizName    string            `protobuf:"bytes,9,opt,name=biz_name,json=bizName,proto3" json:"biz_name,omitempty"`                                                                                          // POST@/api/v1/open/login
 	BizData    map[string]string `protobuf:"bytes,10,rep,name=biz_data,json=bizData,proto3" json:"biz_data,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"` // query, status, error
-	Identities map[string]string `protobuf:"bytes,11,rep,name=identities,proto3" json:"identities,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`          // accountId, tokenId, ip, role
+	Identities map[string]string `protobuf:"bytes,11,rep,name=identities,proto3" json:"identities,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`          // accountId, tokenId, ip, levelm roles
 	Code       string            `protobuf:"bytes,12,opt,name=code,proto3" json:"code,omitempty"`                                                                                                              // custom app code: ok, warn, error, panic
 	Value      float64           `protobuf:"fixed64,13,opt,name=value,proto3" json:"value,omitempty"`
 	Labels     []string          `protobuf:"bytes,14,rep,name=labels,proto3" json:"labels,omitempty"`

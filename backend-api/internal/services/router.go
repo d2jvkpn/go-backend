@@ -7,7 +7,9 @@ import (
 )
 
 func LoadOpen(router *gin.RouterGroup, handlers ...gin.HandlerFunc) {
-	_ = router.Group("/api/v1/open", handlers...)
+	group := router.Group("/api/v1/open", handlers...)
+
+	group.POST("/account/login", accountLogin)
 }
 
 func LoadAuth(router *gin.RouterGroup, handlers ...gin.HandlerFunc) {

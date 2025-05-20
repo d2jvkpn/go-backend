@@ -17,12 +17,12 @@ import (
 
 type HandleJwt func(context.Context, *ginx.JwtData) *errx.ErrX
 
-func AllowRoles(roles ...string) HandleJwt {
-	errNotInRoles := fmt.Errorf("not in roles: %v", roles)
+func AllowLevels(levels ...string) HandleJwt {
+	noAllowed := fmt.Errorf("levels: %v", levels)
 
 	return func(ctx context.Context, data *ginx.JwtData) (err *errx.ErrX) {
-		if len(roles) > 0 && !slices.Contains(roles, data.Data["role"]) {
-			err = erri.NotPermited(errNotInRoles).WithCode("not_roles").WithMsg("no permited")
+		if len(levels) > 0 && !slices.Contains(levels, data.Data["level"]) {
+			err = erri.NotPermited(noAllowed).WithCode("no_allowed").WithMsg("no allowed")
 			return err
 		}
 
@@ -89,10 +89,10 @@ func Auth(funcs ...HandleJwt) gin.HandlerFunc {
 			handleError()
 			return
 		}
-		ctx.Set("AuthAcocunt", auth)
+		ctx.Set("Auth", auth)
 
 		structs.GinSetData(ctx, "accountId", auth.AccountId)
-		structs.GinSetData(ctx, "role", auth.Role)
+		structs.GinSetData(ctx, "level", auth.Level)
 		structs.GinSetData(ctx, "tokenId", auth.TokenId)
 
 		for i := range funcs {

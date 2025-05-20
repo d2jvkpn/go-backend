@@ -25,7 +25,7 @@ message LogRequest {
 	// google.protobuf.Timestamp at = 8;
 	string biz_name = 9; // POST@/api/v1/open/login
 	map<string,string> biz_data = 10; // query, status, error
-	map<string,string> identities = 11; // accountId, tokenId, ip, role
+	map<string,string> identities = 11; // accountId, tokenId, ip, level, roles
 
 	string code = 12; // custom app code: ok, warn, error, panic
 	double value = 13;
