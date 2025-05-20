@@ -30,7 +30,7 @@ func BindErr(e error) *errx.ErrX {
 
 // authorization error
 func AuthErr(e error) *errx.ErrX {
-	return errx.New(e).WithKind("authorization_error").WithCode("authorization_error")
+	return errx.New(e).WithKind("auth_err").WithCode("auth_err")
 }
 
 // not permited

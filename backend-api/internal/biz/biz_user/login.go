@@ -20,6 +20,7 @@ import (
 
 type LoginRequest struct {
 	mod_user.AccountLogin
+	Platform string `json:"platform" extensions:"x-order=04"`
 
 	TokenId string `json:"-" form:"-" swaggerignore:"true"`
 	IP      string `json:"-" form:"-" swaggerignore:"true"`
@@ -61,7 +62,7 @@ func Login(ctx context.Context, input *LoginRequest) (result *LoginResponse, err
 	data = ginx.JwtData{
 		ID:      input.TokenId,
 		Subject: account.Id.String(),
-		Data:    map[string]string{"level": account.Level},
+		Data:    map[string]string{"level": account.Level, "platform": input.Platform},
 	}
 
 	_, span = tracer.Start(ctx, "JwtHAC.Sign")
@@ -79,15 +80,17 @@ func Login(ctx context.Context, input *LoginRequest) (result *LoginResponse, err
 	}
 
 	// 3.
-	values = make(url.Values, 3)
+	values = make(url.Values, 5)
 	values.Add("issuedAt", strconv.FormatInt(data.IssuedAt, 10))
 	values.Add("level", account.Level)
 	values.Add("ip", input.IP)
+	values.Add("tokenId", data.ID)
+	values.Add("expiresAt", strconv.FormatInt(data.ExpiresAt, 10))
 
-	_, span = tracer.Start(ctx, "CacheSetLogin")
+	_, span = tracer.Start(ctx, "CacheSetToken")
 	err = settings.CacheSetToken(
 		ctx,
-		fmt.Sprintf("%s/%s", data.Subject, data.ID),
+		fmt.Sprintf("login:%s:%s", data.Data["platform"], data.Subject),
 		values.Encode(),
 	)
 	span.End()

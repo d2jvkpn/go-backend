@@ -8,7 +8,7 @@ import (
 )
 
 func ErrStatus(err *errx.ErrX) (status int) {
-	switch err.Kind {
+	switch err.Code {
 	case "no_route": // 404
 		status = http.StatusNotFound
 	case "invalid": // 400
@@ -17,7 +17,7 @@ func ErrStatus(err *errx.ErrX) (status int) {
 		status = http.StatusBadRequest
 	case "bind_error": // 400
 		status = http.StatusBadRequest
-	case "authorization_error": // 401
+	case "auth_err": // 401
 		status = http.StatusUnauthorized
 	case "not_permited": // 403
 		status = http.StatusForbidden

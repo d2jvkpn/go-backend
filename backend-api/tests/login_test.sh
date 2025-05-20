@@ -8,7 +8,7 @@ config=${2:-configs/account.yaml}
 email=$(yq .account.email $config)
 password=$(yq .account.password $config)
 
-data=$(jq -n --arg email "$email" --arg password "$password" '{email:$email,password:$password}')
+data=$(jq -n --arg email "$email" --arg password "$password" '{email:$email,password:$password,platform:"web"}')
 
 curl -X POST $api/api/v1/open/account/login -d "$data" | jq
 

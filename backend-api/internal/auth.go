@@ -32,7 +32,7 @@ func AllowLevels(levels ...string) HandleJwt {
 
 func CacheUpdateToken(ctx context.Context, d *ginx.JwtData) (err *errx.ErrX) {
 	// check if cache token enabled or not internal
-	err = settings.CacheUpdateToken(ctx, fmt.Sprintf("%s/%s", d.Subject, d.ID))
+	err = settings.CacheUpdateToken(ctx, fmt.Sprintf("login:%s:%s", d.Data["platform"], d.Subject), d.ID)
 	// fmt.Printf("==> AuthCachedToken: %v\n", err)
 	if err != nil {
 		return err
