@@ -2,4 +2,6 @@ vendor/
 *.pb.go
 
 _*.sql
-docs
+docs.go
+swagger.json
+swagger.yaml
