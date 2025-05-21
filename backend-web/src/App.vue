@@ -23,9 +23,9 @@ onBeforeMount(() => {
 const route = useRoute()
 
 const layoutComponent = computed(() => {
-  const layout = route.meta.layout
+  const requiresAuth = route.meta.requiresAuth
 
-  if (layout === 'home') {
+  if (requiresAuth) {
     return Home
   }
 

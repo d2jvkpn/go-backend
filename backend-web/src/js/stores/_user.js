@@ -9,14 +9,14 @@ export const useUserStore = defineStore('user', {
   state: () => ({
     userId: null,
     username: '',
-    roles: [],
+    level: '',
     token: '',
   }),
   actions: {
     login(payload) {
       this.userId = payload.id
       this.username = payload.username
-      this.roles = payload.roles
+      this.level = payload.level
       this.token = payload.token
     },
     logout() {
@@ -40,13 +40,14 @@ import { useUserStore } from '@/stores/user.js'
 
 const userStore = useUserStore()
 
-console.log(userStore.roles)
+console.log(`~~~ level: ${userStore.level}`)
 
 
 // path: src/router/index.js
 router.beforeEach((to, from, next) => {
   const userStore = useUserStore()
-  if (to.meta.roles && !to.meta.roles.some(role => userStore.roles.includes(role))) {
+  // if (to.meta.levels && !to.meta.levels.some(v => userStore.levels.includes(v))) {
+  if (to.meta.levels && !to.meta.levels.includes(userStore.level))) {
     return next('/403')
   }
   next()

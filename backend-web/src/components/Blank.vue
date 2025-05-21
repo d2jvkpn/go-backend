@@ -2,7 +2,7 @@
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
-console.log(`==> Page: title=${route.meta.title}, roles=${JSON.stringify(route.meta.roles)}`)
+console.log(`==> Page: title=${route.meta.title}, levels="${route.meta.levels.join(",")}"`)
 
 const props = defineProps({
   text: { type: String, default: 'Blank' },

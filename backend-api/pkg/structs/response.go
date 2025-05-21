@@ -19,7 +19,7 @@ func ErrStatus(err *errx.ErrX) (status int) {
 		status = http.StatusBadRequest
 	case "bind_error": // 400
 		status = http.StatusBadRequest
-	case "auth_err": // 401
+	case "auth_error": // 401
 		status = http.StatusUnauthorized
 	case "not_permited": // 403
 		status = http.StatusForbidden

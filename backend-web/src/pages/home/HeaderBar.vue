@@ -6,6 +6,7 @@ import { ArrowDown, Fold, Expand } from '@element-plus/icons-vue'
 
 import ChangePassword from './ChangePassword.vue'
 // import { useUserStore } from '@/js/stores/user'
+import { logout } from "@/js/login.js"
 
 //
 const props = defineProps({
@@ -27,6 +28,14 @@ const router = useRouter()
 // const userStore = useUserStore()
 
 const confirmLogout = () => {
+  const callback = () => {
+      // userStore.logout()
+    localStorage.clear()
+    router.push('/login')
+    ElMessage.success('You have been logged out.')
+  }
+
+
   ElMessageBox.confirm(
     'Are you sure you want to log out?',
     'Logout Confirmation',
@@ -37,10 +46,7 @@ const confirmLogout = () => {
     }
   )
   .then(() => {
-    // userStore.logout()
-    localStorage.clear()
-    router.push('/login')
-    ElMessage.success('You have been logged out.')
+    logout(callback)
   })
   .catch(() => {
     ElMessage.info('Logout canceled.')

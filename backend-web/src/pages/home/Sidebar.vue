@@ -8,10 +8,10 @@ import { allRoutes } from '@/router/index'
 const route = useRoute()
 
 const props = defineProps({
-  roles: Set,
+  level: String, // Set,
 })
 
-//console.log(`--> role: ${role}`)
+//console.log(`--> level: ${level}`)
 //console.log(`~~~ ${allRoutes.length}`);
 
 const visibleRouteNames = computed(() => {
@@ -24,7 +24,7 @@ const visibleRouteNames = computed(() => {
       }
 
       // console.log(`~~~ ${item.name}`)
-      if (item.meta.roles?.includes("any") || item.meta.roles?.some(e => props.roles.has(e))) {
+      if (item.meta.levels?.includes("any") || item.meta.levels?.includes(props.level)) {
         result.push(item.name)
       }
 

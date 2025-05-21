@@ -26,8 +26,8 @@ github.com/cloudwego/iasm v0.2.0/go.mod h1:8rXZaNYT2n95jn+zTI1sDr+IgcD2GVs0nlbbQ
 github.com/cncf/udpa/go v0.0.0-20191209042840-269d4d468f6f/go.mod h1:M8M6+tZqaGXZJjfX53e64911xZQV5JYwmTeXPW+k8Sc=
 github.com/d2jvkpn/errx v0.0.0-20241126015654-e09148245b4c h1:m+lppL+EZ8Jz9o/5zdLuTSH6iHP9g7j4VQULSBHX64o=
 github.com/d2jvkpn/errx v0.0.0-20241126015654-e09148245b4c/go.mod h1:cmiutrzviE8qzyftij8bsQlM5co6VAC6yaUed387G2s=
-github.com/d2jvkpn/gotk v0.0.0-20241126071738-da6892fba447 h1:kDhNs9BqlLNU5vG6JFbEpAM2jhLMepOaUn14PjvNyKs=
-github.com/d2jvkpn/gotk v0.0.0-20241126071738-da6892fba447/go.mod h1:bPFZQ2nEjlpBAFQEIfiddSQLUHvAN8gtOSL1fFwHQBs=
+github.com/d2jvkpn/gotk v0.0.0-20250519092226-f96d6137921b h1:rMidMxFRI6WhkDZgyAHEBLTx0ueniJrqJW2zcJoFtdQ=
+github.com/d2jvkpn/gotk v0.0.0-20250519092226-f96d6137921b/go.mod h1:U1aiY9F4RNDMcb54Ded33EaivugSLAuSIfpWyjrFLwo=
 github.com/d2jvkpn/gotk/cloud v0.0.0-20250519092226-f96d6137921b h1:r0h/s3mPY1nrKAwBVJ+zUJwVJaN4CTlEw4I3UmKL3Ng=
 github.com/d2jvkpn/gotk/cloud v0.0.0-20250519092226-f96d6137921b/go.mod h1:ce6jSuerDCkOCAFL2qjBmLPaPvj/zM17FAvt2TwUthM=
 github.com/d2jvkpn/gotk/ginx v0.0.0-20250519092226-f96d6137921b h1:kNx8wPlDeZCgoQwKMXOLnTmXskztzoQaOwLgaQhe94c=
@@ -56,8 +56,8 @@ github.com/gin-contrib/cors v1.7.5 h1:cXC9SmofOrRg0w9PigwGlHG3ztswH6bqq4vJVXnvYM
 github.com/gin-contrib/cors v1.7.5/go.mod h1:4q3yi7xBEDDWKapjT2o1V7mScKDDr8k+jZ0fSquGoy0=
 github.com/gin-contrib/sse v1.1.0 h1:n0w2GMuUpWDVp7qSpvze6fAu9iRxJY4Hmj6AmBOU05w=
 github.com/gin-contrib/sse v1.1.0/go.mod h1:hxRZ5gVpWMT7Z0B0gSNYqqsSCNIJMjzvm6fqCz9vjwM=
-github.com/gin-gonic/gin v1.10.0 h1:nTuyha1TYqgedzytsKYqna+DfLos46nTv2ygFy86HFU=
-github.com/gin-gonic/gin v1.10.0/go.mod h1:4PMNQiOhvDRa013RKVbsiNwoyezlm2rm0uX/T7kzp5Y=
+github.com/gin-gonic/gin v1.10.1 h1:T0ujvqyCSqRopADpgPgiTT63DUQVSfojyME59Ei63pQ=
+github.com/gin-gonic/gin v1.10.1/go.mod h1:4PMNQiOhvDRa013RKVbsiNwoyezlm2rm0uX/T7kzp5Y=
 github.com/go-kit/log v0.1.0/go.mod h1:zbhenjAZHb184qTLMA9ZjW7ThYL0H2mk7Q6pNt4vbaY=
 github.com/go-logfmt/logfmt v0.5.0/go.mod h1:wCYkCAKZfumFQihp8CzCvQ3paCTfi41vtzG1KdI/P7A=
 github.com/go-logr/logr v1.2.2/go.mod h1:jdQByPbusPIv2/zmleS9BjJVeZ6kBagPoEUsqbVz/1A=
@@ -302,10 +302,10 @@ google.golang.org/appengine v1.4.0/go.mod h1:xpcJRLb0r/rnEns0DIKYYv+WjYCduHsrkT7
 google.golang.org/genproto v0.0.0-20180817151627-c66870c02cf8/go.mod h1:JiN7NxoALGmiZfu7CAH4rXhgtRTLTxftemlI0sWmxmc=
 google.golang.org/genproto v0.0.0-20190819201941-24fa4b261c55/go.mod h1:DMBHOl98Agz4BDEuKkezgsaosCRResVns1a3J2ZsMNc=
 google.golang.org/genproto v0.0.0-20200423170343-7949de9c1215/go.mod h1:55QSHmfGQM9UVYDPBsyGGes0y52j32PQ3BqQfXhyH3c=
-google.golang.org/genproto/googleapis/api v0.0.0-20250512202823-5a2f75b736a9 h1:WvBuA5rjZx9SNIzgcU53OohgZy6lKSus++uY4xLaWKc=
-google.golang.org/genproto/googleapis/api v0.0.0-20250512202823-5a2f75b736a9/go.mod h1:W3S/3np0/dPWsWLi1h/UymYctGXaGBM2StwzD0y140U=
-google.golang.org/genproto/googleapis/rpc v0.0.0-20250512202823-5a2f75b736a9 h1:IkAfh6J/yllPtpYFU0zZN1hUPYdT0ogkBT/9hMxHjvg=
-google.golang.org/genproto/googleapis/rpc v0.0.0-20250512202823-5a2f75b736a9/go.mod h1:qQ0YXyHHx3XkvlzUtpXDkS29lDSafHMZBAZDc03LQ3A=
+google.golang.org/genproto/googleapis/api v0.0.0-20250519155744-55703ea1f237 h1:Kog3KlB4xevJlAcbbbzPfRG0+X9fdoGM+UBRKVz6Wr0=
+google.golang.org/genproto/googleapis/api v0.0.0-20250519155744-55703ea1f237/go.mod h1:ezi0AVyMKDWy5xAncvjLWH7UcLBB5n7y2fQ8MzjJcto=
+google.golang.org/genproto/googleapis/rpc v0.0.0-20250519155744-55703ea1f237 h1:cJfm9zPbe1e873mHJzmQ1nwVEeRDU/T1wXDK2kUSU34=
+google.golang.org/genproto/googleapis/rpc v0.0.0-20250519155744-55703ea1f237/go.mod h1:qQ0YXyHHx3XkvlzUtpXDkS29lDSafHMZBAZDc03LQ3A=
 google.golang.org/grpc v1.19.0/go.mod h1:mqu4LbDTu4XGKhr4mRzUsmM4RtVoemTSY81AxZiDr8c=
 google.golang.org/grpc v1.23.0/go.mod h1:Y5yQAOtifL1yxbo5wqy6BxZv8vAUGQwXBOALyacEbxg=
 google.golang.org/grpc v1.25.1/go.mod h1:c3i+UQWmh7LiEpx4sFZnkU36qjEYZ0imhYfXVyQciAY=

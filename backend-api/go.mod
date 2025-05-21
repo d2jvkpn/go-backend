@@ -5,12 +5,12 @@ go 1.24
 require (
 	github.com/brianvoe/gofakeit/v7 v7.2.1
 	github.com/d2jvkpn/errx v0.0.0-20241126015654-e09148245b4c
-	github.com/d2jvkpn/gotk v0.0.0-20241126071738-da6892fba447
+	github.com/d2jvkpn/gotk v0.0.0-20250519092226-f96d6137921b
 	github.com/d2jvkpn/gotk/cloud v0.0.0-20250519092226-f96d6137921b
 	github.com/d2jvkpn/gotk/ginx v0.0.0-20250519092226-f96d6137921b
 	github.com/elastic/go-elasticsearch/v8 v8.18.0
 	github.com/gin-contrib/cors v1.7.5
-	github.com/gin-gonic/gin v1.10.0
+	github.com/gin-gonic/gin v1.10.1
 	github.com/go-playground/validator/v10 v10.26.0
 	github.com/google/uuid v1.6.0
 	github.com/gorilla/websocket v1.5.3
@@ -96,8 +96,8 @@ require (
 	golang.org/x/sync v0.14.0 // indirect
 	golang.org/x/sys v0.33.0 // indirect
 	golang.org/x/text v0.25.0 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20250512202823-5a2f75b736a9 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20250512202823-5a2f75b736a9 // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20250519155744-55703ea1f237 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20250519155744-55703ea1f237 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

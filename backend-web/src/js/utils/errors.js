@@ -5,7 +5,7 @@ class ApiError extends Error {
     this.name = 'ApiError';
     this.code = code;
     this.msg = msg;
-    this.details = details; // {statusCode: 404, requestId: xxx}
+    this.details = details; // {status: 404, requestId: xxx}
 
     Object.setPrototypeOf(this, ApiError.prototype);
 
@@ -16,7 +16,7 @@ class ApiError extends Error {
 }
 
 function biz() {
-  throw new ApiError('not_exists', "account not found", { statusCode: 404, requestId: "xxxx-xxxx" });
+  throw new ApiError('not_exists', "account not found", { status: 404, requestId: "xxxx-xxxx" });
 }
 
 try {
@@ -24,11 +24,10 @@ try {
 } catch (err) {
   // console.log((err instanceof Error) && (err instanceof ApiError));
   // console.log(`${err}`);
-  console.log(`--> ApiError: code=${err.code}, statusCode=${err.msg}, details=${JSON.stringify(err.details)}`);
+  console.log(`--> ApiError: code=${err.code}, msg=${err.msg}, details=${JSON.stringify(err.details)}`);
 }
 
 /*
-
 1. NetworkError
 if (err instanceof TypeError && err.message.startsWith("NetworkError")) {
   return;
@@ -40,7 +39,7 @@ if (err instanceof SyntaxError) {
 }
 
 3. ServerError
-if (response.statusCode >= 500) { // response.statusCode >= 600
+if (response.status >= 500) { // response.status >= 600
   return;
 }
 
@@ -61,7 +60,7 @@ res = { "requestId": "xxxx-xxxx", "code": "not_found", "msg": "item not found" }
 
 let err = new ApiError(
   res.code, res.msg,
-  { requestId: response.requestId, statusCode: response.statusCode },
+  { requestId: response.requestId, status: response.status },
 );
 
 callback.error(err);
