@@ -31,7 +31,7 @@ func CacheSetToken(ctx context.Context, key, value string) (err *errx.ErrX) {
 
 	// key := fmt.Sprintf("%s/%s/%s", pkg.CACHE_LoginTokenV1,
 	if e = Redis.Set(ctx, key, value, expiration).Err(); e != nil {
-		return structs.InternalError(e).WithKind("cache_set_token")
+		return structs.InternalError(e).WithCode("cache_set_token")
 	}
 
 	return nil
@@ -52,14 +52,14 @@ func CacheUpdateToken(ctx context.Context, key, tokenId string) (err *errx.ErrX)
 
 	const msg = "Please log in again"
 	if value, e = Redis.Get(ctx, key).Result(); e != nil {
-		return structs.AuthError(e).WithKind("cache_no_token").WithMsg(msg)
+		return structs.AuthError(e).WithCode("cache_no_token").WithMsg(msg)
 	}
 
 	if query, e = url.ParseQuery(value); e != nil {
-		return structs.InternalError(e).WithKind("cache_parse_value")
+		return structs.InternalError(e).WithCode("cache_parse_value")
 	}
 	if query.Get("tokenId") != tokenId {
-		return structs.AuthError(fmt.Errorf("token is expired")).WithKind("cache_token_is_expired").WithMsg(msg)
+		return structs.AuthError(fmt.Errorf("token is expired")).WithCode("cache_token_is_expired").WithMsg(msg)
 	}
 
 	expiration = Config.GetDuration("jwt.interval")
@@ -70,10 +70,10 @@ func CacheUpdateToken(ctx context.Context, key, tokenId string) (err *errx.ErrX)
 	ok, e = Redis.Expire(ctx, key, expiration).Result()
 	// fmt.Printf("==> CacheLoginTokenUpdate 2: %t, %v\n", ok, e)
 	if e != nil {
-		return structs.InternalError(e).WithKind("cache_update_token")
+		return structs.InternalError(e).WithCode("cache_update_token")
 	}
 	if !ok {
-		return structs.AuthError(fmt.Errorf("expire token")).WithKind("cache_expire_token").WithMsg(msg)
+		return structs.AuthError(fmt.Errorf("expire token")).WithCode("cache_expire_token").WithMsg(msg)
 	}
 
 	return nil
@@ -88,7 +88,7 @@ func CacheRemoveToken(ctx context.Context, key string) (err *errx.ErrX) {
 	// fmt.Println("???", key)
 
 	if e = Redis.Del(ctx, key).Err(); e != nil {
-		return structs.InternalError(e).WithKind("cache_delete_token")
+		return structs.InternalError(e).WithCode("cache_delete_token")
 	}
 
 	return nil

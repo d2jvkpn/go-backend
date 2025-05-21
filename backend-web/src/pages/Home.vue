@@ -6,7 +6,8 @@ import Sidebar from "./home/Sidebar.vue"
 import HeaderBar from "./home/HeaderBar.vue"
 
 //
-const accountName = localStorage.getItem('accountName')
+const firstname = localStorage.getItem('firstname')
+const lastname = localStorage.getItem('lastname')
 const level = localStorage.getItem('level') // JSON.parse(...)
 
 //
@@ -32,7 +33,8 @@ const toggleCollapse = () => {
 <div class="home">
   <HeaderBar
     class="home-headerbar"
-    :accountName="accountName"
+    :firstname="firstname"
+    :lastname="lastname"
     :isSidebarHidden="isHidden"
     @toggleSidebar="isHidden = !isHidden"
   />

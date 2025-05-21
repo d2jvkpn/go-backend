@@ -10,7 +10,9 @@ import (
 )
 
 func ErrStatus(err *errx.ErrX) (status int) {
-	switch err.Code {
+	//println("???", err.Kind)
+
+	switch err.Kind {
 	case "no_route": // 404
 		status = http.StatusNotFound
 	case "invalid": // 400

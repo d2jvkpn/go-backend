@@ -13,7 +13,10 @@ const loading = ref(false)
 const router = useRouter()
 
 const sumbitLogin = () => {
-  if (account.value && password.value) {
+  if (!account.value || !password.value) {
+    alert('Please enter acocunt and password!')
+    return
+  }
     /*
     let firstname = "Jane";
     let lastname = "Doe";
@@ -27,25 +30,29 @@ const sumbitLogin = () => {
     router.push('/home/dashboard')
     */
 
-    const callback = (data) => {
-      localStorage.setItem('fristname', data.firstname)
-      localStorage.setItem('lastname', data.lastname)
-      localStorage.setItem('token', data.token)
-      localStorage.setItem('level', data.level)
+  const callback = (data) => {
+    localStorage.setItem('firstname', data.firstname)
+    localStorage.setItem('lastname', data.lastname)
+    localStorage.setItem('token', data.token)
+    localStorage.setItem('level', data.level)
 
-      loading.value = false
-      ElMessage.success(`Welcome back, ${data.firstname} ${data.lastname}!`)
-      router.push('/home/dashboard')
-    }
-
-    const onError = () => {
-      loading.value = false
-    }
-
-    login({email: account.value, password: password.value}, callback, onError)
-  } else {
-    alert('Please enter acocunt and password!')
+    loading.value = false
+    ElMessage.success(`Welcome back, ${data.firstname} ${data.lastname}!`)
+    router.push('/home/dashboard')
   }
+
+  const onError = () => {
+    loading.value = false
+  }
+
+  const data = { password: password.value }
+  if (account.value.includes("@")) {
+    data.email = account.value;
+  } else {
+    data.phone = account.value;
+  }
+
+  login(data, callback, onError)
 }
 </script>
 

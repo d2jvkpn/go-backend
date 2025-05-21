@@ -10,7 +10,8 @@ import { logout } from "@/js/login.js"
 
 //
 const props = defineProps({
-  accountName: String,
+  firstname: String,
+  lastname: String,
   isSidebarHidden: Boolean,
 })
 
@@ -84,7 +85,7 @@ const handleCommand = (command) => {
 
   <el-dropdown @command="handleCommand">
     <span class="headerbar-account el-dropdown-link">
-      {{ accountName }} <el-icon> <ArrowDown /> </el-icon>
+      {{ firstname }} {{ lastname }} <el-icon> <ArrowDown /> </el-icon>
     </span>
 
     <template #dropdown>

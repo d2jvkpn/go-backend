@@ -186,5 +186,5 @@ func (self *CreateAccount) Do(ctx context.Context) (err *errx.ErrX) {
 		return err
 	}
 
-	return structs.InternalError(e).WithKind("database")
+	return structs.InternalError(e).WithCode("database")
 }

@@ -31,7 +31,7 @@ func GetAuthAccount(ctx *gin.Context) (auth *structs.AuthAccount, err *errx.ErrX
 	)
 
 	if e != nil {
-		return nil, structs.InternalError(e).WithKind("context_no_value")
+		return nil, structs.InternalError(e).WithCode("context_no_value")
 	}
 
 	return auth, nil

@@ -3,9 +3,10 @@ package mod_user
 import (
 	"context"
 	"errors"
-	// "fmt"
+	//"fmt"
 
 	. "backend-api/internal/models"
+	"backend-api/pkg/infra"
 	"backend-api/pkg/structs"
 
 	"github.com/d2jvkpn/errx"
@@ -87,14 +88,13 @@ func (self *AccountLogin) Do(ctx context.Context) (account *Account, err *errx.E
 	span.End()
 
 	if e != nil {
-		/*
-			if infra.GormPgNotFound(e) {
-				return nil, BizError(e, "account_not_found")
-			}
+		// don't use structs.PgNotFound(e) here
+		if infra.PgNotFound(e) {
+			err = structs.BizError(e).WithCode("wrong_account_or_password").WithMsg("account or password is incorrect")
+			return nil, err
+		}
 
-			return nil, InternalError(e, "find_account")
-		*/
-		return nil, structs.PgNotFound(e).WithMsg("account or password is incorrect")
+		return nil, structs.InternalError(e).WithCode("database")
 	}
 
 	if err = account.IsOK(); err != nil {
