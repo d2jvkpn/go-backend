@@ -75,7 +75,7 @@ func accountLogin(ctx *gin.Context) {
 // @Description	...
 // @Tags			account::logout
 // @Produces		json
-// @Success		200							{object}	ResponseOK
+// @Success		200							{object}	structs.ResponseOK
 // @Router			/api/v1/auth/account/logout	[post]
 func accountLogout(ctx *gin.Context) {
 	var (

@@ -15,6 +15,23 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/v1/auth/account/logout": {
+            "post": {
+                "description": "...",
+                "tags": [
+                    "account::logout"
+                ],
+                "summary": "Account logout",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/structs.ResponseOK"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/open/account/login": {
             "post": {
                 "description": "login in with phone/email and password",
@@ -148,6 +165,35 @@ const docTemplate = `{
                     "type": "integer",
                     "x-order": "23",
                     "example": 1715008592
+                }
+            }
+        },
+        "structs.ResponseOK": {
+            "type": "object",
+            "properties": {
+                "requestId": {
+                    "description": "string: uuid",
+                    "type": "string",
+                    "x-order": "01",
+                    "example": "3cc643bd-7f85-493e-8324-6e491db7b3d8"
+                },
+                "code": {
+                    "description": "string: OK",
+                    "type": "string",
+                    "x-order": "02",
+                    "example": "OK"
+                },
+                "data": {
+                    "description": "any: response data",
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "x-order": "03",
+                    "example": {
+                        "answer": "hello",
+                        "value": "42"
+                    }
                 }
             }
         }

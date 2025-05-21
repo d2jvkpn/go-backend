@@ -81,9 +81,42 @@ definitions:
         type: string
         x-order: "03"
     type: object
+  structs.ResponseOK:
+    properties:
+      code:
+        description: 'string: OK'
+        example: OK
+        type: string
+        x-order: "02"
+      data:
+        additionalProperties:
+          type: string
+        description: 'any: response data'
+        example:
+          answer: hello
+          value: "42"
+        type: object
+        x-order: "03"
+      requestId:
+        description: 'string: uuid'
+        example: 3cc643bd-7f85-493e-8324-6e491db7b3d8
+        type: string
+        x-order: "01"
+    type: object
 info:
   contact: {}
 paths:
+  /api/v1/auth/account/logout:
+    post:
+      description: '...'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/structs.ResponseOK'
+      summary: Account logout
+      tags:
+      - account::logout
   /api/v1/open/account/login:
     post:
       consumes:
