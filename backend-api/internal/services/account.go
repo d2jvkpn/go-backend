@@ -2,7 +2,7 @@ package services
 
 import (
 	"context"
-	// "fmt"
+	"fmt"
 	// "net/http"
 
 	"backend-api/internal/biz/biz_user"
@@ -56,7 +56,7 @@ func accountLogin(ctx *gin.Context) {
 
 	ctx.Set("platform", input.Platform)
 	// ctx and otelCtx share the same key "data"
-	structs.GinSetData(ctx, "User-Agent", ctx.GetHeader("User-Agent")) // pass to biz layer and model layer
+	structs.GinSetData(ctx, "User-Agent", ctx.GetHeader("User-Agent")) // key=data, pass to biz layer and model layer
 
 	if result, err = biz_user.Login(otelCtx, &input); err != nil {
 		structs.JsonErr(ctx, err)
@@ -79,16 +79,13 @@ func accountLogin(ctx *gin.Context) {
 // @Router			/api/v1/auth/account/logout	[post]
 func accountLogout(ctx *gin.Context) {
 	var (
-		err  *errx.ErrX
-		auth *structs.AuthAccount
+		key string
+		err *errx.ErrX
 	)
 
-	if auth, err = GetAuthAccount(ctx); err != nil {
-		structs.JsonErr(ctx, err)
-		return
-	}
+	key = fmt.Sprintf("login:%s:%s", ctx.GetString("platform"), ctx.GetString("accountId"))
 
-	if err = biz_user.AccountLogout(ctx, auth); err != nil {
+	if err = biz_user.AccountLogout(ctx, key); err != nil {
 		structs.JsonErr(ctx, err)
 		return
 	}

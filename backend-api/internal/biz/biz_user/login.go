@@ -104,8 +104,8 @@ func Login(ctx context.Context, input *LoginRequest) (result *LoginResponse, err
 	return result, nil
 }
 
-func AccountLogout(ctx context.Context, auth *structs.AuthAccount) (err *errx.ErrX) {
-	err = settings.CacheRemoveToken(ctx, fmt.Sprintf("login:%s:%s", auth.Platform, auth.AccountId))
+func AccountLogout(ctx context.Context, key string) (err *errx.ErrX) {
+	err = settings.CacheRemoveToken(ctx, key)
 
 	if err != nil {
 		return err

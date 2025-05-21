@@ -1,7 +1,7 @@
 vendor/
 *.pb.go
 
-_*.sql
+migrations/_*.sql
 docs.go
 swagger.json
 swagger.yaml

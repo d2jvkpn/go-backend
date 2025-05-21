@@ -2,13 +2,14 @@ package structs
 
 import (
 	"context"
-	"fmt"
+	//"fmt"
 
 	"github.com/d2jvkpn/gotk/ginx"
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
+	//"github.com/google/uuid"
 )
 
+/*
 type AuthAccount struct {
 	AccountId uuid.UUID `json:"accountId"`
 	TokenId   uuid.UUID `json:"tokenId"`
@@ -30,6 +31,7 @@ func NewAuthAccount(id, level, tokenId, platform string) (item *AuthAccount, err
 
 	return item, nil
 }
+*/
 
 func GinSetData(ctx *gin.Context, key string, value any) {
 	var (

@@ -17,6 +17,7 @@ var (
 	_UUID_Null uuid.UUID
 )
 
+/*
 func GetAuthAccount(ctx *gin.Context) (auth *structs.AuthAccount, err *errx.ErrX) {
 	var e error
 
@@ -35,6 +36,7 @@ func GetAuthAccount(ctx *gin.Context) (auth *structs.AuthAccount, err *errx.ErrX
 
 	return auth, nil
 }
+*/
 
 // parameter must exists and not null
 func QueryUUID(ctx *gin.Context, key string) (id uuid.UUID, err *errx.ErrX) {
