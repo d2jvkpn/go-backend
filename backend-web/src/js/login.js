@@ -6,7 +6,7 @@ export function login(data, callback, onError) {
     onError = () => {}
   }
 
-  fetch(`${import.meta.env.VITE_API_URL}/api/v1/open/account/login?platform=web`, {
+  fetch(`${import.meta.env.VITE_API_URL}/api/v1/open/account/login?_platform=web`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
