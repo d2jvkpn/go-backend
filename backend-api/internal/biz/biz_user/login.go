@@ -8,7 +8,6 @@ import (
 
 	"backend-api/internal/models/mod_user"
 	"backend-api/internal/settings"
-	"backend-api/pkg/erri"
 	"backend-api/pkg/structs"
 
 	"github.com/d2jvkpn/errx"
@@ -20,7 +19,7 @@ import (
 
 type LoginRequest struct {
 	mod_user.AccountLogin
-	Platform string `json:"platform" extensions:"x-order=04"`
+	Platform string `json:"-" form:"platform" extensions:"x-order=04"`
 
 	TokenId string `json:"-" form:"-" swaggerignore:"true"`
 	IP      string `json:"-" form:"-" swaggerignore:"true"`
@@ -48,9 +47,13 @@ func Login(ctx context.Context, input *LoginRequest) (result *LoginResponse, err
 		otelCtx context.Context
 	)
 
+	// TODO: check input.Platform
 	tracer = otel.Tracer("biz_user.Login")
 
 	// 1.
+	ctx = context.WithValue(ctx, "platform", input.Platform)
+	ctx = context.WithValue(ctx, "tokenId", input.TokenId)
+
 	otelCtx, span = tracer.Start(ctx, "AccountLogin")
 	account, err = input.AccountLogin.Do(otelCtx)
 	span.End()
@@ -69,7 +72,7 @@ func Login(ctx context.Context, input *LoginRequest) (result *LoginResponse, err
 	token, e = settings.JwtHMAC.Sign(&data)
 	span.End()
 	if e != nil {
-		return nil, erri.InternalErr(e).WithCode("jwt_sign")
+		return nil, structs.InternalError(e).WithCode("jwt_sign")
 	}
 
 	result = &LoginResponse{
@@ -102,10 +105,7 @@ func Login(ctx context.Context, input *LoginRequest) (result *LoginResponse, err
 }
 
 func AccountLogout(ctx context.Context, auth *structs.AuthAccount) (err *errx.ErrX) {
-	err = settings.CacheRemoveToken(
-		ctx,
-		fmt.Sprintf("%s/%s", auth.AccountId, auth.TokenId),
-	)
+	err = settings.CacheRemoveToken(ctx, fmt.Sprintf("login:%s:%s", auth.Platform, auth.AccountId))
 
 	if err != nil {
 		return err

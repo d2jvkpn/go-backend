@@ -27,7 +27,7 @@ func testWSClient(args []string) {
 	)
 
 	flagSet = flag.NewFlagSet("ws_client", flag.ExitOnError)
-	flagSet.StringVar(&addr, "addr", "ws://127.0.0.1:4011/socket/talk", "websocket address")
+	flagSet.StringVar(&addr, "addr", "ws://127.0.0.1:4011/api/v1/socket/talk", "websocket address")
 	flagSet.Parse(args)
 
 	if client, err = NewWsClient(addr); err != nil {

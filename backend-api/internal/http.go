@@ -12,12 +12,16 @@ import (
 	"time"
 
 	"backend-api/internal/services"
+	"backend-api/internal/settings"
+	"backend-api/pkg/middlewares"
 
+	"github.com/d2jvkpn/errx"
 	"github.com/d2jvkpn/gotk/ginx"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 	// "go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 )
 
@@ -28,6 +32,7 @@ func SetupHttp(release bool, config *viper.Viper) (err error) {
 		httpConfig *viper.Viper
 		cert       tls.Certificate
 
+		apiLog gin.HandlerFunc
 		router *gin.RouterGroup
 		engine *gin.Engine
 	)
@@ -84,7 +89,7 @@ func SetupHttp(release bool, config *viper.Viper) (err error) {
 	engine.SetHTMLTemplate(templ)
 
 	// 4. middlwares
-	notRoute, _ := json.Marshal(gin.H{"code": "no_route", "kind": "NoRoute", "msg": "..."})
+	notRoute, _ := json.Marshal(gin.H{"code": "no_route", "kind": "no_route", "msg": "..."})
 	engine.NoRoute(func(ctx *gin.Context) {
 		time.Sleep(1000 * time.Millisecond)
 
@@ -92,6 +97,19 @@ func SetupHttp(release bool, config *viper.Viper) (err error) {
 		ctx.Writer.WriteHeader(http.StatusNotFound)
 		ctx.Writer.Write(notRoute)
 	})
+
+	apiLog = middlewares.NewAPILog(
+		settings.Logger.Named("api_log"),
+		settings.Logger.Level() == zapcore.DebugLevel,
+		func(ctx *gin.Context) ([]string, any) {
+			if err, _ := ginx.Get[*errx.ErrX](ctx, "error"); err != nil {
+				return []string{err.Code, err.Kind}, err
+			}
+
+			return []string{}, nil
+		},
+		_APIMeters...,
+	)
 
 	// 5. apis and router
 	router.GET("/healthz", ginx.Healthz)
@@ -105,8 +123,8 @@ func SetupHttp(release bool, config *viper.Viper) (err error) {
 	ginx.ServeStaticDir("/site", "./data/site", false)(router)
 
 	// 6. load api
-	services.LoadOpen(router)
-	services.LoadAuth(router, Auth(AllowLevels(), CacheUpdateToken))
+	services.LoadOpen(router, apiLog)
+	services.LoadAuth(router, apiLog, Auth(AllowLevels(), CacheUpdateToken))
 	// services.LoadWebsocket(router)
 
 	_HttpServer.Handler = engine
@@ -139,21 +157,23 @@ func Cors(origins []string, maxAges ...time.Duration) gin.HandlerFunc {
 
 	return cors.New(cors.Config{
 		AllowOrigins: origins,
-		AllowMethods: []string{"GET", "POST", "OPTIONS", "HEAD"},
+		AllowMethods: []string{"GET", "POST", "OPTIONS", "HEAD", "PUT"},
 		AllowHeaders: []string{
 			"Origin",
 			"Content-Type",
+			"Content-Length",
 			"Authorization",
+			"Cache-Control",
+			//"X-CSRF-Token",
+
 			"x-client",
 		},
 		ExposeHeaders: []string{
-			"Access-Control-Allow-Origin",
-			"Access-Control-Allow-Headers",
 			"Content-Type",
 			"Content-Length",
-			"Content-Disposition",
+
+			"x-api",
 		},
-		AllowWildcard:    true,
 		AllowCredentials: true,
 		// AllowOriginFunc:  func(origin string) bool { return origin == "https://github.com" },
 		MaxAge: maxAge,

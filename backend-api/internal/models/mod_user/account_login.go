@@ -6,7 +6,7 @@ import (
 	// "fmt"
 
 	. "backend-api/internal/models"
-	"backend-api/pkg/erri"
+	"backend-api/pkg/structs"
 
 	"github.com/d2jvkpn/errx"
 	// "gorm.io/gorm"
@@ -29,7 +29,7 @@ func (self *AccountLogin) Validate() (password []byte, err *errx.ErrX) {
 
 	if self.Phone == "" && self.Email == "" {
 		const msg = "no account info: phone, email"
-		return nil, erri.Invalid(errors.New(msg)).WithMsg(msg)
+		return nil, structs.Invalid(errors.New(msg)).WithMsg(msg)
 	}
 
 	/*
@@ -39,11 +39,11 @@ func (self *AccountLogin) Validate() (password []byte, err *errx.ErrX) {
 	*/
 
 	if e = ValidatePhone(self.Phone, true); e != nil {
-		return nil, erri.Invalid(e).WithMsg("invalid phone or password")
+		return nil, structs.Invalid(e).WithMsg("invalid phone or password")
 	}
 
 	if e = ValidateEmail(self.Email, true); e != nil {
-		return nil, erri.Invalid(e).WithMsg("invalid email or password")
+		return nil, structs.Invalid(e).WithMsg("invalid email or password")
 	}
 
 	return password, nil
@@ -94,7 +94,7 @@ func (self *AccountLogin) Do(ctx context.Context) (account *Account, err *errx.E
 
 			return nil, InternalError(e, "find_account")
 		*/
-		return nil, erri.PgNotFound(e).WithMsg("account or password is incorrect")
+		return nil, structs.PgNotFound(e).WithMsg("account or password is incorrect")
 	}
 
 	if err = account.IsOK(); err != nil {
@@ -102,7 +102,7 @@ func (self *AccountLogin) Do(ctx context.Context) (account *Account, err *errx.E
 	}
 
 	if account.Password == "" {
-		return account, erri.BizErr(errors.New("hashed password is empty")).
+		return account, structs.BizError(errors.New("hashed password is empty")).
 			WithCode("account_not_available")
 	}
 
@@ -111,7 +111,7 @@ func (self *AccountLogin) Do(ctx context.Context) (account *Account, err *errx.E
 	span.End()
 
 	if e != nil {
-		return account, erri.AuthErr(e).
+		return account, structs.AuthError(e).
 			WithCode("wrong_account_or_password").
 			WithMsg("")
 	}

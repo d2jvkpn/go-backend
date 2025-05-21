@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"time"
 
-	"backend-api/pkg/erri"
+	"backend-api/pkg/structs"
 	"backend-api/pkg/utils"
 
 	"github.com/d2jvkpn/errx"
@@ -17,6 +17,25 @@ var (
 	_UUID_Null uuid.UUID
 )
 
+func GetAuthAccount(ctx *gin.Context) (auth *structs.AuthAccount, err *errx.ErrX) {
+	var e error
+
+	//fmt.Printf("\n??? accountId=%s, tokenId=%s\n", ctx.GetString("accountId"), ctx.GetString("tokenId"))
+
+	auth, e = structs.NewAuthAccount(
+		ctx.GetString("accountId"),
+		ctx.GetString("level"),
+		ctx.GetString("tokenId"),
+		ctx.GetString("platform"),
+	)
+
+	if e != nil {
+		return nil, structs.InternalError(e).WithKind("context_no_value")
+	}
+
+	return auth, nil
+}
+
 // parameter must exists and not null
 func QueryUUID(ctx *gin.Context, key string) (id uuid.UUID, err *errx.ErrX) {
 	var (
@@ -26,15 +45,15 @@ func QueryUUID(ctx *gin.Context, key string) (id uuid.UUID, err *errx.ErrX) {
 	)
 
 	if value, ok = ctx.GetQuery(key); !ok {
-		return id, erri.Invalid(fmt.Errorf("no parameter: %s", key)).WithCode("no_parameter")
+		return id, structs.Invalid(fmt.Errorf("no parameter: %s", key)).WithCode("no_parameter")
 	}
 
 	if id, e = utils.UUIDFromString(value); e != nil {
-		return id, erri.Invalid(e).WithCode("parse_failed")
+		return id, structs.Invalid(e).WithCode("parse_failed")
 	}
 
 	if utils.UUIDIsNull(id) {
-		return id, erri.Invalid(utils.ErrIdIsNull)
+		return id, structs.Invalid(utils.ErrIdIsNull)
 	}
 
 	return id, nil
@@ -49,11 +68,11 @@ func QueryUUIDs(ctx *gin.Context, key string) (ids []uuid.UUID, err *errx.ErrX) 
 	)
 
 	if values, ok = ctx.GetQueryArray(key); !ok {
-		return nil, erri.Invalid(fmt.Errorf("no parameter: %s", key)).WithCode("no_parameter")
+		return nil, structs.Invalid(fmt.Errorf("no parameter: %s", key)).WithCode("no_parameter")
 	}
 
 	if ids, e = utils.UUIDFromStrings(values); e != nil {
-		return nil, erri.Invalid(e).WithCode("parse_failed")
+		return nil, structs.Invalid(e).WithCode("parse_failed")
 	}
 
 	for i := range ids {
@@ -73,11 +92,11 @@ func QueryBool(ctx *gin.Context, key string) (ans bool, err *errx.ErrX) {
 	)
 
 	if value, ok = ctx.GetQuery(key); !ok {
-		return false, erri.Invalid(fmt.Errorf("no parameter: %s", key)).WithCode("no_parameter")
+		return false, structs.Invalid(fmt.Errorf("no parameter: %s", key)).WithCode("no_parameter")
 	}
 
 	if ans, e = strconv.ParseBool(value); e != nil {
-		return false, erri.Invalid(e).WithCode("parse_failed")
+		return false, structs.Invalid(e).WithCode("parse_failed")
 	}
 
 	return ans, nil
@@ -88,7 +107,7 @@ func QueryString(ctx *gin.Context, key string) (str string, err *errx.ErrX) {
 	var ok bool
 
 	if str, ok = ctx.GetQuery(key); !ok {
-		return "", erri.Invalid(fmt.Errorf("no parameter: %s", key)).WithCode("no_parameter")
+		return "", structs.Invalid(fmt.Errorf("no parameter: %s", key)).WithCode("no_parameter")
 	}
 
 	return str, nil
@@ -99,7 +118,7 @@ func QueryStrings(ctx *gin.Context, key string) (strs []string, err *errx.ErrX) 
 	var ok bool
 
 	if strs, ok = ctx.GetQueryArray(key); !ok {
-		return nil, erri.Invalid(fmt.Errorf("no parameter: %s", key)).WithCode("no_parameter")
+		return nil, structs.Invalid(fmt.Errorf("no parameter: %s", key)).WithCode("no_parameter")
 	}
 
 	// TODO: ?? empty strings
@@ -115,11 +134,11 @@ func QueryDate(ctx *gin.Context, key string) (date string, err *errx.ErrX) {
 	)
 
 	if date, ok = ctx.GetQuery(key); !ok {
-		return "", erri.Invalid(fmt.Errorf("no parameter: %s", key)).WithCode("no_parameter")
+		return "", structs.Invalid(fmt.Errorf("no parameter: %s", key)).WithCode("no_parameter")
 	}
 
 	if _, e = time.ParseInLocation(time.DateOnly, date, time.Local); e != nil {
-		return "", erri.Invalid(e).WithCode("parse_failed")
+		return "", structs.Invalid(e).WithCode("parse_failed")
 	}
 
 	return date, nil
@@ -129,7 +148,7 @@ func BindJSON[T any](ctx *gin.Context, value *T) (err *errx.ErrX) {
 	var e error
 
 	if e = ctx.BindJSON(value); e != nil {
-		return erri.BindErr(e).WithCode("bind_json")
+		return structs.BindError(e).WithCode("bind_json")
 	}
 
 	return nil
@@ -139,7 +158,21 @@ func BindQuery[T any](ctx *gin.Context, value *T) (err *errx.ErrX) {
 	var e error
 
 	if e = ctx.BindQuery(value); e != nil {
-		return erri.BindErr(e).WithCode("bind_query")
+		return structs.BindError(e).WithCode("bind_query")
+	}
+
+	return nil
+}
+
+func BindQueryJSON[T any](ctx *gin.Context, value *T) (err *errx.ErrX) {
+	var e error
+
+	if e = ctx.BindQuery(value); e != nil {
+		return structs.BindError(e).WithCode("bind_query")
+	}
+
+	if e = ctx.BindJSON(value); e != nil {
+		return structs.BindError(e).WithCode("bind_json")
 	}
 
 	return nil

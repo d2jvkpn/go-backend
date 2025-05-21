@@ -1,5 +1,5 @@
 // default: ErrX.Kind == ErrX.Code
-package erri
+package structs
 
 import (
 	// "fmt"
@@ -24,12 +24,12 @@ func Incorrect(e error) *errx.ErrX {
 }
 
 // bind error
-func BindErr(e error) *errx.ErrX {
+func BindError(e error) *errx.ErrX {
 	return errx.New(e).WithKind("bind_error").WithCode("bind_error").WithCaller(2)
 }
 
 // authorization error
-func AuthErr(e error) *errx.ErrX {
+func AuthError(e error) *errx.ErrX {
 	return errx.New(e).WithKind("auth_err").WithCode("auth_err")
 }
 
@@ -39,23 +39,23 @@ func NotPermited(e error) *errx.ErrX {
 }
 
 // biz error
-func bizErr(e error) *errx.ErrX {
+func bizError(e error) *errx.ErrX {
 	return errx.New(e).WithKind("biz_error").WithMsg("an biz error occured")
 }
 
 // biz error
-func BizErr(e error) *errx.ErrX {
-	return bizErr(e).WithCode("biz_error").WithCaller(2)
+func BizError(e error) *errx.ErrX {
+	return bizError(e).WithCode("biz_error").WithCaller(2)
 }
 
 // internal error
-func internalErr(e error) *errx.ErrX {
+func internalError(e error) *errx.ErrX {
 	return errx.New(e).WithKind("internal_error").WithMsg("an internal error occured")
 }
 
 // internal error
-func InternalErr(e error) *errx.ErrX {
-	return internalErr(e).WithCode("internal_error").WithCaller(2)
+func InternalError(e error) *errx.ErrX {
+	return internalError(e).WithCode("internal_error").WithCaller(2)
 }
 
 // unavailable
@@ -68,7 +68,7 @@ func Unavailable(e error) *errx.ErrX {
 }
 
 // unknown error
-func UnknownErr(e error) *errx.ErrX {
+func UnknownError(e error) *errx.ErrX {
 	return errx.New(e).
 		WithKind("unknown_error").
 		WithCode("unknown_error").

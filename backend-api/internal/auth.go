@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"backend-api/internal/settings"
-	"backend-api/pkg/erri"
 	"backend-api/pkg/structs"
 
 	"github.com/d2jvkpn/errx"
@@ -18,11 +17,11 @@ import (
 type HandleJwt func(context.Context, *ginx.JwtData) *errx.ErrX
 
 func AllowLevels(levels ...string) HandleJwt {
-	noAllowed := fmt.Errorf("levels: %v", levels)
+	e := fmt.Errorf("allowed levels: %v", levels)
 
 	return func(ctx context.Context, data *ginx.JwtData) (err *errx.ErrX) {
 		if len(levels) > 0 && !slices.Contains(levels, data.Data["level"]) {
-			err = erri.NotPermited(noAllowed).WithCode("no_allowed").WithMsg("no allowed")
+			err = structs.NotPermited(e).WithCode("no_allowed_level").WithMsg("no allowed level")
 			return err
 		}
 
@@ -33,8 +32,9 @@ func AllowLevels(levels ...string) HandleJwt {
 func CacheUpdateToken(ctx context.Context, d *ginx.JwtData) (err *errx.ErrX) {
 	// check if cache token enabled or not internal
 	err = settings.CacheUpdateToken(ctx, fmt.Sprintf("login:%s:%s", d.Data["platform"], d.Subject), d.ID)
-	// fmt.Printf("==> AuthCachedToken: %v\n", err)
+
 	if err != nil {
+		// fmt.Printf("==> CacheUpdateToken: %v\n", err)
 		return err
 	}
 
@@ -52,19 +52,18 @@ func Auth(funcs ...HandleJwt) gin.HandlerFunc {
 			code   string
 			err    *errx.ErrX
 			data   *ginx.JwtData
-			auth   *structs.AuthAccount
 		)
 
 		bearar = ctx.GetHeader("Authorization")
 
 		handleError := func() {
-			structs.JSONErr(ctx, err)
+			structs.JsonErr(ctx, err)
 			ctx.Abort()
 		}
 
 		// if bearar[:7] != "Bearar " {
 		if !strings.HasPrefix(bearar, Bearar) {
-			err = erri.AuthErr(fmt.Errorf("...")).WithCode("invalid_token")
+			err = structs.AuthError(fmt.Errorf("...")).WithCode("invalid_token")
 
 			handleError()
 			return
@@ -72,9 +71,9 @@ func Auth(funcs ...HandleJwt) gin.HandlerFunc {
 
 		if data, code, e = settings.JwtHMAC.Auth(bearar[len(Bearar):]); e != nil {
 			if code == "token_expired" {
-				err = erri.AuthErr(e).WithMsg("token expired")
+				err = structs.AuthError(e).WithMsg("token expired")
 			} else {
-				err = erri.AuthErr(e).WithMsg("invalid token")
+				err = structs.AuthError(e).WithMsg("invalid token")
 			}
 
 			err.WithCode(code)
@@ -82,18 +81,10 @@ func Auth(funcs ...HandleJwt) gin.HandlerFunc {
 			return
 		}
 
-		auth, e = structs.NewAuthAccount(data.Subject, data.Data["level"], data.ID)
-		if e != nil {
-			err = erri.AuthErr(e).WithCode("invalid_token").WithMsg("invalid token")
-
-			handleError()
-			return
-		}
-		ctx.Set("AuthAccount", auth)
-
-		structs.GinSetData(ctx, "accountId", auth.AccountId)
-		structs.GinSetData(ctx, "level", auth.Level)
-		structs.GinSetData(ctx, "tokenId", auth.TokenId)
+		ctx.Set("accountId", data.Subject)
+		ctx.Set("level", data.Data["level"])
+		ctx.Set("platform", data.Data["platform"])
+		ctx.Set("tokenId", data.ID)
 
 		for i := range funcs {
 			if err = funcs[i](ctx, data); err != nil {

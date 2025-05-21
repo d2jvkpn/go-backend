@@ -28,11 +28,9 @@ import (
 // @Router			/api/v1/open/account/login	[post]
 func accountLogin(ctx *gin.Context) {
 	var (
-		err     *errx.ErrX
-		tokenId uuid.UUID
-		auth    *structs.AuthAccount
-		input   biz_user.LoginRequest
-		result  *biz_user.LoginResponse
+		err    *errx.ErrX
+		input  biz_user.LoginRequest
+		result *biz_user.LoginResponse
 
 		tracer  trace.Tracer
 		span    trace.Span
@@ -49,26 +47,51 @@ func accountLogin(ctx *gin.Context) {
 	//	span.SpanContext().TraceID(), span.SpanContext().SpanID(),
 	// )
 
-	if err = BindJSON(ctx, &input); err != nil {
-		middlewares.JsonErr(ctx, err)
+	if err = BindQueryJSON(ctx, &input); err != nil {
+		structs.JsonErr(ctx, err)
 		return
 	}
 
-	tokenId = uuid.New()
-	input.IP, input.TokenId = ctx.ClientIP(), tokenId.String()
+	input.IP, input.TokenId = ctx.ClientIP(), uuid.New().String()
+
+	ctx.Set("platform", input.Platform)
+	// ctx and otelCtx share the same key "data"
+	structs.GinSetData(ctx, "User-Agent", ctx.GetHeader("User-Agent")) // pass to biz layer and model layer
 
 	if result, err = biz_user.Login(otelCtx, &input); err != nil {
-		middlewares.JsonErr(ctx, err)
+		structs.JsonErr(ctx, err)
 		return
 	}
-
-	auth = &structs.AuthAccount{AccountId: result.Id, Level: result.Level, TokenId: tokenId}
-
-	ctx.Set("AuthAccount", auth)
-	structs.ContextSetData(ctx, "level", result.Level)
-	structs.ContextSetData(ctx, "User-Agent", ctx.GetHeader("User-Agent"))
+	ctx.Set("tokenId", input.TokenId)
+	ctx.Set("accountId", result.Id.String())
+	ctx.Set("level", result.Level)
 
 	// ctx.SetCookie("tokenId", tokenId.String(), 300, "/", "localhost", false, true)
 
-	middlewares.JsonOK(ctx, result)
+	structs.JsonOK(ctx, result)
+}
+
+// @Summary		Account logout
+// @Description	...
+// @Tags			account::logout
+// @Produces		json
+// @Success		200							{object}	ResponseOK
+// @Router			/api/v1/auth/account/logout	[post]
+func accountLogout(ctx *gin.Context) {
+	var (
+		err  *errx.ErrX
+		auth *structs.AuthAccount
+	)
+
+	if auth, err = GetAuthAccount(ctx); err != nil {
+		structs.JsonErr(ctx, err)
+		return
+	}
+
+	if err = biz_user.AccountLogout(ctx, auth); err != nil {
+		structs.JsonErr(ctx, err)
+		return
+	}
+
+	structs.JsonOK(ctx)
 }

@@ -8,8 +8,8 @@ import (
 	"time"
 
 	. "backend-api/internal/models"
-	"backend-api/pkg/erri"
 	"backend-api/pkg/infra"
+	"backend-api/pkg/structs"
 
 	// "gorm.io/gorm"
 	"github.com/d2jvkpn/errx"
@@ -69,7 +69,7 @@ type CreateAccount struct {
 
 func (self *Account) IsOK() (err *errx.ErrX) {
 	if self.Status != "activated" {
-		return erri.BizErr(errors.New("account hasn't been actived")).WithCode("not_activated")
+		return structs.BizError(errors.New("account hasn't been actived")).WithCode("not_activated")
 	}
 
 	return nil
@@ -79,28 +79,28 @@ func (self *CreateAccount) Validate() *errx.ErrX {
 	var e error
 
 	if e = ValidateName(self.Firstname, false); e != nil {
-		return erri.Invalid(e).WithMsg("fristname")
+		return structs.Invalid(e).WithMsg("fristname")
 	}
 
 	if e = ValidateName(self.Lastname, false); e != nil {
-		return erri.Invalid(e).WithMsg("lastname")
+		return structs.Invalid(e).WithMsg("lastname")
 	}
 
 	if self.Phone == "" && self.Email == "" {
 		e = fmt.Errorf("phone or email is unset")
-		return erri.Invalid(e).WithMsg("phone or email is unset")
+		return structs.Invalid(e).WithMsg("phone or email is unset")
 	}
 	if e = ValidatePhone(self.Phone, true); e != nil {
-		return erri.Invalid(e).WithMsg("phone")
+		return structs.Invalid(e).WithMsg("phone")
 	}
 
 	if e = ValidateEmail(self.Email, true); e != nil {
-		return erri.Invalid(e).WithMsg("email")
+		return structs.Invalid(e).WithMsg("email")
 	}
 
 	if self.Password != "" {
 		if e = ValidatePassword(self.Password); e != nil {
-			return erri.Invalid(e).WithMsg("password")
+			return structs.Invalid(e).WithMsg("password")
 		}
 		self.Status = "activated"
 	} else {
@@ -115,11 +115,11 @@ func (self *CreateAccount) Validate() *errx.ErrX {
 				fields[i] = errs[i].Error()
 			}
 
-			return erri.Invalid(e).WithMsg(strings.Join(fields, ","))
+			return structs.Invalid(e).WithMsg(strings.Join(fields, ","))
 			*/
-			return erri.Invalid(e).WithMsg("%v", errs)
+			return structs.Invalid(e).WithMsg("%v", errs)
 		} else {
-			return erri.InternalErr(e).WithCode("validator")
+			return structs.InternalError(e).WithCode("validator")
 		}
 	}
 
@@ -134,7 +134,7 @@ func (self *CreateAccount) hashPassword() (err *errx.ErrX) {
 
 	bts, e = bcrypt.GenerateFromPassword([]byte(self.Password), bcrypt.DefaultCost)
 	if e != nil {
-		return erri.InternalErr(e).WithCode("bcrypt")
+		return structs.InternalError(e).WithCode("bcrypt")
 	}
 	self.Password = string(bts)
 
@@ -160,7 +160,7 @@ func (self *CreateAccount) Do(ctx context.Context) (err *errx.ErrX) {
 	bts, e = bcrypt.GenerateFromPassword([]byte(self.Password), bcrypt.DefaultCost)
 	span.End()
 	if e != nil {
-		return erri.InternalErr(e).WithCode("bcrypt")
+		return structs.InternalError(e).WithCode("bcrypt")
 	}
 	self.Password = string(bts)
 
@@ -174,7 +174,7 @@ func (self *CreateAccount) Do(ctx context.Context) (err *errx.ErrX) {
 	if infra.PgUniqueViolation(e) {
 		errStr := e.Error()
 
-		err = erri.BizErr(e).WithCode("already_exists")
+		err = structs.BizError(e).WithCode("already_exists")
 		switch {
 		case strings.Contains(errStr, "_email_key\""):
 			err.WithMsg("email already exists")
@@ -186,5 +186,5 @@ func (self *CreateAccount) Do(ctx context.Context) (err *errx.ErrX) {
 		return err
 	}
 
-	return erri.InternalErr(e).WithKind("database")
+	return structs.InternalError(e).WithKind("database")
 }

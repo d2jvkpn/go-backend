@@ -6,7 +6,7 @@ import (
 	"net/url"
 	"time"
 
-	"backend-api/pkg/erri"
+	"backend-api/pkg/structs"
 
 	"github.com/d2jvkpn/errx"
 )
@@ -31,7 +31,7 @@ func CacheSetToken(ctx context.Context, key, value string) (err *errx.ErrX) {
 
 	// key := fmt.Sprintf("%s/%s/%s", pkg.CACHE_LoginTokenV1,
 	if e = Redis.Set(ctx, key, value, expiration).Err(); e != nil {
-		return erri.InternalErr(e).WithKind("cache_set_token")
+		return structs.InternalError(e).WithKind("cache_set_token")
 	}
 
 	return nil
@@ -52,14 +52,14 @@ func CacheUpdateToken(ctx context.Context, key, tokenId string) (err *errx.ErrX)
 
 	const msg = "Please log in again"
 	if value, e = Redis.Get(ctx, key).Result(); e != nil {
-		return erri.AuthErr(e).WithKind("cache_no_token").WithMsg(msg)
+		return structs.AuthError(e).WithKind("cache_no_token").WithMsg(msg)
 	}
 
 	if query, e = url.ParseQuery(value); e != nil {
-		return erri.InternalErr(e).WithKind("cache_parse_value")
+		return structs.InternalError(e).WithKind("cache_parse_value")
 	}
 	if query.Get("tokenId") != tokenId {
-		return erri.AuthErr(fmt.Errorf("token is expired")).WithKind("cache_token_is_expired").WithMsg(msg)
+		return structs.AuthError(fmt.Errorf("token is expired")).WithKind("cache_token_is_expired").WithMsg(msg)
 	}
 
 	expiration = Config.GetDuration("jwt.interval")
@@ -70,10 +70,10 @@ func CacheUpdateToken(ctx context.Context, key, tokenId string) (err *errx.ErrX)
 	ok, e = Redis.Expire(ctx, key, expiration).Result()
 	// fmt.Printf("==> CacheLoginTokenUpdate 2: %t, %v\n", ok, e)
 	if e != nil {
-		return erri.InternalErr(e).WithKind("cache_update_token")
+		return structs.InternalError(e).WithKind("cache_update_token")
 	}
 	if !ok {
-		return erri.AuthErr(fmt.Errorf("expire token")).WithKind("cache_expire_token").WithMsg(msg)
+		return structs.AuthError(fmt.Errorf("expire token")).WithKind("cache_expire_token").WithMsg(msg)
 	}
 
 	return nil
@@ -85,9 +85,10 @@ func CacheRemoveToken(ctx context.Context, key string) (err *errx.ErrX) {
 	}
 
 	var e error
+	// fmt.Println("???", key)
 
 	if e = Redis.Del(ctx, key).Err(); e != nil {
-		return erri.InternalErr(e).WithKind("cache_remove_token")
+		return structs.InternalError(e).WithKind("cache_delete_token")
 	}
 
 	return nil

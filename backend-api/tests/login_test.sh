@@ -10,9 +10,11 @@ password=$(yq .account.password $config)
 
 data=$(jq -n --arg email "$email" --arg password "$password" '{email:$email,password:$password,platform:"web"}')
 
-curl -X POST $api/api/v1/open/account/login -d "$data" | jq
+curl -X POST "$api/api/v1/open/account/login?platform=web" -d "$data" | jq
 
 
 exit
 
-curl -X GET -H "Authorization: Bearar $token"  $api/api/v1/auth/hello
+curl -X GET -H "Authorization: Bearar $token" $api/api/v1/auth/hello
+
+curl -X POST -H "Authorization: Bearar $token" $api/api/v1/auth/account/logout
