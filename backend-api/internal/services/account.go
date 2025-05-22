@@ -55,6 +55,8 @@ func accountLogin(ctx *gin.Context) {
 	input.IP, input.TokenId = ctx.ClientIP(), uuid.New().String()
 
 	ctx.Set("platform", input.Platform)
+	structs.GinSetData(ctx, "email", input.Email)
+	structs.GinSetData(ctx, "phone", input.Phone)
 	// ctx and otelCtx share the same key "data"
 	structs.GinSetData(ctx, "User-Agent", ctx.GetHeader("User-Agent")) // key=data, pass to biz layer and model layer
 

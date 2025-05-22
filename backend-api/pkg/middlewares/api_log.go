@@ -22,7 +22,7 @@ type Logger[T any] interface {
 }
 
 func NewAPILog(logger Logger[zap.Field], debug bool,
-	errorHandler func(*gin.Context) ([]string, any),
+	handler func(*gin.Context) ([]string, *zap.Field),
 	meters ...func(string, float64, []string)) (hf gin.HandlerFunc) {
 	gomod, _ := gotk.RootModule()
 	// debug := logger.Level() == zapcore.DebugLevel
@@ -37,6 +37,7 @@ func NewAPILog(logger Logger[zap.Field], debug bool,
 			fields      []zap.Field
 			data        any
 			labelValues []string
+			errField    *zap.Field
 		)
 
 		// concurrentRequests.Inc()
@@ -79,18 +80,19 @@ func NewAPILog(logger Logger[zap.Field], debug bool,
 			status := ctx.Writer.Status()
 			fields = append(fields, zap.Int("status", status))
 
-			labelValues = []string{"ok"}
-			if status != http.StatusOK {
-				//var err *errx.ErrX
-				//if err, e = ginx.Get[*errx.ErrX](ctx, "error"); e == nil {
-				//	fields = append(fields, zap.Any("error", &err))
-				//	labelValues[0], labelValues[1] = err.Code, err.Kind
-				//}
+			/*
+				if status != http.StatusOK {
+					var err *errx.ErrX
+					if err, e = ginx.Get[*errx.ErrX](ctx, "error"); e == nil {
+						fields = append(fields, zap.Any("error", &err))
+						labelValues[0], labelValues[1] = err.Code, err.Kind
+					}
+				}
+			*/
 
-				var err any
-
-				labelValues, err = errorHandler(ctx)
-				fields = append(fields, zap.Any("error", &err))
+			labelValues, errField = handler(ctx)
+			if errField != nil {
+				fields = append(fields, *errField)
 			}
 
 			if data, e = ginx.Get[any](ctx, "data"); e == nil {

@@ -100,7 +100,7 @@ func (self *CreateAccount) Validate() *errx.ErrX {
 
 	if self.Password != "" {
 		if e = ValidatePassword(self.Password); e != nil {
-			return structs.Invalid(e).WithMsg("password")
+			return structs.Invalid(e).WithCode("invalid_password").WithMsg("invalid password")
 		}
 		self.Status = "activated"
 	} else {

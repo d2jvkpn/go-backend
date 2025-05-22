@@ -101,12 +101,17 @@ func SetupHttp(release bool, config *viper.Viper) (err error) {
 	apiLog = middlewares.NewAPILog(
 		settings.Logger.Named("api_log"),
 		settings.Logger.Level() == zapcore.DebugLevel,
-		func(ctx *gin.Context) ([]string, any) {
-			if err, _ := ginx.Get[*errx.ErrX](ctx, "error"); err != nil {
-				return []string{err.Code, err.Kind}, err
+		func(ctx *gin.Context) ([]string, *zap.Field) {
+			var (
+				err   *errx.ErrX
+				field zap.Field
+			)
+			if err, _ = ginx.Get[*errx.ErrX](ctx, "error"); err != nil {
+				field = zap.Any("error", *err)
+				return []string{err.Kind, err.Code}, &field
 			}
 
-			return []string{}, nil
+			return []string{"ok", "ok"}, nil
 		},
 		_APIMeters...,
 	)

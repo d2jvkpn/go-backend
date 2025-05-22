@@ -29,8 +29,11 @@ func (self *ChangePassword) Do(ctx context.Context, accountId uuid.UUID) (err *e
 		span   trace.Span
 	)
 
+	if e = ValidatePassword(self.NewPassword); e != nil {
+		return structs.Invalid(e).WithCode("invalid_password").WithMsg("invalid password")
+	}
+
 	tracer = otel.Tracer("mod_user.ChangePassword")
-	// TODO: check self.NewPassword
 
 	account := struct {
 		Password string `gorm:"column:password"`

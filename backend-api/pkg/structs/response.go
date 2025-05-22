@@ -45,7 +45,7 @@ type ResponseOK struct {
 	RequestId string `json:"requestId" example:"3cc643bd-7f85-493e-8324-6e491db7b3d8" extensions:"x-order=01"`
 
 	// string: OK
-	Code string `json:"code" example:"OK" extensions:"x-order=02"`
+	Code string `json:"code" example:"ok" extensions:"x-order=02"`
 
 	// any: response data
 	Data any `json:"data" swaggertype:"object,string" example:"answer:hello,value:42" extensions:"x-order=03"`
@@ -55,8 +55,8 @@ type ResponseItem[T any] struct {
 	// string: uuid
 	RequestId string `json:"requestId" example:"3cc643bd-7f85-493e-8324-6e491db7b3d8" extensions:"x-order=01"`
 
-	// string: OK
-	Code string `json:"code" example:"OK" extensions:"x-order=02"`
+	// string: ok
+	Code string `json:"code" example:"ok" extensions:"x-order=02"`
 
 	Data struct {
 		Item T `json:"item" swaggertype:"object,string" example:"answer:hello,value:42"`
@@ -67,8 +67,8 @@ type ResponsePage[T any] struct {
 	// string: uuid
 	RequestId string `json:"requestId" example:"3cc643bd-7f85-493e-8324-6e491db7b3d8" extensions:"x-order=01"`
 
-	// string: OK
-	Code string `json:"code" example:"OK" extensions:"x-order=02"`
+	// string: ok
+	Code string `json:"code" example:"ok" extensions:"x-order=02"`
 
 	Data struct {
 		PageIndex uint `json:"pageIndex" example:"1"`
