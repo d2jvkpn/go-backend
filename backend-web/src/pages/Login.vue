@@ -5,7 +5,7 @@ import { ElMessage } from 'element-plus'
 
 import { login } from "@/js/_login.js"
 import { service } from  "@/js/utils/request.js"
-import { setAccount } from "@/js/stores/localAccount.js"
+import { setAccount } from "@/js/stores/local.js"
 
 // console.log(`==> import.meta.env: ${JSON.stringify(import.meta.env)}`);
 

@@ -15,3 +15,7 @@ export function getAccount() {
     level: localStorage.getItem('level'),
   }
 }
+
+export function clearAccount() {
+  localStorage.clear()
+}

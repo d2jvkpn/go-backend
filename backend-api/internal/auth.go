@@ -42,7 +42,7 @@ func CacheUpdateToken(ctx context.Context, d *ginx.JwtData) (err *errx.ErrX) {
 }
 
 func Auth(funcs ...HandleJwt) gin.HandlerFunc {
-	const Bearar = "Bearar "
+	const Bearar = "Bearer "
 
 	return func(ctx *gin.Context) {
 		// settings.JwtHAC

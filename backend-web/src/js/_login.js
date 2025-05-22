@@ -76,7 +76,7 @@ export function logout(callback, onError) {
 
   fetch(`${import.meta.env.VITE_API_URL}/api/v1/auth/account/logout`, {
     method: 'POST',
-    headers: { 'Authorization': `Bearar ${localStorage.getItem("token")}` },
+    headers: { 'Authorization': `Bearer ${localStorage.getItem("token")}` },
   })
   .then((response) => {
     if (response.status == 200) {

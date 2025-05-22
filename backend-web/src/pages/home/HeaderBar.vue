@@ -7,6 +7,8 @@ import { ArrowDown, Fold, Expand } from '@element-plus/icons-vue'
 import ChangePassword from './ChangePassword.vue'
 // import { useUserStore } from '@/js/stores/user'
 import { logout } from "@/js/_login.js"
+import { clearAccount } from "@/js/stores/local.js"
+import { service } from  "@/js/utils/request.js"
 
 //
 const props = defineProps({
@@ -28,46 +30,57 @@ const emit = defineEmits(['toggleSidebar'])
 const router = useRouter()
 // const userStore = useUserStore()
 
-const confirmLogout = () => {
-  const callback = () => {
-      // userStore.logout()
-    localStorage.clear()
-    router.push('/login')
-    ElMessage.success('You have been logged out.')
-  }
-
-
+const confirmLogoutV1 = () => {
   ElMessageBox.confirm(
     'Are you sure you want to log out?',
     'Logout Confirmation',
-    {
-      confirmButtonText: 'Logout',
-      cancelButtonText: 'Cancel',
-      type: 'warning',
-    }
+    { confirmButtonText: 'Logout', cancelButtonText: 'Cancel', type: 'warning' }
   )
   .then(() => {
-    logout(callback)
+    // userStore.logout()
+    // localStorage.removeItem('token')
+    clearAccount()
+    router.push('/login')
+    ElMessage.success('You have been logged out.')
   })
   .catch(() => {
     ElMessage.info('Logout canceled.')
   })
 }
 
+const confirmLogout = async () => {
+  try {
+    await ElMessageBox.confirm(
+      'Are you sure you want to log out?',
+      'Logout Confirmation',
+      { confirmButtonText: 'Logout', cancelButtonText: 'Cancel', type: 'warning' },
+    );
+
+    await service.post(`${import.meta.env.VITE_API_URL}/api/v1/auth/account/logout`)
+
+    clearAccount()
+    router.push('/login')
+    ElMessage.success('You have been logged out.')
+  } catch (err) {
+    ElMessage.error(err.response?.data?.msg || 'Logout failed')
+  } finally {
+    // TODO
+  }
+}
+
 const handleCommand = (command) => {
   switch (command) {
-    case 'profile':
-      router.push('/home/settings/profile')
-      break
-    case 'change_password':
-      showChangePassword.value = true
-      break
-    case 'logout':
-      // localStorage.removeItem('token')
-      // localStorage.clear()
-      // router.push('/login')
-      confirmLogout()
-      break
+  case 'profile':
+    router.push('/home/settings/profile')
+    break
+  case 'change_password':
+    showChangePassword.value = true
+    break
+  case 'logout':
+    confirmLogout()
+    break
+  default:
+    alert(`!!! unknown command: ${command}`)
   }
 }
 
