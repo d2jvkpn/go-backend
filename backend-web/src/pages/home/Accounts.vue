@@ -3,7 +3,7 @@ import { ref, computed } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { ArrowDown } from '@element-plus/icons-vue'
 
-// import { hello } from "@/js/utils/hello.js"
+// import { hello } from "@/js/_hello.js"
 // hello()
 
 const allColumns = [

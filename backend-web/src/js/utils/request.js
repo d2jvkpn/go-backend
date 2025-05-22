@@ -1,8 +1,12 @@
 import axios from 'axios'
-import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
+import { useRouter } from 'vue-router'
 
 import { ApiError } from "./errors.js"
+import { clearAccount } from "../stores/local.js";
+
+
+const router = useRouter();
 
 const service = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -55,7 +59,8 @@ function handleStatus(err) {
       break;
     case 401:
       ElMessage.error(`Please login again ${status}`)
-      localStorage.clear()
+      clearAccount();
+      router.push('/login');
       break;
     case 403:
       ElMessage.error(`Permission denied ${status}: ${data.msg}`)
@@ -71,7 +76,6 @@ function handleStatus(err) {
       break;
     default:
       ElMessage.error(`Error ${status}: ${err.message}, code=${data.code}, kind=${data.kind}`);
-      return
   }
 
   return

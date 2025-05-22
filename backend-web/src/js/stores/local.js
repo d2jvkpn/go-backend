@@ -2,8 +2,9 @@ export function setAccount(data) {
   localStorage.setItem("id", data.id);
   localStorage.setItem("firstname", data.firstname);
   localStorage.setItem("lastname", data.lastname);
-  localStorage.setItem("token", data.token);
   localStorage.setItem("level", data.level);
+  localStorage.setItem("token", data.token);
+  localStorage.setItem("expiresAt", data.expiresAt);
 }
 
 export function getAccount() {
@@ -11,8 +12,9 @@ export function getAccount() {
     id: localStorage.getItem("id"),
     firstname: localStorage.getItem("firstname"),
     lastname: localStorage.getItem("lastname"),
-    token: localStorage.getItem("token"),
     level: localStorage.getItem("level"),
+    token: localStorage.getItem("token"),
+    expiresAt: localStorage.getItem("expiresAt"),
   }
 }
 
@@ -21,6 +23,7 @@ export function clearAccount() {
   localStorage.removeItem("id");
   localStorage.removeItem("firstname");
   localStorage.removeItem("lastname");
-  localStorage.removeItem("token");
   localStorage.removeItem("level");
+  localStorage.removeItem("token");
+  localStorage.removeItem("expiresAt");
 }
