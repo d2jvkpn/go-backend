@@ -11,10 +11,12 @@ import (
 	"backend-api/pkg/structs"
 
 	"github.com/d2jvkpn/errx"
+	"github.com/google/uuid"
 	// "go.opentelemetry.io/otel/attribute"
 	"github.com/d2jvkpn/gotk/ginx"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/trace"
+	"go.uber.org/zap"
 )
 
 type LoginRequest struct {
@@ -109,6 +111,20 @@ func AccountLogout(ctx context.Context, key string) (err *errx.ErrX) {
 
 	if err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func ChangePassword(ctx context.Context, input mod_user.ChangePassword, accountId uuid.UUID, key string) (
+	err *errx.ErrX) {
+	if err = input.Do(ctx, accountId); err != nil {
+		return nil
+	}
+
+	if err = settings.CacheRemoveToken(ctx, key); err != nil {
+		settings.Logger.Named("biz_user").Error("CacheRemoveToken", zap.Any("error", &err))
+		err = nil
 	}
 
 	return nil

@@ -81,6 +81,13 @@ definitions:
         type: string
         x-order: "03"
     type: object
+  mod_user.ChangePassword:
+    properties:
+      newPassword:
+        type: string
+      oldPassword:
+        type: string
+    type: object
   structs.ResponseOK:
     properties:
       code:
@@ -106,6 +113,22 @@ definitions:
 info:
   contact: {}
 paths:
+  /api/v1/auth/account/change_password:
+    post:
+      consumes:
+      - application/json
+      description: Change the password of an account
+      parameters:
+      - description: oldPasword newPassword
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/mod_user.ChangePassword'
+      responses: {}
+      summary: Change Password
+      tags:
+      - account::change_password
   /api/v1/auth/account/logout:
     post:
       description: '...'

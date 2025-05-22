@@ -15,6 +15,30 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/v1/auth/account/change_password": {
+            "post": {
+                "description": "Change the password of an account",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "account::change_password"
+                ],
+                "summary": "Change Password",
+                "parameters": [
+                    {
+                        "description": "oldPasword newPassword",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/mod_user.ChangePassword"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/api/v1/auth/account/logout": {
             "post": {
                 "description": "...",
@@ -165,6 +189,17 @@ const docTemplate = `{
                     "type": "integer",
                     "x-order": "23",
                     "example": 1715008592
+                }
+            }
+        },
+        "mod_user.ChangePassword": {
+            "type": "object",
+            "properties": {
+                "newPassword": {
+                    "type": "string"
+                },
+                "oldPassword": {
+                    "type": "string"
                 }
             }
         },

@@ -38,6 +38,16 @@ func GetAuthAccount(ctx *gin.Context) (auth *structs.AuthAccount, err *errx.ErrX
 }
 */
 
+func GetAccountId(ctx *gin.Context) (accountId uuid.UUID, err *errx.ErrX) {
+	var e error
+
+	if accountId, e = utils.UUIDFromString(ctx.GetString("accountId")); e != nil {
+		return accountId, structs.InternalError(e).WithCode("context_no_value")
+	}
+
+	return accountId, nil
+}
+
 // parameter must exists and not null
 func QueryUUID(ctx *gin.Context, key string) (id uuid.UUID, err *errx.ErrX) {
 	var (

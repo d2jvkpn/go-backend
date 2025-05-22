@@ -22,6 +22,7 @@ func LoadAuth(router *gin.RouterGroup, handlers ...gin.HandlerFunc) {
 	})
 
 	group.POST("/account/logout", accountLogout)
+	group.POST("/account/change_password", accountChangePassword)
 }
 
 func LoadWebsocket(router *gin.RouterGroup, handlers ...gin.HandlerFunc) {

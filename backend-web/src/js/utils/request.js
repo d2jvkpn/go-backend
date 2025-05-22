@@ -108,7 +108,7 @@ service.interceptors.response.use(
       err = new ApiError(data.code, data.msg, details)
     } else { // Unexpected
       console.log(`!!! Got UnknownError: ${err}`)
-      err = new ApiError("", `Unknown Error: ${err.message}`, { status: err.response.status, kind: "", raw: err })
+      err = new ApiError("", `Unknown Error: ${err.msg}`, { status: err.response.status, kind: "", raw: err })
     }
 
     /*
@@ -120,6 +120,27 @@ service.interceptors.response.use(
     } else if (err instanceof SyntaxError) {
       ElMessage.warn(`SyntaxError`);
       err = new ApiError("SyntaxError", "syntax error", { raw: err })
+    }
+    */
+
+    /*
+    if (error.response) {
+      const { status, data } = error.response
+      if (status === 401) {
+        ElMessage.error('Authentication failed, please login again')
+        clearAccount()
+        // go to login page
+      } else if (status === 400) {
+        ElMessage.error(data.message || 'Invalid request')
+      } else {
+        ElMessage.error(data.message || 'Failed to change password')
+      }
+    } else if (error.request) {
+      ElMessage.error('Network error, please try again later')
+    } else {
+      if (error.message) {
+        ElMessage.error(error.message)
+      }
     }
     */
 

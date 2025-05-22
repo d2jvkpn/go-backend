@@ -6,7 +6,7 @@ import (
 	// "net/http"
 
 	"backend-api/internal/biz/biz_user"
-	// "backend-api/internal/models"
+	"backend-api/internal/models/mod_user"
 	"backend-api/pkg/middlewares"
 	"backend-api/pkg/structs"
 
@@ -89,6 +89,55 @@ func accountLogout(ctx *gin.Context) {
 		structs.JsonErr(ctx, err)
 		return
 	}
+
+	ctx.Set("skipCacheUpdateToken", true)
+
+	structs.JsonOK(ctx)
+}
+
+// @Summary		Change Password
+// @Description	Change the password of an account
+// @Tags			account::change_password
+// @Accept			json
+// @Produces		json
+// @Param			request									body	mod_user.ChangePassword	true	"oldPasword newPassword"
+// @Router			/api/v1/auth/account/change_password	[post]
+func accountChangePassword(ctx *gin.Context) {
+	var (
+		err       *errx.ErrX
+		accountId uuid.UUID
+		input     mod_user.ChangePassword
+
+		tracer  trace.Tracer
+		span    trace.Span
+		otelCtx context.Context
+	)
+
+	tracer = otel.Tracer("api.accountChangePassword")
+	otelCtx, span = tracer.Start(ctx, middlewares.GetAPI(ctx))
+	// span = trace.SpanFromContext(ctx.Request.Context())
+	span.SetAttributes(attribute.String("requestId", ctx.GetString("requestId")))
+	defer span.End()
+
+	if accountId, err = GetAccountId(ctx); err != nil {
+		structs.JsonErr(ctx, err)
+		return
+	}
+
+	if err = BindJSON(ctx, &input); err != nil {
+		structs.JsonErr(ctx, err)
+		return
+	}
+
+	err = biz_user.ChangePassword(
+		otelCtx, input, accountId,
+		fmt.Sprintf("login:%s:%s", ctx.GetString("platform"), accountId),
+	)
+	if err != nil {
+		structs.JsonErr(ctx, err)
+		return
+	}
+	ctx.Set("skipCacheUpdateToken", true)
 
 	structs.JsonOK(ctx)
 }

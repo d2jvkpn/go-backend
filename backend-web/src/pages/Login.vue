@@ -95,7 +95,7 @@ const sumbitLogin = async () => {
       </el-form-item>
 
       <el-form-item>
-        <el-input type="password" v-model="password" placeholder="password" />
+        <el-input type="password" v-model="password" placeholder="password" show-password />
       </el-form-item>
 
       <div class="login-button">

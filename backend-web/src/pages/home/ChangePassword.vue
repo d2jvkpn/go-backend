@@ -1,12 +1,18 @@
 <script setup>
 import { ref, reactive } from 'vue'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElLoading } from 'element-plus'
+import { useRouter } from 'vue-router'
+
+import { clearAccount } from "@/js/stores/local.js"
+import { service } from  "@/js/utils/request.js"
 
 defineProps({
-  visible: Boolean,
+  visible: { type: Boolean },
 })
 
-const emit = defineEmits(['close', 'submit'])
+const router = useRouter();
+
+const emit = defineEmits(['close'])
 const formRef = ref()
 
 const form = reactive({ oldPassword: '', newPassword: '', confirmPassword: '' })
@@ -28,11 +34,18 @@ const rules = {
   newPassword: [{ required: true, message: 'Please enter new password', trigger: 'blur' }],
   confirmPassword: [
     { required: true, message: 'Please confirm password', trigger: 'blur' },
-    { validator: validator, trigger: 'blur' },
+    {
+      validator: validator,
+      trigger: 'blur',
+      min: 8,
+      max: 32,
+      pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{8,32}$/,
+      message: 'Password must be 8-32 chars with at least one uppercase, lowercase and number'
+    },
   ]
 }
 
-const submit = () => {
+const submitV1 = () => {
   formRef.value.validate((valid) => {
     if (!valid) {
       return
@@ -43,6 +56,36 @@ const submit = () => {
     ElMessage.success('The password has been successfully changed')
     emit('close')
   })
+}
+
+const submit = async () => {
+  const loading = ElLoading.service({
+    lock: true,
+    text: 'Changing password...',
+    background: 'rgba(0, 0, 0, 0.7)'
+  })
+
+  try {
+    const valid = await formRef.value.validate()
+    if (!valid) {
+      return
+    }
+    emit('close');
+
+    const response = await service.post('/api/v1/auth/account/change_password', {
+      oldPassword: form.oldPassword,
+      newPassword: form.newPassword
+    })
+
+    ElMessage.success('Password changed successfully')
+    clearAccount();
+    router.push('/login');
+  } catch (err) {
+    console.log(`!!! error: ${JSON.stringify(err)}, ${err.message}`)
+    ElMessage.error(err.message);
+  } finally {
+    loading?.close()
+  }
 }
 </script>
 
@@ -56,15 +99,15 @@ const submit = () => {
 
       <el-form ref="formRef" :model="form" :rules="rules" label-width="10rem" class="modal-form">
         <el-form-item label="old password" prop="oldPassword">
-          <el-input v-model="form.oldPassword" type="password" clearable />
+          <el-input v-model="form.oldPassword" type="password" show-password clearable/>
         </el-form-item>
 
         <el-form-item label="new password" prop="newPassword">
-          <el-input v-model="form.newPassword" type="password" show-password />
+          <el-input v-model="form.newPassword" type="password" show-password clearable/>
         </el-form-item>
 
         <el-form-item label="confirm password" prop="confirmPassword">
-          <el-input v-model="form.confirmPassword" type="password" show-password />
+          <el-input v-model="form.confirmPassword" type="password" show-password clearable/>
         </el-form-item>
       </el-form>
 

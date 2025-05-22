@@ -19,10 +19,6 @@ const props = defineProps({
 
 const showChangePassword = ref(false)
 
-const handlePasswordSubmit = () => {
-  showChangePassword.value = false
-}
-
 //
 const emit = defineEmits(['toggleSidebar'])
 

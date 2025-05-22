@@ -12,6 +12,7 @@ import (
 	"github.com/d2jvkpn/errx"
 	"github.com/d2jvkpn/gotk/ginx"
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 type HandleJwt func(context.Context, *ginx.JwtData) *errx.ErrX
@@ -29,6 +30,7 @@ func AllowLevels(levels ...string) HandleJwt {
 	}
 }
 
+/*
 func CacheUpdateToken(ctx context.Context, d *ginx.JwtData) (err *errx.ErrX) {
 	// check if cache token enabled or not internal
 	err = settings.CacheUpdateToken(ctx, fmt.Sprintf("login:%s:%s", d.Data["platform"], d.Subject), d.ID)
@@ -40,6 +42,7 @@ func CacheUpdateToken(ctx context.Context, d *ginx.JwtData) (err *errx.ErrX) {
 
 	return nil
 }
+*/
 
 func Auth(funcs ...HandleJwt) gin.HandlerFunc {
 	const Bearar = "Bearer "
@@ -94,5 +97,14 @@ func Auth(funcs ...HandleJwt) gin.HandlerFunc {
 		}
 
 		ctx.Next()
+
+		if ctx.GetBool("skipCacheUpdateToken") {
+			return
+		}
+
+		err = settings.CacheUpdateToken(ctx, fmt.Sprintf("login:%s:%s", data.Data["platform"], data.Subject), data.ID)
+		if err != nil {
+			settings.Logger.Named("internal").Error("CacheUpdateToken", zap.Any("error", &err))
+		}
 	}
 }

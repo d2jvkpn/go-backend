@@ -83,7 +83,7 @@ func (self *AccountLogin) Do(ctx context.Context) (account *Account, err *errx.E
 	account = new(Account)
 	// tx.Select("id", "name", "phone", "email", "status", "level", "status", "password", "expiration")
 
-	_, span = tracer.Start(ctx, "GetAccount")
+	_, span = tracer.Start(ctx, "getAccount")
 	e = tx.Take(account).Error
 	span.End()
 
@@ -111,9 +111,9 @@ func (self *AccountLogin) Do(ctx context.Context) (account *Account, err *errx.E
 	span.End()
 
 	if e != nil {
-		return account, structs.AuthError(e).
+		return account, structs.BizError(e).
 			WithCode("wrong_account_or_password").
-			WithMsg("")
+			WithMsg("wrong account or password")
 	}
 
 	return account, nil
