@@ -1,4 +1,4 @@
-class ApiError extends Error {
+export class ApiError extends Error {
   constructor(code, msg, details = {}) {
     super(msg);
 
@@ -13,18 +13,36 @@ class ApiError extends Error {
       Error.captureStackTrace(this, ApiError);
     }
   }
+
+  toJSON() {
+    return {
+       name: this.name,
+       code: this.code,
+       msg: this.msg,
+       details: {
+         status: this.details.status,
+         kind: this.details.kind,
+         // no field raw
+         requestId: this.details.requestId,
+       }
+    };
+  }
 }
 
-function biz() {
-  throw new ApiError('not_exists', "account not found", { status: 404, requestId: "xxxx-xxxx" });
-}
+function newBizError() {
+  throw new ApiError(
+    "not_exists",
+    "account not found",
+    { status: 404, kind: "biz_error", requestId: "xxxx-xxxx" },
+  );
 
-try {
-  let ans = biz();
-} catch (err) {
-  // console.log((err instanceof Error) && (err instanceof ApiError));
-  // console.log(`${err}`);
-  console.log(`--> ApiError: code=${err.code}, msg=${err.msg}, details=${JSON.stringify(err.details)}`);
+  try {
+    let ans = newBizError();
+  } catch (err) {
+    // console.log((err instanceof Error) && (err instanceof ApiError));
+    // console.log(`${err}`);
+    console.log(`--> ApiError: code=${err.code}, msg=${err.msg}, details=${JSON.stringify(err.details)}`);
+  }
 }
 
 /*

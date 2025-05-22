@@ -4,7 +4,7 @@ go 1.24
 
 require (
 	github.com/brianvoe/gofakeit/v7 v7.2.1
-	github.com/d2jvkpn/errx v0.0.0-20250521125555-68c188403782
+	github.com/d2jvkpn/errx v0.0.0-20250521131728-c22ab8ea9fd5
 	github.com/d2jvkpn/gotk v0.0.0-20250519092226-f96d6137921b
 	github.com/d2jvkpn/gotk/cloud v0.0.0-20250519092226-f96d6137921b
 	github.com/d2jvkpn/gotk/ginx v0.0.0-20250519092226-f96d6137921b

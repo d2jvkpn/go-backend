@@ -27,6 +27,8 @@ func ErrStatus(err *errx.ErrX) (status int) {
 		status = http.StatusForbidden
 	case "biz_error": // 409
 		status = http.StatusConflict
+	case "too_many_requests":
+	    status = http.StatusTooManyRequests
 	case "internal_error": // 500
 		status = http.StatusInternalServerError
 	case "unavailable": // 503

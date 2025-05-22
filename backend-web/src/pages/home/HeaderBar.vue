@@ -6,7 +6,7 @@ import { ArrowDown, Fold, Expand } from '@element-plus/icons-vue'
 
 import ChangePassword from './ChangePassword.vue'
 // import { useUserStore } from '@/js/stores/user'
-import { logout } from "@/js/login.js"
+import { logout } from "@/js/_login.js"
 
 //
 const props = defineProps({

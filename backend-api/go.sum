@@ -24,8 +24,8 @@ github.com/cloudwego/base64x v0.1.5 h1:XPciSp1xaq2VCSt6lF0phncD4koWyULpl5bUxbfCy
 github.com/cloudwego/base64x v0.1.5/go.mod h1:0zlkT4Wn5C6NdauXdJRhSKRlJvmclQ1hhJgA0rcu/8w=
 github.com/cloudwego/iasm v0.2.0/go.mod h1:8rXZaNYT2n95jn+zTI1sDr+IgcD2GVs0nlbbQPiEFhY=
 github.com/cncf/udpa/go v0.0.0-20191209042840-269d4d468f6f/go.mod h1:M8M6+tZqaGXZJjfX53e64911xZQV5JYwmTeXPW+k8Sc=
-github.com/d2jvkpn/errx v0.0.0-20250521125555-68c188403782 h1:GAtG5tW7yRUqyW/y2CoaOynr3t3gdE4Olj6fnx7KRYI=
-github.com/d2jvkpn/errx v0.0.0-20250521125555-68c188403782/go.mod h1:D2xhe4Ui8Fps0z4nFLndOLFZNEG3BgSykMN5dz0TilQ=
+github.com/d2jvkpn/errx v0.0.0-20250521131728-c22ab8ea9fd5 h1:HNWSPnKM4A6fh7EQN5URJKj1kAHYPUgsced1QXWtz0Q=
+github.com/d2jvkpn/errx v0.0.0-20250521131728-c22ab8ea9fd5/go.mod h1:D2xhe4Ui8Fps0z4nFLndOLFZNEG3BgSykMN5dz0TilQ=
 github.com/d2jvkpn/gotk v0.0.0-20250519092226-f96d6137921b h1:rMidMxFRI6WhkDZgyAHEBLTx0ueniJrqJW2zcJoFtdQ=
 github.com/d2jvkpn/gotk v0.0.0-20250519092226-f96d6137921b/go.mod h1:U1aiY9F4RNDMcb54Ded33EaivugSLAuSIfpWyjrFLwo=
 github.com/d2jvkpn/gotk/cloud v0.0.0-20250519092226-f96d6137921b h1:r0h/s3mPY1nrKAwBVJ+zUJwVJaN4CTlEw4I3UmKL3Ng=
