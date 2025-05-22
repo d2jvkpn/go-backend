@@ -72,7 +72,11 @@ const sumbitLogin = async () => {
   }
 
   try {
-    const data = await service.post(`${import.meta.env.VITE_API_URL}/api/v1/open/account/login`, loginData)
+    const data = await service.post(
+      `${import.meta.env.VITE_API_URL}/api/v1/open/account/login?platform=web`,
+      loginData,
+    )
+
     setAccount(data)
     ElMessage.success(`Welcome back, ${data.firstname} ${data.lastname}!`)
     router.push('/home/dashboard')

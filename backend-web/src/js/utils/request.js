@@ -15,11 +15,17 @@ const service = axios.create({
 
 service.interceptors.request.use(
   config => {
+    /*
     config.params = {
       ...config.params,
       _platform: 'web',
       // _version: '1.0'
     }
+    */
+
+    let version = localStorage.getItem("version");
+    let env = localStorage.getItem("env");
+    config.headers['x-client'] = `platform=web; version=${version}; env=${env}`
 
     /*
     if (['post', 'put', 'patch'].includes(config.method?.toLowerCase())) {

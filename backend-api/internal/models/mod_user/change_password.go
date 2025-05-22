@@ -45,7 +45,7 @@ func (self *ChangePassword) Do(ctx context.Context, accountId uuid.UUID) (err *e
 	}
 
 	if account.Status != "activated" {
-		return structs.BizError(fmt.Errorf("account not activated"))
+		return structs.BizError(fmt.Errorf("account not activated")).WithCode("account_not_activated")
 	}
 
 	_, span = tracer.Start(ctx, "bcrypt.CompareHashAndPassword")

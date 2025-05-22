@@ -172,7 +172,7 @@ func Cors(origins []string, maxAges ...time.Duration) gin.HandlerFunc {
 			"Content-Type",
 			"Content-Length",
 
-			"x-api",
+			"x-server",
 		},
 		AllowCredentials: true,
 		// AllowOriginFunc:  func(origin string) bool { return origin == "https://github.com" },

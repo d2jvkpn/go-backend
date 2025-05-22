@@ -21,7 +21,7 @@ import (
 
 type LoginRequest struct {
 	mod_user.AccountLogin
-	Platform string `json:"-" form:"_platform" extensions:"x-order=04"`
+	Platform string `json:"-" form:"platform" extensions:"x-order=04"`
 
 	TokenId string `json:"-" form:"-" swaggerignore:"true"`
 	IP      string `json:"-" form:"-" swaggerignore:"true"`
