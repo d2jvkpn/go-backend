@@ -7,13 +7,13 @@ import Home from './pages/Home.vue'
 //
 console.log(`==> import.meta.env: ${JSON.stringify(import.meta.env)}`);
 
-const config = ref({});
-
 onBeforeMount(() => {
   fetch(`${import.meta.env.VITE_BASE_PATH}/app.json`)
     .then((response) => response.json())
     .then((data) => {
-      config.value = data;
+      localStorage.setItem("apiUrl", data.apiUrl);
+      localStorage.setItem("version", data.version);
+      localStorage.setItem("env", import.meta.env.VITE_APP_ENV);
       console.log(`==> Got app.json: ${JSON.stringify(data)}`);
     })
     .catch(error => console.error(`!!! Error loading app.json: ${error}`));

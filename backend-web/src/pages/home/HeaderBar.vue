@@ -34,17 +34,17 @@ const confirmLogoutV1 = () => {
   ElMessageBox.confirm(
     'Are you sure you want to log out?',
     'Logout Confirmation',
-    { confirmButtonText: 'Logout', cancelButtonText: 'Cancel', type: 'warning' }
+    { confirmButtonText: 'Logout', cancelButtonText: 'Cancel', type: 'warning' },
   )
   .then(() => {
     // userStore.logout()
     // localStorage.removeItem('token')
-    clearAccount()
-    router.push('/login')
-    ElMessage.success('You have been logged out.')
+    clearAccount();
+    router.push('/login');
+    ElMessage.success('You have been logged out.');
   })
   .catch(() => {
-    ElMessage.info('Logout canceled.')
+    ElMessage.info('Logout canceled.');
   })
 }
 
@@ -56,15 +56,14 @@ const confirmLogout = async () => {
       { confirmButtonText: 'Logout', cancelButtonText: 'Cancel', type: 'warning' },
     );
 
-    await service.post(`${import.meta.env.VITE_API_URL}/api/v1/auth/account/logout`)
+    await service.post(`${import.meta.env.VITE_API_URL}/api/v1/auth/account/logout`);
 
-    clearAccount()
-    router.push('/login')
-    ElMessage.success('You have been logged out.')
+    ElMessage.success('You have been logged out.');
   } catch (err) {
-    ElMessage.error(err.response?.data?.msg || 'Logout failed')
+    ElMessage.error(err.response?.data?.msg || 'Logout failed');
   } finally {
-    // TODO
+    clearAccount();
+    router.push('/login');
   }
 }
 

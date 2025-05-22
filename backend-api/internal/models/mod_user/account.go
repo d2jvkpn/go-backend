@@ -177,9 +177,9 @@ func (self *CreateAccount) Do(ctx context.Context) (err *errx.ErrX) {
 		err = structs.BizError(e).WithCode("already_exists")
 		switch {
 		case strings.Contains(errStr, "_email_key\""):
-			err.WithMsg("email already exists")
+			err.WithCode("exists_email").WithMsg("email already exists")
 		case strings.Contains(errStr, "_phone_key\""):
-			err.WithMsg("email already exists")
+			err.WithCode("exists_phone").WithMsg("phone already exists")
 		default:
 			// TODO:
 		}

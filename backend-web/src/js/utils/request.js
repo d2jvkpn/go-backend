@@ -23,10 +23,14 @@ service.interceptors.request.use(
     }
     */
 
+    console.debug(`--> ${config.method}@${config.url}, ${JSON.stringify(config.params)}`)
+
     const token = localStorage.getItem("token")
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`
     }
+    // return Promise.reject(new Error(`!!! no token`))
+    // return Promise.reject(new ApiError("", "no token", {}))
 
     return config
   },
