@@ -9,7 +9,7 @@ config: |
   # path: configs/local.yaml
 
   http:
-    path: ""
+    path: /local
     allow_origins: ["*"]
     tls: false
     cer: configs/site.cer

@@ -77,7 +77,7 @@ func SetupHttp(release bool, config *viper.Viper) (err error) {
 	engine.Use(Cors(httpConfig.GetStringSlice("allow_origins")))
 
 	router = &engine.RouterGroup
-	if p := httpConfig.GetString("base_path"); p != "" {
+	if p := httpConfig.GetString("path"); p != "" {
 		*router = *(router.Group(p))
 	}
 
