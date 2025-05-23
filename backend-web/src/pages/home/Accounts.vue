@@ -198,14 +198,18 @@ onMounted(async () => {
       <el-option v-for="e in statuses" :value="e" :label="e" :key="`account::status::${e}`" />
     </el-select>
 
-    <el-button @click="handleReset"> Reset </el-button>
-    <!--el-button @click="handleSearch"> Search </el-button-->
+    <el-button type="warning" @click="handleReset"> Reset </el-button>
+    <!--el-button type="info" @click="handleSearch"> Search </el-button-->
 
   </div>
 
   <div class="toolbar-right">
+    <el-button type="danger" @click="deleteSelected" :disabled="!selectedRows.length">
+      Delete
+    </el-button>
+
     <el-dropdown trigger="click">
-      <el-button type="primary">
+      <el-button type="success">
         Columns <el-icon> <ArrowDown /> </el-icon>
       </el-button>
 
@@ -220,13 +224,9 @@ onMounted(async () => {
       </template>
     </el-dropdown>
 
-    <el-button type="success" @click="openCreateAccount">Create</el-button>
+    <el-button type="primary" @click="openCreateAccount">Create</el-button>
     <!--CreateAccount v-model:visible="openCreateAccount" @success="refreshData" /-->
     <CreateAccount v-model:visible="createAccountVisible" @success="handleSearch" />
-
-    <el-button type="danger" @click="deleteSelected" :disabled="!selectedRows.length">
-      Delete
-    </el-button>
   </div>
 </div>
 
