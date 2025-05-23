@@ -6,11 +6,13 @@ import (
 	"strings"
 
 	. "backend-api/internal/models"
+	"backend-api/internal/settings"
 	"backend-api/pkg/infra"
 	"backend-api/pkg/structs"
 	"backend-api/pkg/utils"
 
 	"github.com/d2jvkpn/errx"
+	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
@@ -20,7 +22,7 @@ type QueryAccounts struct {
 	// minimum: 15
 	// maximum: 100
 	// default: 15
-	PageSize int `json:"pageSize" form:"pageSize" validate:"omitempty,gte=15,lte=100" extensions:"x-order=01"`
+	PageSize int `json:"pageSize" form:"pageSize" validate:"omitempty,gte=10,lte=100" extensions:"x-order=01"`
 
 	// minimum: 1
 	PageIndex int `json:"pageIndex" form:"pageIndex" validate:"omitempty,gt=0" extensions:"x-order=02"`
@@ -33,15 +35,15 @@ type QueryAccounts struct {
 	// default: asc
 	Order string `form:"order" validate:"omitempty,oneof=asc desc" extensions:"x-order=04"`
 
-	Search string `json:"search" form:"search" extensions:"x-order=10"`
+	Keyword string `json:"keyword" form:"keyword" extensions:"x-order=10"`
 
 	// enum: admin,editor,reviewer,user,guest
 	// default:
 	Level string `json:"level" form:"level" validate:"omitempty,oneof=admin editor reviewer user guest" extensions:"x-order=11"`
 
-	// enum: created,activated,blocked,deleted
+	// enum: created,activated,blocked
 	// default: activated
-	Status string `json:"status" form:"status" validate:"omitempty,oneof=created activated blocked deleted" extensions:"x-order=12"`
+	Status string `json:"status" form:"status" validate:"omitempty,oneof=created activated blocked" extensions:"x-order=12"`
 }
 
 func (self *QueryAccounts) SetDefaults() {
@@ -75,6 +77,7 @@ func (self *QueryAccounts) Validate() (err *errx.ErrX) {
 	}
 
 	if e = _Validate.Struct(self); e != nil {
+		settings.Logger.Named("mod_user").Debug("validate", zap.Any("error", e))
 		// fmt.Println("!!! validate QueryAccounts:", e)
 		return structs.Invalid(e)
 	}
@@ -87,10 +90,11 @@ func (self *QueryAccounts) Validate() (err *errx.ErrX) {
 func (self *QueryAccounts) db(ctx context.Context, flip bool) *gorm.DB {
 	tx := Table(ctx, TABLE_UserAccounts+" t1")
 
-	if self.Search != "" {
+	// TODO: elasticsearch
+	if self.Keyword != "" {
 		tx = tx.Where(
-			"t1.firstname LIKE ? OR t1.lastname LIKE ? OR t1.email LIKE ?",
-			"%"+self.Search+"%", "%"+self.Search+"%", "%"+self.Search+"%",
+			"t1.firstname LIKE ? OR t1.lastname LIKE ? OR t1.phone LIKE ? OR t1.email LIKE ? OR ? = ANY(labels)",
+			"%"+self.Keyword+"%", "%"+self.Keyword+"%", "%"+self.Keyword+"%", "%"+self.Keyword+"%", self.Keyword,
 		)
 	}
 
@@ -100,6 +104,8 @@ func (self *QueryAccounts) db(ctx context.Context, flip bool) *gorm.DB {
 
 	if self.Status != "" {
 		tx = tx.Where("t1.status = ?", self.Status)
+	} else {
+		tx = tx.Where("t1.status != 'deleted'")
 	}
 
 	if flip {

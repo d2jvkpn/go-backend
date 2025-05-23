@@ -19,14 +19,13 @@ func TestFake01_Accounts(t *testing.T) {
 	)
 
 	// 1.
-	tx = Table(_TestCtx, TABLE_UserAccounts).
-		Where("'fake' = any(labels)").Delete(nil)
+	tx = Table(_TestCtx, TABLE_UserAccounts).Where("'fake' = any(labels)").Delete(nil)
 
 	require.Nil(t, tx.Error)
 	fmt.Printf("==> deleted fake account(s): %d\n", tx.RowsAffected)
 
 	// 2.
-	num := 10
+	num := 100
 	accounts = make([]CreateAccount, num)
 	gofakeit.Slice(&accounts)
 	for i := range accounts {
