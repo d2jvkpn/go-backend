@@ -73,8 +73,9 @@ const sumbitLogin = async () => {
 
   try {
     const data = await service.post(
-      `${import.meta.env.VITE_API_URL}/api/v1/open/account/login?platform=web`,
+      `${import.meta.env.VITE_API_URL}/api/v1/open/account/login`,
       loginData,
+      { params: {platform: "web"} },
     )
 
     setAccount(data)

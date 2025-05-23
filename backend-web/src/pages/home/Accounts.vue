@@ -22,7 +22,7 @@ const allColumns = [
 
 const visibleColumns = ref(['firstname', 'lastname', 'email', 'level', 'labels', 'status', 'createdAt'])
 
-const visibleTableColumns = computed(() =>
+const selectVisibleColumns = computed(() =>
   allColumns.filter(col => visibleColumns.value.includes(col.prop))
 )
 
@@ -35,7 +35,7 @@ const fetchData = async () => {
   error.value = null;
 
   try {
-     const data = await service.get("/api/v1/auth/account/query_accounts", { params: query.value });
+     const data = await service.get("/api/v1/auth/account/query_accounts", {}, { params: query.value });
 
      if (query.value.pageIndex == 1) {
        pageData.value.total = data.total;
@@ -88,11 +88,12 @@ function customSort (a, b) {
 //
 const selectedRows = ref([]);
 
-const deleteSelected = () => {
+const deleteSelected = async () => {
   const idsToDelete = selectedRows.value.map(row => row.id)
   // console.log(`~~~ idsToDelete: ${JSON.stringify(idsToDelete)}`)
   let s = idsToDelete.length > 1 ? "s" : ""
 
+  /*
   ElMessageBox.confirm(
     `Are you sure you want to delete ${idsToDelete.length} account${s}?`,
     `Delete Account${s} Confirmation`,
@@ -106,6 +107,26 @@ const deleteSelected = () => {
   .catch(() => {
     ElMessage.info(`Delete account${s} canceled.`)
   })
+  */
+
+  try {
+    await ElMessageBox.confirm(
+      `Are you sure you want to delete ${idsToDelete.length} account${s}?`,
+      `Delete Account${s} Confirmation`,
+      { type: 'warning', confirmButtonText: 'Yes', cancelButtonText: 'No' }
+    );
+
+    const data = await service.post(
+      "/api/v1/auth/account/delete_accounts",
+      {},
+      { params: { "accountId": idsToDelete } },
+    );
+
+    pageData.value.items = pageData.value.items.filter(item => !idsToDelete.includes(item.id));
+    ElMessage.success(`Deleted ${data.count}/${idsToDelete.length} account${s}`);
+  } catch (err) {
+    ElMessage.info(`Delete account${s} canceled.`)
+  }
 }
 
 /*
@@ -204,7 +225,7 @@ onMounted(async () => {
 
   <!--el-table-column prop="id" label="ID" sortable :sort-method="customSort"/-->
 
-  <el-table-column v-for="col in visibleTableColumns"
+  <el-table-column v-for="col in selectVisibleColumns"
     :prop="col.prop" :label="col.label" :key="col.prop" :sortable="col.sortable"
   />
 </el-table>

@@ -1,4 +1,5 @@
 import axios from 'axios'
+import qs from 'qs'
 import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
 
@@ -10,6 +11,7 @@ const router = useRouter();
 
 const service = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
+  paramsSerializer: params => qs.stringify(params, { arrayFormat: 'repeat' }),
   timeout: 5000,
 })
 

@@ -25,7 +25,10 @@ lint:
 	go fmt ./...
 	go vet ./...
 
+swag:
 	swag fmt --dir=internal/services
+	cd ../backend-utils && \
+	  swag init --dir=../backend-api/ --packagePrefix=backend-api --output=bin/backend-swagger/docs
 
 build:
 	target_name=main ../scripts/go_build.sh
@@ -38,6 +41,7 @@ release:
 run:
 	target_name=main ../scripts/go_build.sh
 	./target/main --config=configs/local.yaml -http.addr=:4011 -internal.addr=:4021 -grpc.addr=:4031
+
 
 #### image, image-api-dev
 image-local:

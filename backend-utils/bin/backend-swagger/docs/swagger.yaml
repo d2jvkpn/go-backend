@@ -211,6 +211,29 @@ paths:
       summary: Change Password
       tags:
       - account::change_password
+  /api/v1/auth/account/delete_accounts:
+    get:
+      consumes:
+      - application/json
+      description: '...'
+      parameters:
+      - collectionFormat: csv
+        description: uuids of accounts
+        in: query
+        items:
+          type: string
+        name: accountId
+        type: array
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: integer
+            type: object
+      summary: Delete accounts
+      tags:
+      - account::query
   /api/v1/auth/account/logout:
     post:
       description: '...'
@@ -222,7 +245,7 @@ paths:
       summary: Account logout
       tags:
       - account::logout
-  /api/v1/auth/account/query:
+  /api/v1/auth/account/query_accounts:
     get:
       consumes:
       - application/json
@@ -234,7 +257,7 @@ paths:
           default: 15
         in: query
         maximum: 100
-        minimum: 15
+        minimum: 10
         name: pageSize
         type: integer
         x-order: "01"
@@ -245,7 +268,7 @@ paths:
         x-order: "02"
       - description: |-
           enum: createdAt,updatedAt,firstname,lastname
-          default: createdAt
+          default: createdAt + desc
         enum:
         - createdAt
         - updatedAt
@@ -266,7 +289,7 @@ paths:
         type: string
         x-order: "04"
       - in: query
-        name: search
+        name: keyword
         type: string
         x-order: "10"
       - description: |-
@@ -283,13 +306,12 @@ paths:
         type: string
         x-order: "11"
       - description: |-
-          enum: created,activated,blocked,deleted
+          enum: created,activated,blocked
           default: activated
         enum:
         - created
         - activated
         - blocked
-        - deleted
         in: query
         name: status
         type: string

@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"fmt"
+
 	// "net/http"
 
 	"backend-api/internal/biz/biz_user"
@@ -19,14 +20,14 @@ import (
 	"go.opentelemetry.io/otel/trace"
 )
 
-// @Summary		Account login
-// @Description	login in with phone/email and password
-// @Tags			account::login
-// @Accept			json
-// @Produces		json
-// @Param			request						body		biz_user.LoginRequest	true	"login data"
-// @Success		200							{object}	biz_user.LoginResponse
-// @Router			/api/v1/open/account/login	[post]
+//	@Summary		Account login
+//	@Description	login in with phone/email and password
+//	@Tags			account::login
+//	@Accept			json
+//	@Produces		json
+//	@Param			request						body		biz_user.LoginRequest	true	"login data"
+//	@Success		200							{object}	biz_user.LoginResponse
+//	@Router			/api/v1/open/account/login	[post]
 func accountLogin(ctx *gin.Context) {
 	var (
 		err    *errx.ErrX
@@ -74,12 +75,12 @@ func accountLogin(ctx *gin.Context) {
 	structs.JsonOK(ctx, result)
 }
 
-// @Summary		Account logout
-// @Description	...
-// @Tags			account::logout
-// @Produces		json
-// @Success		200							{object}	structs.ResponseOK
-// @Router			/api/v1/auth/account/logout	[post]
+//	@Summary		Account logout
+//	@Description	...
+//	@Tags			account::logout
+//	@Produces		json
+//	@Success		200							{object}	structs.ResponseOK
+//	@Router			/api/v1/auth/account/logout	[post]
 func accountLogout(ctx *gin.Context) {
 	var (
 		key string
@@ -98,13 +99,13 @@ func accountLogout(ctx *gin.Context) {
 	structs.JsonOK(ctx)
 }
 
-// @Summary		Change Password
-// @Description	Change the password of an account
-// @Tags			account::change_password
-// @Accept			json
-// @Produces		json
-// @Param			request									body	mod_user.ChangePassword	true	"oldPasword newPassword"
-// @Router			/api/v1/auth/account/change_password	[post]
+//	@Summary		Change Password
+//	@Description	Change the password of an account
+//	@Tags			account::change_password
+//	@Accept			json
+//	@Produces		json
+//	@Param			request									body	mod_user.ChangePassword	true	"oldPasword newPassword"
+//	@Router			/api/v1/auth/account/change_password	[post]
 func accountChangePassword(ctx *gin.Context) {
 	var (
 		err       *errx.ErrX
@@ -145,14 +146,14 @@ func accountChangePassword(ctx *gin.Context) {
 	structs.JsonOK(ctx)
 }
 
-// @Summary		Query accounts
-// @Description	...
-// @Tags			account::query
-// @Accept			json
-// @Produces		json
-// @Param			query						query		mod_user.QueryAccounts	true	"parameters"
-// @Success		200							{object}	utils.PageResult[mod_user.Account]
-// @Router			/api/v1/auth/account/query	[get]
+//	@Summary		Query accounts
+//	@Description	...
+//	@Tags			account::query
+//	@Accept			json
+//	@Produces		json
+//	@Param			query								query		mod_user.QueryAccounts	true	"parameters"
+//	@Success		200									{object}	utils.PageResult[mod_user.Account]
+//	@Router			/api/v1/auth/account/query_accounts	[get]
 func queryAccounts(ctx *gin.Context) {
 	var (
 		err    *errx.ErrX
@@ -171,4 +172,31 @@ func queryAccounts(ctx *gin.Context) {
 	}
 
 	structs.JsonOK(ctx, result)
+}
+
+//	@Summary		Delete accounts
+//	@Description	...
+//	@Tags			account::query
+//	@Accept			json
+//	@Produces		json
+//	@Param			accountId								query		[]string		string	"uuids of accounts"
+//	@Success		200										{object}	map[string]int	'{"count": 32}'
+//	@Router			/api/v1/auth/account/delete_accounts	[get]
+func deleteAccounts(ctx *gin.Context) {
+	var (
+		err        *errx.ErrX
+		accountIds []uuid.UUID
+		count      int64
+	)
+
+	if accountIds, err = QueryUUIDs(ctx, "accountId"); err != nil {
+		structs.JsonErr(ctx, err)
+	}
+
+	if count, err = mod_user.DeleteAccounts(ctx, accountIds); err != nil {
+		structs.JsonErr(ctx, err)
+		return
+	}
+
+	structs.JsonOK(ctx, gin.H{"count": count})
 }
