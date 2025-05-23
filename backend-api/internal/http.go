@@ -89,7 +89,7 @@ func SetupHttp(release bool, config *viper.Viper) (err error) {
 	engine.SetHTMLTemplate(templ)
 
 	// 4. middlwares
-	notRoute, _ := json.Marshal(gin.H{"code": "no_route", "kind": "no_route", "msg": "..."})
+	notRoute, _ := json.Marshal(gin.H{"requestId": "", "code": "no_route", "kind": "no_route", "msg": ""})
 	engine.NoRoute(func(ctx *gin.Context) {
 		time.Sleep(1000 * time.Millisecond)
 
@@ -99,7 +99,7 @@ func SetupHttp(release bool, config *viper.Viper) (err error) {
 	})
 
 	apiLog = middlewares.NewAPILog(
-		settings.Logger.Named("api_log"),
+		settings.Logger.Named("api"),
 		settings.Logger.Level() == zapcore.DebugLevel,
 		func(ctx *gin.Context) ([]string, *zap.Field) {
 			var (

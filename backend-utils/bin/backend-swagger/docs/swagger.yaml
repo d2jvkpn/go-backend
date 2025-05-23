@@ -81,6 +81,63 @@ definitions:
         type: string
         x-order: "03"
     type: object
+  mod_user.Account:
+    properties:
+      createdAt:
+        description: created time RFC3339
+        type: string
+        x-order: "02"
+      email:
+        description: email address
+        example: john@noreply.local
+        maxLength: 128
+        minLength: 5
+        type: string
+        x-order: "08"
+      firstname:
+        description: firstname
+        example: John
+        maxLength: 24
+        minLength: 2
+        type: string
+        x-order: "05"
+      id:
+        description: account id
+        type: string
+        x-order: "01"
+      labels:
+        description: labels
+        items:
+          type: string
+        type: array
+        x-order: "10"
+      lastname:
+        description: lastname
+        example: John
+        maxLength: 24
+        minLength: 2
+        type: string
+        x-order: "06"
+      level:
+        description: level
+        type: string
+        x-order: "09"
+      phone:
+        description: Phone number
+        example: ^1[3456789][0-9]{9}$
+        maxLength: 20
+        minLength: 6
+        type: string
+        x-order: "07"
+      status:
+        description: account status
+        type: string
+        x-order: "04"
+      updatedAt:
+        description: updated time
+        type: string
+        x-order: "03"
+    type: object
   mod_user.ChangePassword:
     properties:
       newPassword:
@@ -92,7 +149,7 @@ definitions:
     properties:
       code:
         description: 'string: OK'
-        example: OK
+        example: ok
         type: string
         x-order: "02"
       data:
@@ -109,6 +166,19 @@ definitions:
         example: 3cc643bd-7f85-493e-8324-6e491db7b3d8
         type: string
         x-order: "01"
+    type: object
+  utils.PageResult-mod_user_Account:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/mod_user.Account'
+        type: array
+      pageIndex:
+        type: integer
+      pageSize:
+        type: integer
+      total:
+        type: integer
     type: object
 info:
   contact: {}
@@ -140,6 +210,86 @@ paths:
       summary: Account logout
       tags:
       - account::logout
+  /api/v1/auth/account/query:
+    get:
+      consumes:
+      - application/json
+      description: '...'
+      parameters:
+      - description: |-
+          minimum: 15
+          maximum: 100
+          default: 15
+        in: query
+        maximum: 100
+        minimum: 15
+        name: pageSize
+        type: integer
+        x-order: "01"
+      - description: 'minimum: 1'
+        in: query
+        name: pageIndex
+        type: integer
+        x-order: "02"
+      - description: |-
+          enum: createdAt,updatedAt,firstname,lastname
+          default: createdAt
+        enum:
+        - createdAt
+        - updatedAt
+        - firstname
+        - lastname
+        in: query
+        name: sort
+        type: string
+        x-order: "03"
+      - description: |-
+          enum: asc,desc
+          default: asc
+        enum:
+        - asc
+        - desc
+        in: query
+        name: order
+        type: string
+        x-order: "04"
+      - in: query
+        name: search
+        type: string
+        x-order: "10"
+      - description: |-
+          enum: admin,editor,reviewer,user,guest
+          default:
+        enum:
+        - admin
+        - editor
+        - reviewer
+        - user
+        - guest
+        in: query
+        name: level
+        type: string
+        x-order: "11"
+      - description: |-
+          enum: created,activated,blocked,deleted
+          default: activated
+        enum:
+        - created
+        - activated
+        - blocked
+        - deleted
+        in: query
+        name: status
+        type: string
+        x-order: "12"
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.PageResult-mod_user_Account'
+      summary: Query accounts
+      tags:
+      - account::query
   /api/v1/open/account/login:
     post:
       consumes:

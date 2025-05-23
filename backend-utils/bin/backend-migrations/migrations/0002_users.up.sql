@@ -1,7 +1,8 @@
-CREATE TYPE account_status AS ENUM('created', 'activated', 'blocked', 'deleted');
-
 CREATE TYPE account_level AS ENUM('admin', 'editor', 'reviewer', 'user', 'guest');
 -- CREATE TYPE account_roles AS ENUM();
+
+CREATE TYPE account_status AS ENUM('created', 'activated', 'blocked', 'deleted');
+
 
 CREATE TABLE user_accounts (
   id          uuid DEFAULT gen_random_uuid(),

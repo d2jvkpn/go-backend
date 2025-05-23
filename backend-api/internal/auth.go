@@ -45,34 +45,34 @@ func CacheUpdateToken(ctx context.Context, d *ginx.JwtData) (err *errx.ErrX) {
 */
 
 func Auth(funcs ...HandleJwt) gin.HandlerFunc {
-	const Bearar = "Bearer "
+	const Bearer = "Bearer "
 
 	return func(ctx *gin.Context) {
 		// settings.JwtHAC
 		var (
 			e      error
-			bearar string
+			bearer string
 			code   string
 			err    *errx.ErrX
 			data   *ginx.JwtData
 		)
 
-		bearar = ctx.GetHeader("Authorization")
+		bearer = ctx.GetHeader("Authorization")
 
 		handleError := func() {
 			structs.JsonErr(ctx, err)
 			ctx.Abort()
 		}
 
-		// if bearar[:7] != "Bearar " {
-		if !strings.HasPrefix(bearar, Bearar) {
+		// if bearer[:7] != "Bearer " {
+		if !strings.HasPrefix(bearer, Bearer) {
 			err = structs.AuthError(fmt.Errorf("...")).WithCode("invalid_token")
 
 			handleError()
 			return
 		}
 
-		if data, code, e = settings.JwtHMAC.Auth(bearar[len(Bearar):]); e != nil {
+		if data, code, e = settings.JwtHMAC.Auth(bearer[len(Bearer):]); e != nil {
 			if code == "token_expired" {
 				err = structs.AuthError(e).WithMsg("token expired")
 			} else {

@@ -9,6 +9,7 @@ import (
 	"backend-api/internal/models/mod_user"
 	"backend-api/pkg/middlewares"
 	"backend-api/pkg/structs"
+	"backend-api/pkg/utils"
 
 	"github.com/d2jvkpn/errx"
 	"github.com/gin-gonic/gin"
@@ -142,4 +143,32 @@ func accountChangePassword(ctx *gin.Context) {
 	ctx.Set("skipCacheUpdateToken", true)
 
 	structs.JsonOK(ctx)
+}
+
+// @Summary		Query accounts
+// @Description	...
+// @Tags			account::query
+// @Accept			json
+// @Produces		json
+// @Param			query						query		mod_user.QueryAccounts	true	"parameters"
+// @Success		200							{object}	utils.PageResult[mod_user.Account]
+// @Router			/api/v1/auth/account/query	[get]
+func queryAccounts(ctx *gin.Context) {
+	var (
+		err    *errx.ErrX
+		input  mod_user.QueryAccounts
+		result *utils.PageResult[mod_user.Account]
+	)
+
+	if err = BindQuery(ctx, &input); err != nil {
+		structs.JsonErr(ctx, err)
+		return
+	}
+
+	if result, err = input.Do(ctx); err != nil {
+		structs.JsonErr(ctx, err)
+		return
+	}
+
+	structs.JsonOK(ctx, result)
 }

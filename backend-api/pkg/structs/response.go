@@ -59,7 +59,7 @@ type ResponseItem[T any] struct {
 	Code string `json:"code" example:"ok" extensions:"x-order=02"`
 
 	Data struct {
-		Item T `json:"item" swaggertype:"object,string" example:"answer:hello,value:42"`
+		Item T `json:"item" swaggertype:"object,string" example:"answer:hello,value:10"`
 	} `json:"data,omitempty" extensions:"x-order=03"`
 }
 
@@ -83,12 +83,11 @@ type ResponseErr struct {
 	RequestId string `json:"requestId" example:"3cc643bd-7f85-493e-8324-6e491db7b3d8" extensions:"x-order=01"`
 
 	// string: error code(BadRequest....)
-	Code string `json:"code" example:"BadRequest" extensions:"x-order=02"`
-
+	Code string `json:"code" example:"invalid_parameter" extensions:"x-order=02"`
 	// string: error kind(invalid_parameter)
-	Kind string `json:"kind" example:"invalid_parameter" extensions:"x-order=03"`
+	Kind string `json:"kind" example:"incorrect_uuid" extensions:"x-order=03"`
 
-	// Option<string>: notification msg
+	// Option<string>: notification message
 	Msg string `json:"msg" example:"no account id" extensions:"x-order=04"`
 }
 
