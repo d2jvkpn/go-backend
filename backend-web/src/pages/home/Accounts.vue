@@ -220,7 +220,7 @@ onMounted(async () => {
       </template>
     </el-dropdown>
 
-    <el-button type="primary" @click="openCreateAccount">Create</el-button>
+    <el-button type="success" @click="openCreateAccount">Create</el-button>
     <!--CreateAccount v-model:visible="openCreateAccount" @success="refreshData" /-->
     <CreateAccount v-model:visible="createAccountVisible" @success="handleSearch" />
 
