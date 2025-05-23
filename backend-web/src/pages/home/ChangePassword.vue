@@ -95,7 +95,8 @@ const submit = async () => {
   <div v-if="visible" class="overlay">
     <div class="modal">
       <header class="modal-header"> 🔒 Change Password </header>
-      <hr style="color: #bbb">
+      <!--hr style="color: #bbb"-->
+      <el-divider style="margin: 0 0 20px 0" />
 
       <el-form ref="formRef" :model="form" :rules="rules" label-width="10rem" class="modal-form">
         <el-form-item label="old password" prop="oldPassword">

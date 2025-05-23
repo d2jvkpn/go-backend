@@ -6,13 +6,24 @@ import { ArrowDown } from '@element-plus/icons-vue'
 // import { hello } from "@/js/_hello.js"
 // hello()
 import { service } from "@/js/utils/request.js";
+import CreateAccount from './CreateAccount.vue'
 
-//
+
+// create an account
+const createAccountVisible = ref(false)
+
+function openCreateAccount() {
+  console.log("==> openCreateAccount")
+  createAccountVisible.value = true
+}
+
+// show accounts table
 const allColumns = [
   { prop: 'id',         label: 'ID' },
   { prop: 'firstname',  label: 'Firstname' },
   { prop: 'lastname',   label: 'Lastname' },
   { prop: 'email',      label: 'Email' },
+  { prop: 'phone',      label: 'Phone' },
   { prop: 'level',      label: 'Level' },
   { prop: 'labels',     label: 'Labels' },
   { prop: 'status',     label: 'Status', sortable: true },
@@ -20,12 +31,14 @@ const allColumns = [
   { prop: 'updatedAt', label: 'updatedAt', sortable: true },
 ]
 
-const visibleColumns = ref(['firstname', 'lastname', 'email', 'level', 'labels', 'status', 'createdAt'])
+const visibleColumns = ref(['firstname', 'lastname', 'email', 'phone', 'level', 'labels', 'status', 'createdAt'])
 
 const selectVisibleColumns = computed(() =>
   allColumns.filter(col => visibleColumns.value.includes(col.prop))
 )
 
+
+// fetch accounts
 const pageData = ref({ total: 0, items: [] })
 const loading = ref(false)
 const error = ref(null);
@@ -49,7 +62,7 @@ const fetchData = async () => {
   }
 };
 
-//
+// search bar
 const levels = ['admin', 'editor', 'reviewer', 'user', 'guest'];
 const statuses = ["created", "activated", "blocked"]
 
@@ -187,6 +200,7 @@ onMounted(async () => {
 
     <el-button @click="handleReset"> Reset </el-button>
     <!--el-button @click="handleSearch"> Search </el-button-->
+
   </div>
 
   <div class="toolbar-right">
@@ -206,6 +220,10 @@ onMounted(async () => {
       </template>
     </el-dropdown>
 
+    <el-button type="primary" @click="openCreateAccount">Create</el-button>
+    <!--CreateAccount v-model:visible="openCreateAccount" @success="refreshData" /-->
+    <CreateAccount v-model:visible="createAccountVisible" @success="handleSearch" />
+
     <el-button type="danger" @click="deleteSelected" :disabled="!selectedRows.length">
       Delete
     </el-button>
@@ -224,7 +242,6 @@ onMounted(async () => {
   <el-table-column type="selection" width="50" />
 
   <!--el-table-column prop="id" label="ID" sortable :sort-method="customSort"/-->
-
   <el-table-column v-for="col in selectVisibleColumns"
     :prop="col.prop" :label="col.label" :key="col.prop" :sortable="col.sortable"
   />

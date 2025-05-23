@@ -20,6 +20,33 @@ import (
 	"go.opentelemetry.io/otel/trace"
 )
 
+//	@Summary		Create an account
+//	@Description	...
+//	@Tags			account::create_account
+//	@Accept			json
+//	@Produces		json
+//	@Param			request								body		mod_user.CreateAccount	true	"account data"
+//	@Success		200									{object}	map[string]string
+//	@Router			/api/v1/auth/account/create_account	[post]
+func createAccount(ctx *gin.Context) {
+	var (
+		err   *errx.ErrX
+		input mod_user.CreateAccount
+	)
+
+	if err = BindJSON(ctx, &input); err != nil {
+		structs.JsonErr(ctx, err)
+		return
+	}
+
+	if err = input.Do(ctx); err != nil {
+		structs.JsonErr(ctx, err)
+		return
+	}
+
+	structs.JsonOK(ctx, gin.H{"accountId": input.Id})
+}
+
 //	@Summary		Account login
 //	@Description	login in with phone/email and password
 //	@Tags			account::login

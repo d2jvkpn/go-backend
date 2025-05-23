@@ -12,9 +12,9 @@ import { service } from  "@/js/utils/request.js"
 
 //
 const props = defineProps({
-  firstname: String,
-  lastname: String,
-  isSidebarHidden: Boolean,
+  firstname: { type: String },
+  lastname: { type: String },
+  isSidebarHidden: { type: Boolean },
 })
 
 const showChangePassword = ref(false)

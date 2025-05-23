@@ -11,9 +11,10 @@ var (
 	ACCOUNT_Name_Min = 2
 	ACCOUNT_Name_Max = 24
 
-	_ACCOUNT_Phone = regexp.MustCompile(`^1[3456789]\d{9}$`)
+	//_ACCOUNT_Phone = regexp.MustCompile(`^1[3456789]\d{9}$`)
+	_ACCOUNT_Phone = regexp.MustCompile(`^\d{6,20}$`)
 
-	_ACCOUNT_Password = regexp.MustCompile(`^[a-zA-Z0-9]{16,64}$`) // !@.-_*
+	_ACCOUNT_Password = regexp.MustCompile(`^[a-zA-Z0-9]{8,32}$`) // !@.-_*
 
 	_ACCOUNT_PasswordContains = []*regexp.Regexp{
 		regexp.MustCompile(`[a-z]\+`),

@@ -35,7 +35,8 @@ type QueryAccounts struct {
 	// default: asc
 	Order string `form:"order" validate:"omitempty,oneof=asc desc" extensions:"x-order=04"`
 
-	Keyword string `json:"keyword" form:"keyword" extensions:"x-order=10"`
+	// maxLen: 32
+	Keyword string `json:"keyword" form:"keyword" validate:"max=32" extensions:"x-order=10"`
 
 	// enum: admin,editor,reviewer,user,guest
 	// default:

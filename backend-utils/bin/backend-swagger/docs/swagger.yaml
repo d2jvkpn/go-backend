@@ -157,6 +157,8 @@ definitions:
       oldPassword:
         type: string
     type: object
+  mod_user.CreateAccount:
+    type: object
   structs.ResponseOK:
     properties:
       code:
@@ -211,6 +213,28 @@ paths:
       summary: Change Password
       tags:
       - account::change_password
+  /api/v1/auth/account/create_account:
+    post:
+      consumes:
+      - application/json
+      description: '...'
+      parameters:
+      - description: account data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/mod_user.CreateAccount'
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create an account
+      tags:
+      - account::create_account
   /api/v1/auth/account/delete_accounts:
     get:
       consumes:
@@ -288,7 +312,9 @@ paths:
         name: order
         type: string
         x-order: "04"
-      - in: query
+      - description: 'maxLen: 32'
+        in: query
+        maxLength: 32
         name: keyword
         type: string
         x-order: "10"

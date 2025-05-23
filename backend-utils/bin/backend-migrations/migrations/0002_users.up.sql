@@ -13,7 +13,7 @@ CREATE TABLE user_accounts (
   firstname  varchar(24) NOT NULL, -- UNIQUE,
   lastname   varchar(24) NOT NULL,
   phone      varchar(20) DEFAULT NULL UNIQUE,
-  email      varchar(128) DEFAULT NULL UNIQUE,
+  email      varchar(64) DEFAULT NULL UNIQUE,
   level      account_level NOT NULL,
   labels     varchar[] NOT NULL DEFAULT array[]::varchar[],
 
