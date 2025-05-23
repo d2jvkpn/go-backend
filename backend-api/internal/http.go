@@ -2,12 +2,12 @@ package internal
 
 import (
 	"crypto/tls"
-	"errors"
-	"net"
-	// "fmt"
 	"encoding/json"
+	"errors"
+	"fmt"
 	"html/template"
 	"io/fs"
+	"net"
 	"net/http"
 	"time"
 
@@ -74,7 +74,16 @@ func SetupHttp(release bool, config *viper.Viper) (err error) {
 	// engine.MaxMultipartMemory = HTTP_MaxMultipartMemory // ??
 
 	// engine.Use(Cors(config.GetString("cors")))
-	engine.Use(Cors(httpConfig.GetStringSlice("allow_origins")))
+	engine.Use(
+		Cors(httpConfig.GetStringSlice("allow_origins")),
+		func(ctx *gin.Context) {
+			ctx.Header("x-server", fmt.Sprintf(
+				"app=%s; version=%s",
+				settings.Project.GetString("app_name"),
+				settings.Project.GetString("app_version"),
+			))
+		},
+	)
 
 	router = &engine.RouterGroup
 	if p := httpConfig.GetString("path"); p != "" {

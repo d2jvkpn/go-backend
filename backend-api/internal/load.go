@@ -28,7 +28,8 @@ func Load(project *viper.Viper) (err error) {
 		config  *viper.Viper
 	)
 
-	appName = project.GetString("app_name") + ".api"
+	settings.Project = project
+	appName = project.GetString("app_name")
 	release = project.GetBool("meta.release")
 	ctx, cancel = context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()

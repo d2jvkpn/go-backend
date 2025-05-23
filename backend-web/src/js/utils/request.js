@@ -25,7 +25,7 @@ service.interceptors.request.use(
 
     let version = localStorage.getItem("version");
     let env = localStorage.getItem("env");
-    config.headers['x-client'] = `platform=web; version=${version}; env=${env}`
+    config.headers['x-client'] = `app=backend-web; version=${version}; env=${env}`
 
     /*
     if (['post', 'put', 'patch'].includes(config.method?.toLowerCase())) {

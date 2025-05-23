@@ -13,6 +13,7 @@ import (
 
 var (
 	Config   *viper.Viper
+	Project  *viper.Viper
 	Logger   *gotk.ZapLogger
 	WsServer *ws.Server
 	JwtHMAC  *ginx.JwtHMAC

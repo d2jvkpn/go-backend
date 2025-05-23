@@ -20,10 +20,11 @@ definitions:
         type: string
         x-order: "02"
       email:
-        description: email address
-        example: john@noreply.local
-        maxLength: 128
-        minLength: 5
+        description: |-
+          email address
+          minLength: 5
+          maxLength: 128
+          example: john@noreply.local
         type: string
         x-order: "08"
       expiresAt:
@@ -32,10 +33,11 @@ definitions:
         type: integer
         x-order: "23"
       firstname:
-        description: firstname
-        example: John
-        maxLength: 24
-        minLength: 2
+        description: |-
+          firstname
+          minLength: 2
+          maxLength: 24
+          example: John
         type: string
         x-order: "05"
       id:
@@ -49,21 +51,25 @@ definitions:
         type: array
         x-order: "10"
       lastname:
-        description: lastname
-        example: John
-        maxLength: 24
-        minLength: 2
+        description: |-
+          lastname
+          minLength: 2
+          maxLength: 24
+          example: John
         type: string
         x-order: "06"
       level:
-        description: level
+        description: |-
+          level
+          enum: admin,editor,reviewer,user,guest
         type: string
         x-order: "09"
       phone:
-        description: Phone number
-        example: ^1[3456789][0-9]{9}$
-        maxLength: 20
-        minLength: 6
+        description: |-
+          Phone number
+          minLength: 6
+          maxLength: 20
+          example: ^1[3456789][0-9]{9}$
         type: string
         x-order: "07"
       status:
@@ -88,17 +94,19 @@ definitions:
         type: string
         x-order: "02"
       email:
-        description: email address
-        example: john@noreply.local
-        maxLength: 128
-        minLength: 5
+        description: |-
+          email address
+          minLength: 5
+          maxLength: 128
+          example: john@noreply.local
         type: string
         x-order: "08"
       firstname:
-        description: firstname
-        example: John
-        maxLength: 24
-        minLength: 2
+        description: |-
+          firstname
+          minLength: 2
+          maxLength: 24
+          example: John
         type: string
         x-order: "05"
       id:
@@ -112,21 +120,25 @@ definitions:
         type: array
         x-order: "10"
       lastname:
-        description: lastname
-        example: John
-        maxLength: 24
-        minLength: 2
+        description: |-
+          lastname
+          minLength: 2
+          maxLength: 24
+          example: John
         type: string
         x-order: "06"
       level:
-        description: level
+        description: |-
+          level
+          enum: admin,editor,reviewer,user,guest
         type: string
         x-order: "09"
       phone:
-        description: Phone number
-        example: ^1[3456789][0-9]{9}$
-        maxLength: 20
-        minLength: 6
+        description: |-
+          Phone number
+          minLength: 6
+          maxLength: 20
+          example: ^1[3456789][0-9]{9}$
         type: string
         x-order: "07"
       status:

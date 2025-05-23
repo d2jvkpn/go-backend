@@ -25,7 +25,9 @@ func LoadAuth(router *gin.RouterGroup, handlers ...gin.HandlerFunc) {
 
 	group.POST("/account/logout", accountLogout)
 	group.POST("/account/change_password", accountChangePassword)
-	group.GET("/account/query_accounts", queryAccounts)
+
+	admin := group.Use(AllowLevels([]string{"admin"}))
+	admin.GET("/account/query_accounts", queryAccounts)
 }
 
 func LoadWebsocket(router *gin.RouterGroup, handlers ...gin.HandlerFunc) {

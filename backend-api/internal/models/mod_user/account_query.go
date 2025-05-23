@@ -74,6 +74,7 @@ func (self *QueryAccounts) Validate() (err *errx.ErrX) {
 	}
 
 	if e = _Validate.Struct(self); e != nil {
+		// fmt.Println("!!! validate QueryAccounts:", e)
 		return structs.Invalid(e)
 	}
 	self.SetDefaults()

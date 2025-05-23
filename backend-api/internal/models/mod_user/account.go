@@ -33,38 +33,74 @@ type Account struct {
 	Status string `json:"status,omitempty" gorm:"column:status;->;<-:create" fake:"activated" extensions:"x-order=04"`
 
 	// firstname
-	Firstname string `json:"firstname" gorm:"column:firstname" minLength:"2" maxLength:"24" example:"John" fake:"{firstname}" extensions:"x-order=05"`
+	// minLength: 2
+	// maxLength: 24
+	// example: John
+	Firstname string `json:"firstname" gorm:"column:firstname" fake:"{firstname}" extensions:"x-order=05"`
+
 	// lastname
-	Lastname string `json:"lastname" gorm:"column:lastname" minLength:"2" maxLength:"24" example:"John" fake:"{lastname}" extensions:"x-order=06"`
+	// minLength: 2
+	// maxLength: 24
+	// example: John
+	Lastname string `json:"lastname" gorm:"column:lastname" fake:"{lastname}" extensions:"x-order=06"`
+
 	// Phone number
-	Phone string `json:"phone" gorm:"column:phone;default:null" minLength:"6" maxLength:"20" example:"^1[3456789][0-9]{9}$" fake:"-" extensions:"x-order=07"` // fake:"{phone}"
+	// minLength: 6
+	// maxLength: 20
+	// example: ^1[3456789][0-9]{9}$
+	Phone string `json:"phone" gorm:"column:phone;default:null" fake:"-" extensions:"x-order=07"` // fake:"{phone}"
+
 	// email address
-	Email string `json:"email,omitempty" gorm:"column:email;default:null" minLength:"5" maxLength:"128"  example:"john@noreply.local" fake:"{email}" extensions:"x-order=08"`
+	// minLength: 5
+	// maxLength: 128
+	// example: john@noreply.local
+	Email string `json:"email,omitempty" gorm:"column:email;default:null" fake:"{email}" extensions:"x-order=08"`
+
 	// level
+	// enum: admin,editor,reviewer,user,guest
 	Level string `json:"level" gorm:"column:level" fake:"{randomstring:[admin,editor,reviewer,user,guest]}" extensions:"x-order=09"`
+
 	// labels
-	Labels pq.StringArray `json:"labels" gorm:"column:labels;type:varchar[]" fake:"fake" fakesize:"1" extensions:"x-order=10" swaggertype:"array,string"`
+	Labels pq.StringArray `json:"labels" gorm:"column:labels;type:varchar[]" fake:"fake" fakesize:"1" swaggertype:"array,string" extensions:"x-order=10"`
 
 	Password string `json:"-" gorm:"column:password" fake:"-" swaggerignore:"true"`
 }
 
 type CreateAccount struct {
 	Status string `json:"status,omitempty" gorm:"column:status;->;<-:create" validate:"oneof=created activated" fake:"activated" extensions:"x-order=04"`
+
 	// firstname
-	Firstname string `json:"firstname" gorm:"column:firstname" binding:"required" example:"John" fake:"{firstname}" extensions:"x-order=05"`
+	// example: John
+	Firstname string `json:"firstname" gorm:"column:firstname" validate:"required,min=2,max=32" fake:"{firstname}" extensions:"x-order=05"`
+
 	// lastname
-	Lastname string `json:"lastname" gorm:"column:lastname" binding:"required" example:"John" fake:"{lastname}" extensions:"x-order=06"`
+	// example: Doe
+	Lastname string `json:"lastname" gorm:"column:lastname" validate:"required,min=2,max=32" fake:"{lastname}" extensions:"x-order=06"`
+
 	// Phone number
-	Phone string `json:"phone" gorm:"column:phone;default:null" binding:"required,min=6,max=20" minLength:"6" maxLength:"20" example:"^1[3456789][0-9]{9}$" fake:"-" extensions:"x-order=07"`
+	// minLength: 6
+	// maxLength: 20
+	// example: ^1[3456789][0-9]{9}$
+	Phone string `json:"phone" gorm:"column:phone;default:null" validate:"required,min=6,max=20"  fake:"-" extensions:"x-order=07"`
+
 	// email address
-	Email string `json:"email,omitempty" gorm:"column:email;default:null" binding:"max=128" minLength:"5" maxLength:"128"  example:"john@noreply.local" fake:"{email}" extensions:"x-order=08"`
+	// minLength: 5
+	// maxLength: 128
+	// example: john@noreply.local
+	Email string `json:"email,omitempty" gorm:"column:email;default:null" validate:"min=5,max=128" fake:"{email}" extensions:"x-order=08"`
+
 	// level
-	Level string `json:"level" gorm:"column:level" validate:"oneof=admin editor reviewer user guest" fake:"{randomstring:[admin,editor,reviewer,user,guest]}" extensions:"x-order=09" swaggertype:"array,string"`
+	// required: true
+	// enum: admin,editor,reviewer,user,guest
+	Level string `json:"level" gorm:"column:level" validate:"required,oneof=admin editor reviewer user guest" fake:"{randomstring:[admin,editor,reviewer,user,guest]}" swaggertype:"array,string" extensions:"x-order=09"`
+
 	// labels
 	Labels pq.StringArray `json:"labels" gorm:"column:labels;type:varchar[]" fake:"fake" fakesize:"1" extensions:"x-order=10"`
 
 	// password: [a-z][A-Z][0-9][!@.-_*]
-	Password string `json:"password" gorm:"column:password" binding:"required,min=8,max=32" fake:"-" extensions:"x-order=11"`
+	// minLen: 8
+	// maxLen: 32
+	Password string `json:"password" gorm:"column:password" validate:"required,min=8,max=32" fake:"-" extensions:"x-order=11"`
 }
 
 func (self *Account) IsOK() (err *errx.ErrX) {
