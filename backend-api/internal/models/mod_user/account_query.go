@@ -2,7 +2,8 @@ package mod_user
 
 import (
 	"context"
-	// "fmt"
+	"fmt"
+	"strings"
 
 	. "backend-api/internal/models"
 	"backend-api/pkg/infra"
@@ -25,7 +26,7 @@ type QueryAccounts struct {
 	PageIndex int `json:"pageIndex" form:"pageIndex" validate:"omitempty,gt=0" extensions:"x-order=02"`
 
 	// enum: createdAt,updatedAt,firstname,lastname
-	// default: createdAt
+	// default: createdAt + desc
 	Sort string `form:"sort" validate:"omitempty,oneof=createdAt updatedAt firstname lastname" extensions:"x-order=03"`
 
 	// enum: asc,desc
@@ -83,14 +84,6 @@ func (self *QueryAccounts) Validate() (err *errx.ErrX) {
 	return nil
 }
 
-func (self *QueryAccounts) order() string {
-	if self.Order == "desc" {
-		return "t1." + utils.ToSnakeCase(self.Sort) + " DESC, t1.id"
-	} else {
-		return "t1." + utils.ToSnakeCase(self.Sort) + " ASC, t1.id"
-	}
-}
-
 func (self *QueryAccounts) db(ctx context.Context, flip bool) *gorm.DB {
 	tx := Table(ctx, TABLE_UserAccounts+" t1")
 
@@ -110,7 +103,8 @@ func (self *QueryAccounts) db(ctx context.Context, flip bool) *gorm.DB {
 	}
 
 	if flip {
-		tx = infra.GormFlip(tx.Order(self.order()), self.PageSize, self.PageIndex)
+		orderSeg := fmt.Sprintf("t1.%s %s, t1.id", utils.ToSnakeCase(self.Sort), strings.ToUpper(self.Order))
+		tx = infra.GormFlip(tx.Order(orderSeg), self.PageSize, self.PageIndex)
 	}
 
 	return tx
