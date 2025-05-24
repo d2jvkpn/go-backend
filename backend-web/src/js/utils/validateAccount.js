@@ -1,12 +1,17 @@
-const validateContact = (rule, value, callback) => {
-  const email = form.value.email?.trim()
-  const phone = form.value.phone?.trim()
+import { ElMessage } from 'element-plus'
+
+
+export function validateContact (form) {
+  const email = form.email?.trim()
+  const phone = form.phone?.trim()
+
   if (!email && !phone) {
     // Please enter at least an email or a phone number
-    callback(new Error('Either email or phone must be provided'))
-  } else {
-    callback()
+    ElMessage.warning('Either email or phone must be provided')
+    return false
   }
+
+  return true
 }
 
 const validateLabels = (rule, value, callback) => {
@@ -33,7 +38,6 @@ export const validateAccount = {
   firstname: [{ required: true, min: 2, max: 32, message: 'Please enter firstname', trigger: 'blur' }],
   lastname: [{ required: true, min: 2, max: 32, message: 'Please enter lastname', trigger: 'blur' }],
   email: [
-    { validator: validateContact, trigger: 'blur' },
     { type: 'email', message: 'invalid email format', trigger: 'blur' },
     { min: 5, max: 64, message: 'Email too long', trigger: 'blur' },
   ],

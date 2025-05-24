@@ -4,7 +4,7 @@ import { ElMessage, ElLoading } from 'element-plus'
 import cloneDeep from 'lodash/cloneDeep'
 
 import { service } from "@/js/utils/request.js"
-import { validateAccount } from "@/js/utils/validateAccount.js"
+import { validateAccount, validateContact } from "@/js/utils/validateAccount.js"
 
 const props = defineProps({
   visible: Boolean,
@@ -43,6 +43,10 @@ function addLabel ()  {
 }
 
 async function confirm() {
+  if (!validateContact(form)) {
+    return
+  }
+
   const valid = await formRef.value.validate()
   if (!valid) {
     return;
@@ -92,7 +96,7 @@ watch(() => props.visible, (visible) => {
 >
   <el-divider style="margin: 0 0 20px 0" />
 
-  <el-form :model="form" :rules="rules" ref="formRef" label-width="120px">
+  <el-form :model="form" :rules="validateAccount" ref="formRef" label-width="120px">
     <el-form-item label="ID"> <el-input :value="form.id" disabled /> </el-form-item>
 
     <el-form-item label="Firstname"> <el-input v-model="form.firstname"/> </el-form-item>

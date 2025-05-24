@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { ElMessage } from 'element-plus'
 
 import { service } from  "@/js/utils/request.js"
-import { validateAccount } from "@/js/utils/validateAccount.js"
+import { validateAccount, validateContact } from "@/js/utils/validateAccount.js"
 
 defineProps({
   visible: { type: Boolean },
@@ -40,6 +40,10 @@ const addLabel = () => {
 
 const submit = async () => {
   try {
+    if (!validateContact(form.value)) {
+      return
+    }
+
     const valid = await formRef.value.validate()
     if (!valid) {
       return;
@@ -75,7 +79,7 @@ const submit = async () => {
   <!--hr style="color: #bbb"-->
   <el-divider style="margin: 0 0 20px 0" />
 
-  <el-form :model="form" :rules="rules" ref="formRef" label-width="100px">
+  <el-form :model="form" :rules="validateAccount" ref="formRef" label-width="100px">
     <el-form-item label="Firstname" prop="firstname">
       <el-input v-model="form.firstname" placeholder="Enter firstname" />
     </el-form-item>
