@@ -41,8 +41,8 @@ async function confirm() {
 
   const loading = ElLoading.service({
     lock: true,
-    text: 'Changing password...',
-    background: 'rgba(0, 0, 0, 0.7)'
+    text: 'Updating status...',
+    background: 'rgba(0, 0, 0, 0.7)',
   })
 
   try {
@@ -56,7 +56,7 @@ async function confirm() {
     emit('update:visible', false)
     ElMessage.success('Status updated successfully')
   } catch (err) {
-    console.log(`!!! error: ${err}`)
+    console.log(`!!! update account status error: ${err}`)
   } finally {
     loading?.close()
   }

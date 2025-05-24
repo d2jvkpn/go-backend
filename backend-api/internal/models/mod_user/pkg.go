@@ -87,3 +87,5 @@ func ValidatePassword(password string) (err error) {
 
 	return nil
 }
+
+// TODO: ValidateLabels: 16, 32

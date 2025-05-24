@@ -47,6 +47,33 @@ func createAccount(ctx *gin.Context) {
 	structs.JsonOK(ctx, gin.H{"accountId": input.Id})
 }
 
+// @Summary		Edit an account
+// @Description	...
+// @Tags			account::edit_account
+// @Accept			json
+// @Produces		json
+// @Param			request								body		mod_user.EditAccount	true	"account data"
+// @Success		200									{object}	structs.ResponseOK
+// @Router			/api/v1/auth/account/edit_account	[post]
+func editAccount(ctx *gin.Context) {
+	var (
+		err   *errx.ErrX
+		input mod_user.EditAccount
+	)
+
+	if err = BindQueryJSON(ctx, &input); err != nil {
+		structs.JsonErr(ctx, err)
+		return
+	}
+
+	if err = input.Do(ctx); err != nil {
+		structs.JsonErr(ctx, err)
+		return
+	}
+
+	structs.JsonOK(ctx)
+}
+
 // @Summary		Account login
 // @Description	login in with phone/email and password
 // @Tags			account::login

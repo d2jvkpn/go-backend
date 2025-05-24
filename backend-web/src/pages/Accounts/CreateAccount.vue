@@ -40,8 +40,9 @@ const validateLabels = (rule, value, callback) => {
     return;
   }
 
-  if (value.find(label => label.length > 16)) {
-    callback(new Error(`Label "${tooLong}" exceeds 16 characters`));
+  const tooLong = value.find(label => label.length > 32);
+  if (tooLong) {
+    callback(new Error(`Label ${tooLong} exceeds 32 characters`));
     return;
   }
 

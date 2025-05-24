@@ -9,6 +9,7 @@ import dayjs from 'dayjs'
 import { service } from "@/js/utils/request.js";
 import CreateAccount from './CreateAccount.vue'
 import UpdateStatus from "./UpdateStatus.vue";
+import EditAccount from "./EditAccount.vue";
 
 
 // create an account
@@ -140,18 +141,23 @@ const deleteSelected = async () => {
 }
 
 //
-const editAccount = (data) => {
-  console.log(`==> ${data.id}: ${data.firstname} ${data.lastname}, ${data.status}`)
+const selectedAccount = ref(null)
+const updateStatusVisible = ref(false)
+
+
+function updateStatus (account) {
+  console.log(`==> UpdateStatus: ${account.id}: ${account.firstname} ${account.lastname}, ${account.status}`)
+  selectedAccount.value = account
+  updateStatusVisible.value = true
 }
 
 //
-const updateStatusVisible = ref(false)
-const selectedAccount = ref(null)
+const editAccountVisible = ref(false)
 
-function updateStatus (account) {
-  console.log(`==> updateStatus: ${account.id}: ${account.firstname} ${account.lastname}, ${account.status}`)
+const editAccount = (account) => {
+  console.log(`==> EditAccount: ${account.id}, ${account.firstname} ${account.lastname}, ${account.status}`)
   selectedAccount.value = account
-  updateStatusVisible.value = true
+  editAccountVisible.value = true
 }
 
 //
@@ -227,7 +233,7 @@ onMounted(async () => {
     </el-dropdown>
 
     <el-button type="primary" @click="openCreateAccount">Create</el-button>
-    <!--CreateAccount v-model:visible="openCreateAccount" @success="refreshData" /-->
+    <!--CreateAccount v-model:visible="openCreateAccount" @success="refresh" /-->
     <CreateAccount v-model:visible="createAccountVisible" @success="handleSearch" />
   </div>
 </div>
@@ -239,6 +245,15 @@ onMounted(async () => {
     const target = pageData.items.find(item => item.id === id)
     if (target) { target.status = status }
     selectedAccount.status = status; selectedAccount.newStatus = '';
+  }"
+/>
+
+<EditAccount
+  v-model:visible="editAccountVisible"
+  :account="selectedAccount"
+  @update:refresh="(form) => {
+    const target = pageData.items.find(item => item.id === form.id)
+    if (target) { Object.assign(target, form); delete target.password; }
   }"
 />
 

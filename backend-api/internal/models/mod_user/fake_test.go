@@ -14,6 +14,7 @@ import (
 func TestFake01_Accounts(t *testing.T) {
 	var (
 		e        error
+		bts      []byte
 		accounts []CreateAccount
 		tx       *gorm.DB
 	)
@@ -34,8 +35,9 @@ func TestFake01_Accounts(t *testing.T) {
 			accounts[i].Labels,
 			"passowrd="+accounts[i].Password,
 		)
-		e = accounts[i].hashPassword()
+		bts, e = HashPassword(accounts[i].Password)
 		require.Nil(t, e)
+		accounts[i].Password = string(bts)
 	}
 	fmt.Printf("==> fake accounts: %v\n", accounts)
 

@@ -158,6 +158,90 @@ definitions:
         type: string
     type: object
   mod_user.CreateAccount:
+    properties:
+      email:
+        description: |-
+          minLength: 5
+          maxLength: 64
+          example: john@noreply.local
+        maxLength: 64
+        minLength: 5
+        type: string
+        x-order: "05"
+      firstname:
+        description: |-
+          required: true
+          minLength: 2
+          maxLength: 32
+          example: John
+        maxLength: 32
+        minLength: 2
+        type: string
+        x-order: "02"
+      labels:
+        description: labels
+        items:
+          type: string
+        maxItems: 16
+        type: array
+        x-order: "07"
+      lastname:
+        description: |-
+          minLength: 2
+          maxLength: 32
+          example: Doe
+        maxLength: 32
+        minLength: 2
+        type: string
+        x-order: "03"
+      level:
+        description: |-
+          required: true
+          enum: admin,editor,reviewer,user,guest
+        enum:
+        - admin
+        - editor
+        - reviewer
+        - user
+        - guest
+        type: string
+        x-order: "06"
+      password:
+        description: |-
+          password: ^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{8,32}$
+          minLength: 8
+          maxLength: 32
+        maxLength: 32
+        minLength: 8
+        type: string
+        x-order: "08"
+      phone:
+        description: |-
+          Phone number
+          minLength: 6
+          maxLength: 20
+          example: ^1[3456789][0-9]{9}$
+        maxLength: 20
+        minLength: 6
+        type: string
+        x-order: "04"
+      status:
+        description: |-
+          required: true
+          enum: created,activated
+        enum:
+        - created
+        - activated
+        type: string
+        x-order: "01"
+    required:
+    - firstname
+    - lastname
+    - level
+    - password
+    - status
+    type: object
+  mod_user.EditAccount:
     type: object
   services.deleteAccountRes:
     properties:
@@ -269,6 +353,26 @@ paths:
       summary: Delete accounts
       tags:
       - account::query
+  /api/v1/auth/account/edit_account:
+    post:
+      consumes:
+      - application/json
+      description: '...'
+      parameters:
+      - description: account data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/mod_user.EditAccount'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/structs.ResponseOK'
+      summary: Edit an account
+      tags:
+      - account::edit_account
   /api/v1/auth/account/logout:
     post:
       description: '...'
