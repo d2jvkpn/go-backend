@@ -2,8 +2,8 @@
 import { ref, onMounted, watchEffect} from 'vue'
 import { Fold, Expand, ArrowDown } from '@element-plus/icons-vue'
 
-import Sidebar from "./home/Sidebar.vue"
-import HeaderBar from "./home/HeaderBar.vue"
+import Sidebar from "./Bars/Sidebar.vue"
+import HeaderBar from "./Bars/HeaderBar.vue"
 
 //
 const firstname = localStorage.getItem('firstname')

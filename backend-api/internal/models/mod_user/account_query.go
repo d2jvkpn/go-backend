@@ -43,7 +43,7 @@ type QueryAccounts struct {
 	Level string `json:"level" form:"level" validate:"omitempty,oneof=admin editor reviewer user guest" extensions:"x-order=11"`
 
 	// enum: created,activated,blocked
-	// default: activated
+	// default: 
 	Status string `json:"status" form:"status" validate:"omitempty,oneof=created activated blocked" extensions:"x-order=12"`
 }
 
@@ -65,9 +65,11 @@ func (self *QueryAccounts) SetDefaults() {
 		self.Order = "asc"
 	}
 
+	/*
 	if self.Status == "" {
 		self.Status = "activated"
 	}
+	*/
 }
 
 func (self *QueryAccounts) Validate() (err *errx.ErrX) {
@@ -103,10 +105,10 @@ func (self *QueryAccounts) db(ctx context.Context, flip bool) *gorm.DB {
 		tx = tx.Where("t1.level = ?", self.Level)
 	}
 
-	if self.Status != "" {
-		tx = tx.Where("t1.status = ?", self.Status)
-	} else {
+	if self.Status == "" {
 		tx = tx.Where("t1.status != 'deleted'")
+	} else {
+		tx = tx.Where("t1.status = ?", self.Status)
 	}
 
 	if flip {

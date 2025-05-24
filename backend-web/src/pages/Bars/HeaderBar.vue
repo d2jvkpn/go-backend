@@ -105,7 +105,7 @@ const handleCommand = (command) => {
     </template>
   </el-dropdown>
 
-<ChangePassword :visible="showChangePassword" @close="showChangePassword = false"/>
+  <ChangePassword :visible="showChangePassword" @close="showChangePassword = false"/>
 </header>
 </template>
 

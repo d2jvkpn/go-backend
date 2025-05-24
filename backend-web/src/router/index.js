@@ -14,13 +14,13 @@ export const allRoutes = [
   {
     path: "/home/dashboard", name: "Dashboard",
     meta: { title: "Backend - Dashboard", requiresAuth: true, levels: ["editor", "admin"] },
-    component: () => import("@/pages/home/Dashboard.vue"),
+    component: () => import("@/pages/Dashboard/Dashboard.vue"),
   },
 
   {
     path: "/home/accounts", name: "Accounts",
     meta: { title: "Backend - Accounts", requiresAuth: true, levels: ["admin"] },
-    component: () => import("@/pages/home/Accounts.vue"),
+    component: () => import("@/pages/Accounts/Accounts.vue"),
   },
 
   {
@@ -30,12 +30,12 @@ export const allRoutes = [
       {
         path: "profile", name: "Profile",
         meta: { title: "Backend - Profile", requiresAuth: true, levels: ["any"] },
-        component: () => import("@/pages/home/Profile.vue"),
+        component: () => import("@/pages/Profile/Profile.vue"),
       },
       {
         path: "security", name: "Security",
         meta: { title: "Backend - Security", requiresAuth: true, levels: ["admin"] },
-        component: () => import("@/pages/home/Security.vue"),
+        component: () => import("@/pages/Security/Security.vue"),
       },
     ],
   },

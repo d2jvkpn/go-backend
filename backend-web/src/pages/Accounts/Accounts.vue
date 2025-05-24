@@ -2,6 +2,7 @@
 import { ref, computed, watch, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { ArrowDown } from '@element-plus/icons-vue'
+import dayjs from 'dayjs'
 
 // import { hello } from "@/js/_hello.js"
 // hello()
@@ -19,24 +20,24 @@ function openCreateAccount() {
 
 // show accounts table
 const allColumns = [
-  { prop: 'id',         label: 'ID' },
-  { prop: 'firstname',  label: 'Firstname' },
-  { prop: 'lastname',   label: 'Lastname' },
-  { prop: 'email',      label: 'Email' },
-  { prop: 'phone',      label: 'Phone' },
-  { prop: 'level',      label: 'Level' },
-  { prop: 'labels',     label: 'Labels' },
-  { prop: 'status',     label: 'Status', sortable: true },
-  { prop: 'createdAt',  label: 'CreatedAt', sortable: true },
-  { prop: 'updatedAt', label: 'updatedAt', sortable: true },
+  { prop: 'id',        label: 'ID' },
+  { prop: 'firstname', label: 'Firstname' },
+  { prop: 'lastname',  label: 'Lastname' },
+  { prop: 'email',     label: 'Email' },
+  { prop: 'phone',     label: 'Phone', width: 120 },
+  { prop: 'level',     label: 'Level', width: 100 },
+  { prop: 'labels',    label: 'Labels', width: 200 },
+  { prop: 'createdAt', label: 'Created At', sortable: true },
+  { prop: 'updatedAt', label: 'updated At', sortable: true },
+  //{ prop: 'status',    label: 'Status' },
 ]
 
-const visibleColumns = ref(['firstname', 'lastname', 'email', 'phone', 'level', 'labels', 'status', 'createdAt'])
+// const visibleColumns = ref(['id', 'firstname', 'lastname', 'email', 'phone', 'level', 'labels', 'createdAt', 'status'])
+const visibleColumns = ref(['email', 'phone', 'level', 'labels', 'createdAt'])
 
 const selectVisibleColumns = computed(() =>
   allColumns.filter(col => visibleColumns.value.includes(col.prop))
 )
-
 
 // fetch accounts
 const pageData = ref({ total: 0, items: [] })
@@ -48,13 +49,18 @@ const fetchData = async () => {
   error.value = null;
 
   try {
-     const data = await service.get("/api/v1/auth/account/query_accounts", {}, { params: query.value });
+     let data = await service.get("/api/v1/auth/account/query_accounts", {}, { params: query.value });
 
      if (query.value.pageIndex == 1) {
        pageData.value.total = data.total;
      }
 
-     pageData.value.items = data.items;
+     data.items.forEach(item => {
+       item.createdAt = dayjs(item.createdAt).format('YYYY-MM-DD HH:mm')
+       item.updatedAt = dayjs(item.updatedAt).format('YYYY-MM-DD HH:mm')
+    })
+
+     pageData.value.items = data.items
   } catch (err) {
     error.value = err.response?.data?.msg || err.msg;
   } finally {
@@ -66,13 +72,13 @@ const fetchData = async () => {
 const levels = ['admin', 'editor', 'reviewer', 'user', 'guest'];
 const statuses = ["created", "activated", "blocked"]
 
-const query = ref({ pageIndex: 1, pageSize: 10, keyword: '', level: '', status: 'activated' })
+const query = ref({ pageIndex: 1, pageSize: 10, keyword: '', level: '', status: '' })
 
 const handleReset = async () => {
   query.value.pageIndex = 1;
   query.value.keyword = '';
   query.value.level = '';
-  query.value.status = 'activated';
+  query.value.status = '';
   await fetchData();
 }
 
@@ -172,6 +178,16 @@ watch(
   }
 );
 
+//
+const editAccount = (data) => {
+  console.log(`==> ${data.id}: ${data.firstname} ${data.lastname}, ${data.status}`)
+}
+
+const updateUserStatus = (data) => {
+  console.log(`==> ${data.id}: ${data.firstname} ${data.lastname}, ${data.status}`)
+}
+
+//
 onMounted(async () => {
   console.log("==> onMounted");
   await fetchData();
@@ -190,17 +206,16 @@ onMounted(async () => {
       clearable
     />
 
-    <el-select v-model="query.level" placeholder="level" style="width: 150px" clearable>
+    <el-select v-model="query.level" placeholder="level" style="width: 100px" clearable>
       <el-option v-for="e in levels" :value="e" :label="e" :key="`account::level::${e}`" />
     </el-select>
 
-    <el-select v-model="query.status" placeholder="status" style="width: 150px" clearable>
-      <el-option v-for="e in statuses" :value="e" :label="e" :key="`account::status::${e}`" />
+    <el-select v-model="query.status" placeholder="status" style="width: 100px" clearable>
+      <el-option v-for="e in statuses" :value="e" :label="e" :key="`account::status::${e}`" clearable/>
     </el-select>
 
-    <el-button type="warning" @click="handleReset"> Reset </el-button>
+    <el-button type="info" @click="handleReset"> Reset </el-button>
     <!--el-button type="info" @click="handleSearch"> Search </el-button-->
-
   </div>
 
   <div class="toolbar-right">
@@ -239,12 +254,25 @@ onMounted(async () => {
   empty-text="No accounts found"
 >
 
-  <el-table-column type="selection" width="50" />
+  <el-table-column type="selection" width="40" />
+
+  <el-table-column label="Full Name" prop="fullName" width="120">
+    <template #default="scope">
+      {{ scope.row.firstname }} {{ scope.row.lastname }}
+    </template>
+  </el-table-column>
 
   <!--el-table-column prop="id" label="ID" sortable :sort-method="customSort"/-->
   <el-table-column v-for="col in selectVisibleColumns"
-    :prop="col.prop" :label="col.label" :key="col.prop" :sortable="col.sortable"
+    :prop="col.prop" :label="col.label" :key="col.prop" :sortable="col.sortable" :width="col.width"
   />
+
+  <el-table-column label="Actions" fixed="right" width="180">
+    <template #default="scope">
+      <el-button type="warning" size="small" @click="updateUserStatus(scope.row)"> {{ scope.row.status }} </el-button>
+      <el-button type="primary" size="small" @click="editAccount(scope.row)"> edit </el-button>
+    </template>
+  </el-table-column>
 </el-table>
 
 <el-alert v-if="error" :title="error" type="error" show-icon style="margin-top: 10px" />
