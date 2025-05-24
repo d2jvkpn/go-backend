@@ -70,6 +70,10 @@ func editAccount(ctx *gin.Context) {
 		structs.JsonErr(ctx, err)
 		return
 	}
+	if input.Password != "" {
+		input.Password = "..."
+	}
+	structs.GinSetData(ctx, "EditAccount", input)
 
 	structs.JsonOK(ctx)
 }
