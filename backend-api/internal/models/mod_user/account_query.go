@@ -43,7 +43,7 @@ type QueryAccounts struct {
 	Level string `json:"level" form:"level" validate:"omitempty,oneof=admin editor reviewer user guest" extensions:"x-order=11"`
 
 	// enum: created,activated,blocked
-	// default: 
+	// default:
 	Status string `json:"status" form:"status" validate:"omitempty,oneof=created activated blocked" extensions:"x-order=12"`
 }
 
@@ -66,9 +66,9 @@ func (self *QueryAccounts) SetDefaults() {
 	}
 
 	/*
-	if self.Status == "" {
-		self.Status = "activated"
-	}
+		if self.Status == "" {
+			self.Status = "activated"
+		}
 	*/
 }
 

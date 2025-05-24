@@ -1,6 +1,6 @@
 <script setup>
 import { computed, reactive, watch } from 'vue'
-import { ElMessage } from 'element-plus';
+import { ElMessage, ElLoading } from 'element-plus';
 
 import { service } from "@/js/utils/request.js"
 
@@ -39,6 +39,12 @@ async function confirm() {
 
   console.log(`==> update status: id=${form.id}, status=${form.status}, newStatus=${form.newStatus}`)
 
+  const loading = ElLoading.service({
+    lock: true,
+    text: 'Changing password...',
+    background: 'rgba(0, 0, 0, 0.7)'
+  })
+
   try {
     await service.post("/api/v1/auth/account/update_status", {}, { params: {
       accountId: form.id,
@@ -50,37 +56,51 @@ async function confirm() {
     emit('update:visible', false)
     ElMessage.success('Status updated successfully')
   } catch (err) {
-    //
+    console.log(`!!! error: ${err}`)
   } finally {
-    //
+    loading?.close()
   }
-
-
 }
 
+/* no works well 
 watch(() => props.account, (newVal) => {
   if (newVal) {
+    console.log("???");
     Object.assign(form, {
       id: newVal.id,
       firstname: newVal.firstname,
       lastname: newVal.lastname,
       level: newVal.level,
       status: newVal.status,
-      newStatus: ''
+      newStatus: '',
     })
   }
 }, { immediate: true })
+*/
+
+watch(() => props.visible, (visible) => {
+  if (visible && props.account) {
+    Object.assign(form, {
+      id: props.account.id,
+      firstname: props.account.firstname,
+      lastname: props.account.lastname,
+      level: props.account.level,
+      status: props.account.status,
+      newStatus: '',
+    })
+  }
+})
 </script>
 
 <template>
 <el-dialog
-  :model-value="visible" title="Update Account" width="400px"
+  :model-value="visible" title="Update status of account" width="400px"
   @update:modelValue="emit('update:visible', $event)"
 >
   <el-divider style="margin: 0 0 20px 0" />
 
   <el-form :model="form" label-width="120px">
-    <el-form-item label="Account ID"> <el-input :value="form.id" disabled /> </el-form-item>
+    <el-form-item label="ID"> <el-input :value="form.id" disabled /> </el-form-item>
 
     <el-form-item label="Full Name">
       <el-input :value="form.firstname + ' ' + form.lastname" disabled />

@@ -217,7 +217,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/mod_user.ChangePassword'
-      responses: {}
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/structs.ResponseOK'
       summary: Change Password
       tags:
       - account::change_password
@@ -255,6 +259,7 @@ paths:
         items:
           type: string
         name: accountId
+        required: true
         type: array
       responses:
         "200":
@@ -354,6 +359,46 @@ paths:
           schema:
             $ref: '#/definitions/utils.PageResult-mod_user_Account'
       summary: Query accounts
+      tags:
+      - account::query
+  /api/v1/auth/account/update_status:
+    get:
+      consumes:
+      - application/json
+      description: '...'
+      parameters:
+      - description: account id(uuid)
+        in: query
+        name: accountId
+        type: string
+      - description: |-
+          new status
+          enum: activated,blocked,deleted
+          required: true
+        enum:
+        - activated
+        - blocked
+        - deleted
+        in: query
+        name: newStatus
+        type: string
+      - description: |-
+          origin status
+          enum: created,activated,blocked
+          required: true
+        enum:
+        - created
+        - activated
+        - blocked
+        in: query
+        name: status
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/structs.ResponseOK'
+      summary: Delete accounts
       tags:
       - account::query
   /api/v1/open/account/login:

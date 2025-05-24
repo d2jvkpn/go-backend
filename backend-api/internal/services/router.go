@@ -29,6 +29,7 @@ func LoadAuth(router *gin.RouterGroup, handlers ...gin.HandlerFunc) {
 	admin := group.Use(AllowLevels([]string{"admin"}))
 	admin.POST("/account/create_account", createAccount)
 	admin.GET("/account/query_accounts", queryAccounts)
+	admin.POST("/account/update_status", updateStatus)
 	admin.POST("/account/delete_accounts", deleteAccounts)
 }
 

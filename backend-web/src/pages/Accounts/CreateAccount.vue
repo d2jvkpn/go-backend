@@ -13,8 +13,10 @@ const emit = defineEmits(['update:visible', 'success'])
 const formRef = ref()
 
 const form = ref({
-  firstname: '', lastname: '',
-  email: '', phone: '',
+  firstname: '',
+  lastname: '',
+  email: '',
+  phone: '',
   password: '',
   level: '',
   labels: [],
@@ -95,8 +97,10 @@ const submit = async () => {
     const data = await service.post("/api/v1/auth/account/create_account", form.value);
 
     form.value = {
-      firstname: '', lastname: '',
-      email: '', phone: '',
+      firstname: '',
+      lastname: '',
+      email: '',
+      phone: '',
       password: '',
       level: '',
       labels: [],

@@ -142,13 +142,8 @@ const editAccount = (data) => {
 const updateStatusVisible = ref(false)
 const selectedAccount = ref(null)
 
-function openUpdateStatus(account) {
-  selectedAccount.value = account
-  updateStatusVisible.value = true
-}
-
 function updateStatus (account) {
-  console.log(`==> ${account.id}: ${account.firstname} ${account.lastname}, ${account.status}`)
+  console.log(`==> updateStatus: ${account.id}: ${account.firstname} ${account.lastname}, ${account.status}`)
   selectedAccount.value = account
   updateStatusVisible.value = true
 }
@@ -226,6 +221,7 @@ onMounted(async () => {
   @update:status="({ id, status }) => {
     const target = pageData.items.find(item => item.id === id)
     if (target) { target.status = status }
+    selectedAccount.status = status; selectedAccount.newStatus = '';
   }"
 />
 

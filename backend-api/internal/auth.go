@@ -53,6 +53,7 @@ func Auth(funcs ...HandleJwt) gin.HandlerFunc {
 			e      error
 			bearer string
 			code   string
+			key    string
 			err    *errx.ErrX
 			data   *ginx.JwtData
 		)
@@ -96,13 +97,23 @@ func Auth(funcs ...HandleJwt) gin.HandlerFunc {
 			}
 		}
 
+		//
+		key = fmt.Sprintf("login:%s:%s", data.Data["platform"], data.Subject)
+		if err = settings.CacheCheckToken(ctx, key, data.ID); err != nil {
+			err.WithCode(code)
+			handleError()
+			return
+		}
+
+		//
 		ctx.Next()
 
+		//
 		if ctx.GetBool("skipCacheUpdateToken") {
 			return
 		}
 
-		err = settings.CacheUpdateToken(ctx, fmt.Sprintf("login:%s:%s", data.Data["platform"], data.Subject), data.ID)
+		err = settings.CacheUpdateToken(ctx, key, data.ID)
 		if err != nil {
 			settings.Logger.Named("internal").Error("CacheUpdateToken", zap.Any("error", &err))
 		}

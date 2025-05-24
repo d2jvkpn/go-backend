@@ -4,19 +4,22 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"slices"
 	"strings"
 	"time"
 
 	. "backend-api/internal/models"
 	"backend-api/pkg/infra"
 	"backend-api/pkg/structs"
+	"backend-api/pkg/utils"
 
-	// "gorm.io/gorm"
 	"github.com/d2jvkpn/errx"
 	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
 	"github.com/lib/pq"
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 	// "go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/trace"
@@ -229,4 +232,88 @@ func (self *CreateAccount) Do(ctx context.Context) (err *errx.ErrX) {
 	}
 
 	return structs.InternalError(e).WithCode("database")
+}
+
+type UpdateStatus struct {
+	// account id(uuid)
+	AccountId string `form:"accountId"`
+	accountId uuid.UUID
+
+	// origin status
+	// enum: created,activated,blocked
+	// required: true
+	Status string `form:"status" validate:"oneof=created activated blocked"`
+
+	// new status
+	// enum: activated,blocked,deleted
+	// required: true
+	NewStatus string `form:"newStatus" validate:"oneof=activated blocked deleted"`
+}
+
+func (self *UpdateStatus) Validate() (err *errx.ErrX) {
+	var (
+		e              error
+		validNewStatus bool
+	)
+
+	if e = _Validate.Struct(self); e != nil {
+		return structs.Invalid(e).WithCode("validate_failed")
+	}
+
+	if self.accountId, e = utils.UUIDFromString(self.AccountId); e != nil {
+		return structs.Invalid(e).WithCode("invalid_accountId")
+	}
+
+	switch self.Status {
+	case "created":
+		validNewStatus = slices.Contains([]string{"activated", "deleted"}, self.NewStatus)
+	case "activated":
+		validNewStatus = slices.Contains([]string{"blocked", "deleted"}, self.NewStatus)
+	case "blocked":
+		validNewStatus = slices.Contains([]string{"activated", "deleted"}, self.NewStatus)
+	default:
+		return structs.Invalid(e).WithCode("invalid_status")
+	}
+
+	if !validNewStatus {
+		return structs.Invalid(e).WithCode("invalid_newStatus")
+	}
+
+	return nil
+}
+
+/*
+UPDATE your_table SET status = 'new_value' WHERE id = 123 RETURNING OLD.status;
+
+BEGIN;
+SELECT status FROM your_table WHERE id = 123 FOR UPDATE;
+UPDATE your_table SET status = 'new_value' WHERE id = 123;
+COMMIT;
+*/
+func (self *UpdateStatus) Do(ctx context.Context) (originStatus string, err *errx.ErrX) {
+	if err = self.Validate(); err != nil {
+		return "", err
+	}
+
+	var e1, e2 error
+
+	e2 = Table(ctx, TABLE_UserAccounts).Transaction(func(tx *gorm.DB) error {
+		if e1 = tx.Clauses(clause.Locking{Strength: "UPDATE"}).
+			Where("id = ?", self.AccountId).Pluck("status", &originStatus).Error; e1 != nil {
+			return e1
+		}
+
+		if e1 = tx.Where("id = ?", self.AccountId).
+			Update("status", self.NewStatus).Error; e1 != nil {
+			return e1
+		}
+
+		return nil
+	})
+
+	if e2 != nil {
+		return "", structs.InternalError(e2).WithCode("database")
+	}
+
+	return originStatus, nil
 }

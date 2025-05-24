@@ -37,17 +37,15 @@ func CacheSetToken(ctx context.Context, key, value string) (err *errx.ErrX) {
 	return nil
 }
 
-func CacheUpdateToken(ctx context.Context, key, tokenId string) (err *errx.ErrX) {
+func CacheCheckToken(ctx context.Context, key, tokenId string) (err *errx.ErrX) {
 	if !cacheTokenEnabled() {
 		return nil
 	}
 
 	var (
-		ok         bool
-		e          error
-		value      string
-		query      url.Values
-		expiration time.Duration
+		e     error
+		value string
+		query url.Values
 	)
 
 	const msg = "Please log in again"
@@ -61,6 +59,22 @@ func CacheUpdateToken(ctx context.Context, key, tokenId string) (err *errx.ErrX)
 	if query.Get("tokenId") != tokenId {
 		return structs.AuthError(fmt.Errorf("token is expired")).WithCode("cache_token_is_expired").WithMsg(msg)
 	}
+
+	return nil
+}
+
+func CacheUpdateToken(ctx context.Context, key, tokenId string) (err *errx.ErrX) {
+	if !cacheTokenEnabled() {
+		return nil
+	}
+
+	var (
+		ok         bool
+		e          error
+		expiration time.Duration
+	)
+
+	const msg = "Please log in again"
 
 	expiration = Config.GetDuration("jwt.interval")
 	// fmt.Printf("==> CacheLoginTokenUpdate 1: %s, %v\n", key, expiration)
