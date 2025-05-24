@@ -6,6 +6,27 @@ import { ArrowDown } from '@element-plus/icons-vue'
 // import { hello } from "@/js/_hello.js"
 // hello()
 
+/*
+const keyword = ref('');
+
+watch(keyword, (newVal, oldVal) => {
+  console.log(`keyword changed from ${oldVal} to ${newVal}`);
+});
+*/
+
+/*
+import debounce from 'lodash/debounce'
+
+const debouncedFetch = debounce(async () => {
+  console.log('🔍 用户停止输入，开始搜索')
+  await fetchData()
+}, 500)  // 500 毫秒内没输入，才触发
+
+watch(() => query.value.keyword, () => {
+  debouncedFetch()
+})
+*/
+
 const allColumns = [
   { prop: 'id',       label: 'ID' },
   { prop: 'username', label: 'Account' },

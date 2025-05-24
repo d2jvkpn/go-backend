@@ -159,6 +159,14 @@ definitions:
     type: object
   mod_user.CreateAccount:
     type: object
+  services.deleteAccountRes:
+    properties:
+      count:
+        description: |-
+          number of delete accounts
+          required: true
+        type: integer
+    type: object
   structs.ResponseOK:
     properties:
       code:
@@ -252,9 +260,7 @@ paths:
         "200":
           description: OK
           schema:
-            additionalProperties:
-              type: integer
-            type: object
+            $ref: '#/definitions/services.deleteAccountRes'
       summary: Delete accounts
       tags:
       - account::query
@@ -276,9 +282,9 @@ paths:
       description: '...'
       parameters:
       - description: |-
-          minimum: 15
+          minimum: 10
           maximum: 100
-          default: 15
+          default: 10
         in: query
         maximum: 100
         minimum: 10
@@ -333,7 +339,7 @@ paths:
         x-order: "11"
       - description: |-
           enum: created,activated,blocked
-          default: activated
+          default:
         enum:
         - created
         - activated

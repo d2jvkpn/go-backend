@@ -201,13 +201,19 @@ func queryAccounts(ctx *gin.Context) {
 	structs.JsonOK(ctx, result)
 }
 
+type deleteAccountRes struct {
+	// number of delete accounts
+	// required: true
+	Count int64 `json:"count"`
+}
+
 //	@Summary		Delete accounts
 //	@Description	...
 //	@Tags			account::query
 //	@Accept			json
 //	@Produces		json
-//	@Param			accountId								query		[]string		string	"uuids of accounts"
-//	@Success		200										{object}	map[string]int	'{"count": 32}'
+//	@Param			accountId								query		[]string	string	"uuids of accounts"
+//	@Success		200										{object}	deleteAccountRes
 //	@Router			/api/v1/auth/account/delete_accounts	[get]
 func deleteAccounts(ctx *gin.Context) {
 	var (

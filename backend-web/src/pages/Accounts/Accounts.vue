@@ -8,6 +8,7 @@ import dayjs from 'dayjs'
 // hello()
 import { service } from "@/js/utils/request.js";
 import CreateAccount from './CreateAccount.vue'
+import UpdateStatus from "./UpdateStatus.vue";
 
 
 // create an account
@@ -26,7 +27,7 @@ const allColumns = [
   { prop: 'email',     label: 'Email' },
   { prop: 'phone',     label: 'Phone', width: 120 },
   { prop: 'level',     label: 'Level', width: 100 },
-  { prop: 'labels',    label: 'Labels', width: 200 },
+  { prop: 'labels',    label: 'Labels', width: 250 },
   { prop: 'createdAt', label: 'Created At', sortable: true },
   { prop: 'updatedAt', label: 'updated At', sortable: true },
   //{ prop: 'status',    label: 'Status' },
@@ -112,22 +113,6 @@ const deleteSelected = async () => {
   // console.log(`~~~ idsToDelete: ${JSON.stringify(idsToDelete)}`)
   let s = idsToDelete.length > 1 ? "s" : ""
 
-  /*
-  ElMessageBox.confirm(
-    `Are you sure you want to delete ${idsToDelete.length} account${s}?`,
-    `Delete Account${s} Confirmation`,
-    { type: 'warning', confirmButtonText: 'Yes', cancelButtonText: 'No' }
-  )
-  .then(() => {
-    // TODO
-    selectedRows.value = []
-    ElMessage.success(`Deleted ${idsToDelete.length} account${s}`)
-  })
-  .catch(() => {
-    ElMessage.info(`Delete account${s} canceled.`)
-  })
-  */
-
   try {
     await ElMessageBox.confirm(
       `Are you sure you want to delete ${idsToDelete.length} account${s}?`,
@@ -148,27 +133,27 @@ const deleteSelected = async () => {
   }
 }
 
-/*
-const keyword = ref('');
+//
+const editAccount = (data) => {
+  console.log(`==> ${data.id}: ${data.firstname} ${data.lastname}, ${data.status}`)
+}
 
-watch(keyword, (newVal, oldVal) => {
-  console.log(`keyword changed from ${oldVal} to ${newVal}`);
-});
-*/
+//
+const updateStatusVisible = ref(false)
+const selectedAccount = ref(null)
 
-/*
-import debounce from 'lodash/debounce'
+function openUpdateStatus(account) {
+  selectedAccount.value = account
+  updateStatusVisible.value = true
+}
 
-const debouncedFetch = debounce(async () => {
-  console.log('🔍 用户停止输入，开始搜索')
-  await fetchData()
-}, 500)  // 500 毫秒内没输入，才触发
+function updateStatus (account) {
+  console.log(`==> ${account.id}: ${account.firstname} ${account.lastname}, ${account.status}`)
+  selectedAccount.value = account
+  updateStatusVisible.value = true
+}
 
-watch(() => query.value.keyword, () => {
-  debouncedFetch()
-})
-*/
-
+//
 watch(
   // query.value.keyword
   () => [ query.value.pageSize, query.value.pageIndex, query.value.level, query.value.status ],
@@ -178,16 +163,6 @@ watch(
   }
 );
 
-//
-const editAccount = (data) => {
-  console.log(`==> ${data.id}: ${data.firstname} ${data.lastname}, ${data.status}`)
-}
-
-const updateStatus = (data) => {
-  console.log(`==> ${data.id}: ${data.firstname} ${data.lastname}, ${data.status}`)
-}
-
-//
 onMounted(async () => {
   console.log("==> onMounted");
   await fetchData();
@@ -245,6 +220,15 @@ onMounted(async () => {
   </div>
 </div>
 
+<UpdateStatus
+  v-model:visible="updateStatusVisible"
+  :account="selectedAccount"
+  @update:status="({ id, status }) => {
+    const target = pageData.items.find(item => item.id === id)
+    if (target) { target.status = status }
+  }"
+/>
+
 <el-table
   :data="pageData.items"
   style="margin-top: 10px;"
@@ -253,13 +237,10 @@ onMounted(async () => {
   v-loading="loading"
   empty-text="No accounts found"
 >
-
   <el-table-column type="selection" width="40" />
 
   <el-table-column label="Full Name" prop="fullName" width="120">
-    <template #default="scope">
-      {{ scope.row.firstname }} {{ scope.row.lastname }}
-    </template>
+    <template #default="scope"> {{ scope.row.firstname }} {{ scope.row.lastname }} </template>
   </el-table-column>
 
   <!--el-table-column prop="id" label="ID" sortable :sort-method="customSort"/-->

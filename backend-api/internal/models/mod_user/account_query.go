@@ -19,9 +19,9 @@ import (
 type QueryAccounts struct {
 	ok bool
 
-	// minimum: 15
+	// minimum: 10
 	// maximum: 100
-	// default: 15
+	// default: 10
 	PageSize int `json:"pageSize" form:"pageSize" validate:"omitempty,gte=10,lte=100" extensions:"x-order=01"`
 
 	// minimum: 1

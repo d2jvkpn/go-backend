@@ -134,7 +134,7 @@ const handleCommand = (command) => {
   top: 2px;
   left: 2px;
   z-index: 10;
-*/
+  */
 }
 
 .headerbar-logo {
