@@ -87,14 +87,14 @@ const handleSearch = async () => {
   await fetchData();
 };
 
-const hanldePageIndexChange = async (v) => {
-  console.log(`==> hanldePageIndexChange: ${v}`)
+const updatePageIndex = async (v) => {
+  console.log(`==> updatePageIndex: ${v}`)
   query.value.pageIndex = v;
   await fetchData();;
 }
 
-const handlePageSizeChange = async (v) => {
-  console.log(`==> handlePageSizeChange: ${v}`)
+const updatePageSize = async (v) => {
+  console.log(`==> updatePageSize: ${v}`)
   query.value.pageIndex = 1;
   query.value.pageSize = v;
   await fetchData();
@@ -183,7 +183,7 @@ const editAccount = (data) => {
   console.log(`==> ${data.id}: ${data.firstname} ${data.lastname}, ${data.status}`)
 }
 
-const updateUserStatus = (data) => {
+const updateStatus = (data) => {
   console.log(`==> ${data.id}: ${data.firstname} ${data.lastname}, ${data.status}`)
 }
 
@@ -269,7 +269,7 @@ onMounted(async () => {
 
   <el-table-column label="Actions" fixed="right" width="180">
     <template #default="scope">
-      <el-button type="warning" size="small" @click="updateUserStatus(scope.row)"> {{ scope.row.status }} </el-button>
+      <el-button type="warning" size="small" @click="updateStatus(scope.row)"> {{ scope.row.status }} </el-button>
       <el-button type="primary" size="small" @click="editAccount(scope.row)"> edit </el-button>
     </template>
   </el-table-column>
