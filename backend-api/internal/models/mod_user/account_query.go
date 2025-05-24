@@ -27,9 +27,10 @@ type QueryAccounts struct {
 	// minimum: 1
 	PageIndex int `json:"pageIndex" form:"pageIndex" validate:"omitempty,gt=0" extensions:"x-order=02"`
 
+	// sort by field
 	// enum: createdAt,updatedAt,firstname,lastname
 	// default: createdAt + desc
-	Sort string `form:"sort" validate:"omitempty,oneof=createdAt updatedAt firstname lastname" extensions:"x-order=03"`
+	SortBy string `form:"sortBy" validate:"omitempty,oneof=createdAt updatedAt firstname lastname" extensions:"x-order=03"`
 
 	// enum: asc,desc
 	// default: asc
@@ -56,8 +57,8 @@ func (self *QueryAccounts) SetDefaults() {
 		self.PageIndex = 1
 	}
 
-	if self.Sort == "" {
-		self.Sort = "createdAt"
+	if self.SortBy == "" {
+		self.SortBy = "createdAt"
 		self.Order = "desc"
 	}
 
@@ -112,7 +113,7 @@ func (self *QueryAccounts) db(ctx context.Context, flip bool) *gorm.DB {
 	}
 
 	if flip {
-		orderSeg := fmt.Sprintf("t1.%s %s, t1.id", utils.ToSnakeCase(self.Sort), strings.ToUpper(self.Order))
+		orderSeg := fmt.Sprintf("t1.%s %s, t1.id", utils.ToSnakeCase(self.SortBy), strings.ToUpper(self.Order))
 		tx = infra.GormFlip(tx.Order(orderSeg), self.PageSize, self.PageIndex)
 	}
 

@@ -50,7 +50,9 @@ const fetchData = async () => {
   error.value = null;
 
   try {
-     let data = await service.get("/api/v1/auth/account/query_accounts", {}, { params: query.value });
+     const [sortBy, Order] = sortValue.value.split('-');
+     const params = {...query.value, sortBy, Order};
+     const data = await service.get("/api/v1/auth/account/query_accounts", { params });
 
      if (query.value.pageIndex == 1) {
        pageData.value.total = data.total;
@@ -75,11 +77,15 @@ const statuses = ["created", "activated", "blocked"]
 
 const query = ref({ pageIndex: 1, pageSize: 10, keyword: '', level: '', status: '' })
 
+const sortValue = ref('createdAt-desc')
+
 const handleReset = async () => {
   query.value.pageIndex = 1;
   query.value.keyword = '';
   query.value.level = '';
   query.value.status = '';
+  sortValue.value = 'createdAt-desc';
+
   await fetchData();
 }
 
@@ -151,7 +157,7 @@ function updateStatus (account) {
 //
 watch(
   // query.value.keyword
-  () => [ query.value.pageSize, query.value.pageIndex, query.value.level, query.value.status ],
+  () => [ query.value.pageSize, query.value.pageIndex, query.value.level, query.value.status, sortValue.value ],
   (newValues, oldValues) => {
     console.log(`==> watch: ${newValues}, ${oldValues}`);
     fetchData();
@@ -182,6 +188,17 @@ onMounted(async () => {
 
     <el-select v-model="query.status" placeholder="status" style="width: 100px" clearable>
       <el-option v-for="e in statuses" :value="e" :label="e" :key="`account::status::${e}`" clearable/>
+    </el-select>
+
+    <el-select v-model="sortValue" placeholder="Sort by" style="width: 150px">
+      <el-option label="Created At ↓" value="createdAt-desc" />
+      <el-option label="Created At ↑" value="createdAt-asc" />
+      <el-option label="Updated At ↓" value="updatedAt-desc" />
+      <el-option label="Updated At ↑" value="updatedAt-asc" />
+      <el-option label="Firstname At ↑" value="firstname-asc" />
+      <el-option label="Firstname At ↓" value="level-desc" />
+      <el-option label="Lastname At ↑" value="lastname-asc" />
+      <el-option label="Lastname At ↓" value="lastname-desc" />
     </el-select>
 
     <el-button type="info" @click="handleReset"> Reset </el-button>

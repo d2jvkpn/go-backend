@@ -302,6 +302,7 @@ paths:
         type: integer
         x-order: "02"
       - description: |-
+          sort by field
           enum: createdAt,updatedAt,firstname,lastname
           default: createdAt + desc
         enum:
@@ -310,7 +311,7 @@ paths:
         - firstname
         - lastname
         in: query
-        name: sort
+        name: sortBy
         type: string
         x-order: "03"
       - description: |-
