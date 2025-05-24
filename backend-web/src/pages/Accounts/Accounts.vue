@@ -51,8 +51,8 @@ const fetchData = async () => {
   error.value = null;
 
   try {
-     const [sortBy, Order] = sortValue.value.split('-');
-     const params = {...query.value, sortBy, Order};
+     const [sortBy, order] = sortValue.value.split('-');
+     const params = {...query.value, sortBy, order};
      const data = await service.get("/api/v1/auth/account/query_accounts", { params });
 
      if (query.value.pageIndex == 1) {
