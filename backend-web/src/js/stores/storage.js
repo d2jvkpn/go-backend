@@ -14,7 +14,7 @@ export function getAccount() {
     lastname: localStorage.getItem("lastname"),
     level: localStorage.getItem("level"),
     token: localStorage.getItem("token"),
-    expiresAt: localStorage.getItem("expiresAt"),
+    expiresAt: Number(localStorage.getItem("expiresAt")),
   }
 }
 
@@ -28,7 +28,17 @@ export function clearAccount() {
   localStorage.removeItem("expiresAt");
 }
 
-export function checkLoggedIn() {
-  // TODO
-  return !!localStorage.getItem("token");
+export function checkIsLoggedIn() {
+  if (!localStorage.getItem("token")) {
+    return false;
+  }
+
+  const now = Date.now();
+  const expiresAt = Number(localStorage.getItem("expiresAt"));
+
+  if (expiresAt <= now) {
+    return false;
+  }
+
+  return true;
 }

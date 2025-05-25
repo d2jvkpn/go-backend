@@ -2,4 +2,4 @@
 set -eu -o pipefail; _wd=$(pwd); _dir=$(readlink -f `dirname "$0"`)
 
 
-npm install axios qs dayjs
+npm install axios qs dayjs lodash

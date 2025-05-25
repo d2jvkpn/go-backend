@@ -5,7 +5,7 @@ import { ElMessage } from 'element-plus'
 
 import { login } from "@/js/_login.js"
 import { service } from  "@/js/utils/request.js"
-import { setAccount, checkLoggedIn } from "@/js/stores/storage.js"
+import { setAccount, checkIsLoggedIn } from "@/js/stores/storage.js"
 
 // console.log(`==> import.meta.env: ${JSON.stringify(import.meta.env)}`);
 
@@ -46,7 +46,7 @@ const submit = async () => {
 }
 
 onBeforeMount(() => {
-  if (checkLoggedIn()) {
+  if (checkIsLoggedIn()) {
     router.push('/home/accounts')
   }
 })

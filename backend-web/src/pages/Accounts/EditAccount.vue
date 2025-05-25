@@ -28,8 +28,8 @@ const form = reactive({
   password: '',
 })
 
+//
 const levels = ['admin', 'editor', 'reviewer', 'user', 'guest'];
-
 const newLabel = ref('')
 
 function addLabel ()  {
@@ -42,6 +42,7 @@ function addLabel ()  {
   newLabel.value = '';
 }
 
+//
 async function confirm() {
   if (!validateContact(form)) {
     return
@@ -91,7 +92,8 @@ watch(() => props.visible, (visible) => {
 
 <template>
 <el-dialog
-  :model-value="visible" title="Edit account" width="500px"
+  title="Edit account" width="500px"
+  :model-value="visible"
   @update:modelValue="emit('update:visible', $event)"
 >
   <el-divider style="margin: 0 0 20px 0" />
