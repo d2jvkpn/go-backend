@@ -43,6 +43,8 @@ func createAccount(ctx *gin.Context) {
 		structs.JsonErr(ctx, err)
 		return
 	}
+	input.Password = ""
+	structs.GinSetData(ctx, "CreateAccount", input)
 
 	structs.JsonOK(ctx, gin.H{"accountId": input.Id})
 }
@@ -74,6 +76,7 @@ func editAccount(ctx *gin.Context) {
 		input.Password = "..."
 	}
 	structs.GinSetData(ctx, "EditAccount", input)
+	// TODO: if status == blocked or status == deleted, remove cache token
 
 	structs.JsonOK(ctx)
 }
@@ -114,9 +117,11 @@ func accountLogin(ctx *gin.Context) {
 
 	input.IP, input.TokenId = ctx.ClientIP(), uuid.New().String()
 
-	ctx.Set("platform", input.Platform)
-	structs.GinSetData(ctx, "email", input.Email)
-	structs.GinSetData(ctx, "phone", input.Phone)
+	structs.GinSetData(
+		ctx,
+		"LoginRequest",
+		gin.H{"email": input.Email, "phone": input.Phone, "platform": input.Platform},
+	)
 	// ctx and otelCtx share the same key "data"
 	structs.GinSetData(ctx, "User-Agent", ctx.GetHeader("User-Agent")) // key=data, pass to biz layer and model layer
 
@@ -201,6 +206,7 @@ func accountChangePassword(ctx *gin.Context) {
 		return
 	}
 	ctx.Set("skipCacheUpdateToken", true)
+	// TODO: remove cache token
 
 	structs.JsonOK(ctx)
 }
@@ -259,8 +265,8 @@ func updateStatus(ctx *gin.Context) {
 	}
 
 	structs.GinSetData(ctx, "originStatus", originStatus)
-	structs.GinSetData(ctx, "status", input.Status)
-	structs.GinSetData(ctx, "newStatus", input.NewStatus)
+	structs.GinSetData(ctx, "UpdateStatus", input)
+	// TODO: if status == blocked or status == deleted, remove cache token
 
 	structs.JsonOK(ctx)
 }
@@ -294,6 +300,7 @@ func deleteAccounts(ctx *gin.Context) {
 		structs.JsonErr(ctx, err)
 		return
 	}
+	// TODO: if status == blocked or status == deleted, remove cache token
 
 	structs.JsonOK(ctx, gin.H{"count": count})
 }

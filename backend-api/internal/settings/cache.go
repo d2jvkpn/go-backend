@@ -93,15 +93,15 @@ func CacheUpdateToken(ctx context.Context, key, tokenId string) (err *errx.ErrX)
 	return nil
 }
 
-func CacheRemoveToken(ctx context.Context, key string) (err *errx.ErrX) {
+func CacheRemoveToken(ctx context.Context, keys ...string) (err *errx.ErrX) {
 	if !cacheTokenEnabled() {
 		return nil
 	}
 
 	var e error
-	// fmt.Println("???", key)
+	// TODO: Log
 
-	if e = Redis.Del(ctx, key).Err(); e != nil {
+	if e = Redis.Del(ctx, keys...).Err(); e != nil {
 		return structs.InternalError(e).WithCode("cache_delete_token")
 	}
 

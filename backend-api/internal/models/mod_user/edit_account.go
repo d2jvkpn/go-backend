@@ -57,7 +57,7 @@ type EditAccount struct {
 	// password: ^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{8,32}$
 	// minLength: 8
 	// maxLength: 32
-	// default: 
+	// default:
 	Password string `json:"password" gorm:"column:password" validate:"omitempty,min=8,max=32" fake:"-" extensions:"x-order=08"`
 }
 
