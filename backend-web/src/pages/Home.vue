@@ -4,13 +4,11 @@ import { Fold, Expand, ArrowDown } from '@element-plus/icons-vue'
 
 import Sidebar from "./Bars/Sidebar.vue"
 import HeaderBar from "./Bars/HeaderBar.vue"
+import { getAccount } from "@/js/stores/storage.js"
 
 //
-const firstname = localStorage.getItem('firstname')
-const lastname = localStorage.getItem('lastname')
-const level = localStorage.getItem('level') // JSON.parse(...)
+const account = getAccount();
 
-//
 const isHidden = ref(false)
 
 onMounted(() => {
@@ -33,14 +31,13 @@ const toggleCollapse = () => {
 <div class="home">
   <HeaderBar
     class="home-headerbar"
-    :firstname="firstname"
-    :lastname="lastname"
+    :account="account"
     :isSidebarHidden="isHidden"
     @toggleSidebar="isHidden = !isHidden"
   />
 
   <div class="home-main">
-    <Sidebar class="home-sidebar" v-show="!isHidden" :level="level" />
+    <Sidebar class="home-sidebar" v-show="!isHidden" :account="account" />
 
     <main class="home-content">
       <router-view v-slot="{ Component }">

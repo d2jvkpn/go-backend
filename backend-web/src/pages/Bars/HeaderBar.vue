@@ -12,8 +12,7 @@ import { service } from  "@/js/utils/request.js"
 
 //
 const props = defineProps({
-  firstname: { type: String },
-  lastname: { type: String },
+  account: { type: Object },
   isSidebarHidden: { type: Boolean },
 })
 
@@ -93,7 +92,7 @@ const handleCommand = (command) => {
 
   <el-dropdown @command="handleCommand">
     <span class="headerbar-account el-dropdown-link">
-      {{ firstname }} {{ lastname }} <el-icon> <ArrowDown /> </el-icon>
+      {{ account.firstname }} {{ account.lastname }} <el-icon> <ArrowDown /> </el-icon>
     </span>
 
     <template #dropdown>

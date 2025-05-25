@@ -8,7 +8,7 @@ import { allRoutes } from '@/router/index'
 const route = useRoute()
 
 const props = defineProps({
-  level: String, // Set,
+  account: { type: Object }, // Set,
 })
 
 //console.log(`--> level: ${level}`)
@@ -24,7 +24,7 @@ const visibleRouteNames = computed(() => {
       }
 
       // console.log(`~~~ ${item.name}`)
-      if (item.meta.levels?.includes("any") || item.meta.levels?.includes(props.level)) {
+      if (item.meta.levels?.includes("any") || item.meta.levels?.includes(props.account.level)) {
         result.push(item.name)
       }
 
