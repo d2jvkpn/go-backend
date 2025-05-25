@@ -28,14 +28,14 @@ const allColumns = [
   { prop: 'email',     label: 'Email' },
   { prop: 'phone',     label: 'Phone', width: 120 },
   { prop: 'level',     label: 'Level', width: 100 },
-  { prop: 'labels',    label: 'Labels', width: 250 },
-  { prop: 'createdAtLocal', label: 'Created At', sortable: true },
-  { prop: 'updatedAtLocal', label: 'Updated At', sortable: true },
+  { prop: 'labels',    label: 'Labels' },
+  { prop: 'createdAt_x', label: 'Created At', sortable: true, width: 150 },
+  { prop: 'updatedAt_x', label: 'Updated At', sortable: true, width: 150 },
   //{ prop: 'status',    label: 'Status' },
 ]
 
 // const visibleColumns = ref(['id', 'firstname', 'lastname', 'email', 'phone', 'level', 'labels', 'createdAt', 'status'])
-const visibleColumns = ref(['email', 'phone', 'level', 'labels', 'createdAtLocal'])
+const visibleColumns = ref(['email', 'phone', 'level', 'labels', 'createdAt_x'])
 
 const selectVisibleColumns = computed(() =>
   allColumns.filter(col => visibleColumns.value.includes(col.prop))
@@ -60,8 +60,8 @@ async function fetchData() {
      }
 
      data.items.forEach(item => {
-       item.createdAtLocal = dayjs(item.createdAt).format('YYYY-MM-DD HH:mm')
-       item.updatedAtLocal = dayjs(item.updatedAt).format('YYYY-MM-DD HH:mm')
+       item.createdAt_x = dayjs(item.createdAt).format('YYYY-MM-DD HH:mm')
+       item.updatedAt_x = dayjs(item.updatedAt).format('YYYY-MM-DD HH:mm')
     })
 
      pageData.value.items = data.items
@@ -238,6 +238,47 @@ onMounted(async () => {
   </div>
 </div>
 
+<el-table
+  :data="pageData.items"
+  style="margin-top: 10px;"
+  @selection-change="selectedRows = $event"
+  v-loading="loading"
+  empty-text="No accounts found"
+  border
+>
+  <el-table-column type="selection" width="40" />
+
+  <el-table-column label="Full Name" prop="fullName" width="120">
+    <template #default="scope"> {{ scope.row.firstname }} {{ scope.row.lastname }} </template>
+  </el-table-column>
+
+  <!--el-table-column prop="id" label="ID" sortable :sort-method="customSort"/-->
+  <el-table-column v-for="col in selectVisibleColumns"
+    :prop="col.prop" :label="col.label" :key="col.prop" :sortable="col.sortable" :width="col.width"
+  />
+
+  <el-table-column label="Actions" fixed="right" width="180">
+    <template #default="scope">
+      <el-button type="primary" size="small" @click="editAccount(scope.row)"> edit </el-button>
+      <el-button type="warning" size="small" @click="updateStatus(scope.row)"> {{ scope.row.status }} </el-button>
+    </template>
+  </el-table-column>
+</el-table>
+
+<el-alert v-if="error" :title="error" type="error" show-icon style="margin-top: 10px" />
+
+<el-pagination
+  v-model:current-page="query.pageIndex"
+  v-model:page-size="query.pageSize"
+  :total="pageData.total"
+  :page-sizes="[10, 20, 50]"
+  class="pagination"
+  layout="prev, pager, next, jumper, total, sizes"
+  @current-change="fetchData()"
+/>
+<!-- @size-change="" -->
+
+
 <UpdateStatus
   v-model:visible="updateStatusVisible"
   :account="selectedAccount"
@@ -256,46 +297,6 @@ onMounted(async () => {
     if (target) { Object.assign(target, form); delete target.password; }
   }"
 />
-
-<el-table
-  :data="pageData.items"
-  style="margin-top: 10px;"
-  @selection-change="selectedRows = $event"
-  border
-  v-loading="loading"
-  empty-text="No accounts found"
->
-  <el-table-column type="selection" width="40" />
-
-  <el-table-column label="Full Name" prop="fullName" width="120">
-    <template #default="scope"> {{ scope.row.firstname }} {{ scope.row.lastname }} </template>
-  </el-table-column>
-
-  <!--el-table-column prop="id" label="ID" sortable :sort-method="customSort"/-->
-  <el-table-column v-for="col in selectVisibleColumns"
-    :prop="col.prop" :label="col.label" :key="col.prop" :sortable="col.sortable" :width="col.width"
-  />
-
-  <el-table-column label="Actions" fixed="right" width="180">
-    <template #default="scope">
-      <el-button type="warning" size="small" @click="updateStatus(scope.row)"> {{ scope.row.status }} </el-button>
-      <el-button type="primary" size="small" @click="editAccount(scope.row)"> edit </el-button>
-    </template>
-  </el-table-column>
-</el-table>
-
-<el-alert v-if="error" :title="error" type="error" show-icon style="margin-top: 10px" />
-
-<el-pagination
-  v-model:current-page="query.pageIndex"
-  v-model:page-size="query.pageSize"
-  :total="pageData.total"
-  :page-sizes="[10, 20, 50]"
-  class="pagination"
-  layout="prev, pager, next, jumper, total, sizes"
-  @current-change="fetchData()"
-/>
-<!-- @size-change="" -->
 </template>
 
 

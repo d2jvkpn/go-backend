@@ -7,12 +7,10 @@ import { ApiError } from "./errors.js"
 import { clearAccount } from "../stores/storage.js";
 
 
-const router = useRouter();
-
 const service = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   paramsSerializer: params => qs.stringify(params, { arrayFormat: 'repeat' }),
-  timeout: 5000,
+  timeout: 3000,
 })
 
 service.interceptors.request.use(
@@ -68,6 +66,7 @@ function handleStatus(err) {
     case 401:
       ElMessage.error(`Please login again ${status}`)
       clearAccount();
+      const router = useRouter();
       router.push('/login');
       break;
     case 403:

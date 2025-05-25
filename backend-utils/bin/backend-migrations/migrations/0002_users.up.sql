@@ -10,13 +10,15 @@ CREATE TABLE user_accounts (
   updated_at  timestamptz NOT NULL DEFAULT now(),
   status      account_status NOT NULL DEFAULT 'created',
 
-  firstname  varchar(24) NOT NULL, -- UNIQUE,
-  lastname   varchar(24) NOT NULL,
+  firstname  varchar(32) NOT NULL, -- UNIQUE,
+  lastname   varchar(32) NOT NULL,
   phone      varchar(20) DEFAULT NULL UNIQUE,
+  -- length range=[5, 64]
   email      varchar(64) DEFAULT NULL UNIQUE,
   level      account_level NOT NULL,
+  -- max=16x32
   labels     varchar[] NOT NULL DEFAULT array[]::varchar[],
-
+  -- raw_password: 8-32, [a-z][A-Z][0-9]
   password  varchar NOT NULL, -- bcrypt(password)
 
   PRIMARY KEY (id)

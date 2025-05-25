@@ -68,7 +68,7 @@ func (self *CreateAccount) Validate() *errx.ErrX {
 	var e error
 
 	if e = ValidateName(self.Firstname, false); e != nil {
-		return structs.Invalid(e).WithCode("invalid_firstname").WithMsg("fristname")
+		return structs.Invalid(e).WithCode("invalid_firstname").WithMsg("firstname")
 	}
 
 	if e = ValidateName(self.Lastname, false); e != nil {

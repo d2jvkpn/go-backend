@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElLoading } from 'element-plus'
 
 import { service } from  "@/js/utils/request.js"
 import { validateAccount, validateContact } from "@/js/utils/validateAccount.js"
@@ -39,17 +39,23 @@ function addLabel () {
 }
 
 const submit = async () => {
+  if (!validateContact(form.value)) {
+    return
+  }
+
+  const valid = await formRef.value.validate()
+  if (!valid) {
+    return;
+  }
+
+  const loading = ElLoading.service({
+    lock: true,
+    text: 'Creating account...',
+    background: 'rgba(0, 0, 0, 0.7)',
+  })
+  console.log(`==> form: ${JSON.stringify(form.value)}`);
+
   try {
-    if (!validateContact(form.value)) {
-      return
-    }
-
-    const valid = await formRef.value.validate()
-    if (!valid) {
-      return;
-    }
-
-    console.log(`==> form: ${JSON.stringify(form.value)}`);
     const data = await service.post("/api/v1/auth/account/create_account", form.value);
 
     form.value = {
@@ -67,9 +73,9 @@ const submit = async () => {
     emit('success');
     emit('update:visible', false);
   } catch (err) {
-    console.log(`==> error: ${err}`)
+    console.log(`==> CreateAccount error: ${err}`)
   } finally {
-    // TODO:
+    loading?.close()
   }
 }
 </script>

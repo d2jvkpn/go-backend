@@ -8,9 +8,6 @@ import (
 )
 
 var (
-	ACCOUNT_Name_Min = 2
-	ACCOUNT_Name_Max = 24
-
 	//_ACCOUNT_Phone = regexp.MustCompile(`^1[3456789]\d{9}$`)
 	_ACCOUNT_Phone = regexp.MustCompile(`^\d{6,20}$`)
 
@@ -29,8 +26,8 @@ func ValidateName(name string, allowEmpty bool) error {
 		return nil
 	}
 
-	if length < ACCOUNT_Name_Min || length > ACCOUNT_Name_Max {
-		return fmt.Errorf("name length: %d~%d", ACCOUNT_Name_Min, ACCOUNT_Name_Max)
+	if length < 1 || length > 32 {
+		return fmt.Errorf("name length: %d~%d", 1, 32)
 	}
 
 	return nil
@@ -47,7 +44,7 @@ func ValidateEmail(email string, allowEmpty bool) (err error) {
 		return fmt.Errorf("email length is too short")
 	}
 
-	if length > 128 {
+	if length > 64 {
 		return fmt.Errorf("email length is too long")
 	}
 

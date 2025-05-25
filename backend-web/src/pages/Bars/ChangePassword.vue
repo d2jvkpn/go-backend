@@ -59,6 +59,11 @@ const submitV1 = () => {
 }
 
 const submit = async () => {
+  const valid = await formRef.value.validate()
+    if (!valid) {
+      return
+  }
+
   const loading = ElLoading.service({
     lock: true,
     text: 'Changing password...',
@@ -66,18 +71,13 @@ const submit = async () => {
   })
 
   try {
-    const valid = await formRef.value.validate()
-    if (!valid) {
-      return
-    }
-    emit('close');
-
     const response = await service.post('/api/v1/auth/account/change_password', {
       oldPassword: form.oldPassword,
-      newPassword: form.newPassword
+      newPassword: form.newPassword,
     })
 
-    ElMessage.success('Password changed successfully')
+    ElMessage.success('Password changed successfully');
+    emit('close');
     clearAccount();
     router.push('/login');
   } catch (err) {

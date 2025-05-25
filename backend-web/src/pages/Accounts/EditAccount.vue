@@ -53,13 +53,12 @@ async function confirm() {
     return;
    }
 
-  console.log(`==> update account`)
-
   const loading = ElLoading.service({
     lock: true,
     text: 'Updating account...',
     background: 'rgba(0, 0, 0, 0.7)',
   })
+  console.log(`==> Updating account`)
 
   try {
     await service.post("/api/v1/auth/account/edit_account", form, { params: { accountId: form.id } })
@@ -68,24 +67,27 @@ async function confirm() {
     emit('update:refresh', form)
     ElMessage.success('Account updated successfully')
   } catch (err) {
-    console.log(`!!! edit status error: ${err}`)
+    console.log(`!!! EditAccount error: ${err}`)
   } finally {
     loading?.close()
   }
 }
 
 watch(() => props.visible, (visible) => {
-  if (visible && props.account) {
-    const cleaned = cloneDeep(props.account)
-    delete cleaned.createdAt
-    delete cleaned.updatedAt
-    delete cleaned.status
-
-    cleaned.labels = Array.isArray(cleaned.labels) ? cleaned.labels : []
-    Object.assign(form, cleaned)
-
-    newLabel.value = ''
+  if (!visible || !props.account) {
+    return
   }
+
+  const cleaned = cloneDeep(props.account)
+
+  cleaned.labels = Array.isArray(cleaned.labels) ? cleaned.labels : [];
+  delete cleaned.createdAt
+  delete cleaned.updatedAt
+  delete cleaned.status
+
+  Object.assign(form, cleaned)
+
+  newLabel.value = ''
 }, { immediate: true })
 
 </script>

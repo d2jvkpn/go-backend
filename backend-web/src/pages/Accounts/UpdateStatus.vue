@@ -56,7 +56,7 @@ async function confirm() {
     emit('update:visible', false)
     ElMessage.success('Status updated successfully')
   } catch (err) {
-    console.log(`!!! update account status error: ${err}`)
+    console.log(`!!! UpdateStatus error: ${err}`)
   } finally {
     loading?.close()
   }

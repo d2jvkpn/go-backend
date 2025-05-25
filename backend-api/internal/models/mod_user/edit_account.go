@@ -29,12 +29,12 @@ type EditAccount struct {
 	// minLength: 1
 	// maxLength: 32
 	// example: John
-	Firstname string `json:"firstname" gorm:"column:firstname" validate:"required,min=2,max=32" fake:"{firstname}" extensions:"x-order=02"`
+	Firstname string `json:"firstname" gorm:"column:firstname" validate:"required,min=1,max=32" fake:"{firstname}" extensions:"x-order=02"`
 
 	// minLength: 1
 	// maxLength: 32
 	// example: Doe
-	Lastname string `json:"lastname" gorm:"column:lastname" validate:"required,min=2,max=32" fake:"{lastname}" extensions:"x-order=03"`
+	Lastname string `json:"lastname" gorm:"column:lastname" validate:"required,min=1,max=32" fake:"{lastname}" extensions:"x-order=03"`
 
 	// Phone number
 	// minLength: 6
@@ -65,11 +65,11 @@ func (self *EditAccount) Validate() *errx.ErrX {
 	var e error
 
 	if self.id, e = utils.UUIDFromString(self.AccountId); e != nil {
-		return structs.Invalid(e).WithCode("invalid_id").WithMsg("fristname")
+		return structs.Invalid(e).WithCode("invalid_id").WithMsg("firstname")
 	}
 
 	if e = ValidateName(self.Firstname, false); e != nil {
-		return structs.Invalid(e).WithCode("invalid_firstname").WithMsg("fristname")
+		return structs.Invalid(e).WithCode("invalid_firstname").WithMsg("firstname")
 	}
 
 	if e = ValidateName(self.Lastname, false); e != nil {
