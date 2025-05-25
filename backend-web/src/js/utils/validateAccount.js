@@ -35,13 +35,13 @@ const validateLabels = (rule, value, callback) => {
 }
 
 export const validateAccount = {
-  firstname: [{ required: true, min: 2, max: 32, message: 'Please enter firstname', trigger: 'blur' }],
-  lastname: [{ required: true, min: 2, max: 32, message: 'Please enter lastname', trigger: 'blur' }],
+  firstname: [{ required: true, min: 1, max: 32, message: 'Please enter firstname', trigger: 'blur' }],
+  lastname: [{ required: true, min: 1, max: 32, message: 'Please enter lastname', trigger: 'blur' }],
   email: [
     { type: 'email', message: 'invalid email format', trigger: 'blur' },
     { min: 5, max: 64, message: 'Email too long', trigger: 'blur' },
   ],
-  phone: [{ min: 6, max: 20, validator: validateContact, trigger: 'blur' }],
+  phone: [{ min: 6, max: 20, trigger: 'blur' }],
   password: [{
     required: true, message: 'Please enter password',
     trigger: 'blur', min: 8, max: 32,

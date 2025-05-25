@@ -29,13 +29,13 @@ const allColumns = [
   { prop: 'phone',     label: 'Phone', width: 120 },
   { prop: 'level',     label: 'Level', width: 100 },
   { prop: 'labels',    label: 'Labels', width: 250 },
-  { prop: 'createdAt', label: 'Created At', sortable: true },
-  { prop: 'updatedAt', label: 'updated At', sortable: true },
+  { prop: 'createdAtLocal', label: 'Created At', sortable: true },
+  { prop: 'updatedAtLocal', label: 'Updated At', sortable: true },
   //{ prop: 'status',    label: 'Status' },
 ]
 
 // const visibleColumns = ref(['id', 'firstname', 'lastname', 'email', 'phone', 'level', 'labels', 'createdAt', 'status'])
-const visibleColumns = ref(['email', 'phone', 'level', 'labels', 'createdAt'])
+const visibleColumns = ref(['email', 'phone', 'level', 'labels', 'createdAtLocal'])
 
 const selectVisibleColumns = computed(() =>
   allColumns.filter(col => visibleColumns.value.includes(col.prop))
@@ -46,7 +46,7 @@ const pageData = ref({ total: 0, items: [] })
 const loading = ref(false)
 const error = ref(null);
 
-const fetchData = async () => {
+async function fetchData() {
   loading.value = true;
   error.value = null;
 
@@ -60,8 +60,8 @@ const fetchData = async () => {
      }
 
      data.items.forEach(item => {
-       item.createdAt = dayjs(item.createdAt).format('YYYY-MM-DD HH:mm')
-       item.updatedAt = dayjs(item.updatedAt).format('YYYY-MM-DD HH:mm')
+       item.createdAtLocal = dayjs(item.createdAt).format('YYYY-MM-DD HH:mm')
+       item.updatedAtLocal = dayjs(item.updatedAt).format('YYYY-MM-DD HH:mm')
     })
 
      pageData.value.items = data.items
@@ -80,7 +80,7 @@ const query = ref({ pageIndex: 1, pageSize: 10, keyword: '', level: '', status: 
 
 const sortValue = ref('createdAt-desc')
 
-const handleReset = async () => {
+async function handleReset () {
   query.value.pageIndex = 1;
   query.value.keyword = '';
   query.value.level = '';
@@ -90,18 +90,18 @@ const handleReset = async () => {
   await fetchData();
 }
 
-const handleSearch = async () => {
+async function handleSearch () {
   query.value.pageIndex = 1;
   await fetchData();
 };
 
-const updatePageIndex = async (v) => {
+async function updatePageIndex (v) {
   console.log(`==> updatePageIndex: ${v}`)
   query.value.pageIndex = v;
-  await fetchData();;
+  await fetchData();
 }
 
-const updatePageSize = async (v) => {
+async function updatePageSize (v) {
   console.log(`==> updatePageSize: ${v}`)
   query.value.pageIndex = 1;
   query.value.pageSize = v;
@@ -115,7 +115,7 @@ function customSort (a, b) {
 //
 const selectedRows = ref([]);
 
-const deleteSelected = async () => {
+async function deleteSelected () {
   const idsToDelete = selectedRows.value.map(row => row.id)
   // console.log(`~~~ idsToDelete: ${JSON.stringify(idsToDelete)}`)
   let s = idsToDelete.length > 1 ? "s" : ""
@@ -144,7 +144,6 @@ const deleteSelected = async () => {
 const selectedAccount = ref(null)
 const updateStatusVisible = ref(false)
 
-
 function updateStatus (account) {
   console.log(`==> UpdateStatus: ${account.id}: ${account.firstname} ${account.lastname}, ${account.status}`)
   selectedAccount.value = account
@@ -154,7 +153,7 @@ function updateStatus (account) {
 //
 const editAccountVisible = ref(false)
 
-const editAccount = (account) => {
+function editAccount (account) {
   console.log(`==> EditAccount: ${account.id}, ${account.firstname} ${account.lastname}, ${account.status}`)
   selectedAccount.value = account
   editAccountVisible.value = true
@@ -163,9 +162,10 @@ const editAccount = (account) => {
 //
 watch(
   // query.value.keyword
-  () => [ query.value.pageSize, query.value.pageIndex, query.value.level, query.value.status, sortValue.value ],
+  () => [query.value.pageSize, query.value.level, query.value.status, sortValue.value ],
   (newValues, oldValues) => {
-    console.log(`==> watch: ${newValues}, ${oldValues}`);
+    console.log(`==> Watch: ${newValues}, ${oldValues}`);
+    query.value.pageIndex = 1;
     fetchData();
   }
 );
@@ -234,7 +234,7 @@ onMounted(async () => {
 
     <el-button type="primary" @click="openCreateAccount">Create</el-button>
     <!--CreateAccount v-model:visible="openCreateAccount" @success="refresh" /-->
-    <CreateAccount v-model:visible="createAccountVisible" @success="handleSearch" />
+    <CreateAccount v-model:visible="createAccountVisible" @success="fetchData" />
   </div>
 </div>
 
@@ -293,6 +293,7 @@ onMounted(async () => {
   :page-sizes="[10, 20, 50]"
   class="pagination"
   layout="prev, pager, next, jumper, total, sizes"
+  @current-change="fetchData"
 />
 </template>
 

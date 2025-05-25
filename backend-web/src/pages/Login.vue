@@ -14,52 +14,7 @@ const password = ref('')
 const loading = ref(false)
 const router = useRouter()
 
-const sumbitLoginV1 = () => {
-  if (!account.value || !password.value) {
-    alert('Please enter acocunt and password!')
-    return
-  }
-
-  /*
-  let firstname = "Jane";
-  let lastname = "Doe";
-  localStorage.setItem('fristname', "Jane")
-  localStorage.setItem('lastname', "Doe")
-  localStorage.setItem('token', `${account.value}:${password.value}`)
-
-  localStorage.setItem('level', "admin")
-
-  ElMessage.success(`Welcome back, ${firstname} ${lastname}!`)
-  router.push('/home/dashboard')
-  */
-
-  const callback = (data) => {
-    localStorage.setItem('firstname', data.firstname)
-    localStorage.setItem('lastname', data.lastname)
-    localStorage.setItem('token', data.token)
-    localStorage.setItem('level', data.level)
-
-    loading.value = false
-    ElMessage.success(`Welcome back, ${data.firstname} ${data.lastname}!`)
-    router.push('/home/dashboard')
-  }
-
-  const onError = () => {
-    loading.value = false
-  }
-
-  const data = { password: password.value }
-  if (account.value.includes("@")) {
-    data.email = account.value;
-  } else {
-    data.phone = account.value;
-  }
-
-  login(data, callback, onError)
-
-}
-
-const sumbitLogin = async () => {
+const submit = async () => {
   if (!account.value || !password.value) {
     alert('Please enter acocunt and password!')
     return
@@ -112,7 +67,7 @@ onBeforeMount(() => {
       </el-form-item>
 
       <div class="login-button">
-        <el-button type="primary" @click="sumbitLogin"> {{ loading ? 'Logining...' : 'Login' }} </el-button>
+        <el-button type="primary" @click="submit"> {{ loading ? 'Logining...' : 'Login' }} </el-button>
       </div>
     </el-form>
   </el-card>

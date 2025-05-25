@@ -27,12 +27,12 @@ type CreateAccount struct {
 	Status string `json:"status,omitempty" gorm:"column:status;->;<-:create" validate:"required,oneof=created activated" fake:"activated" extensions:"x-order=01"`
 
 	// required: true
-	// minLength: 2
+	// minLength: 1
 	// maxLength: 32
 	// example: John
 	Firstname string `json:"firstname" gorm:"column:firstname" validate:"required,min=2,max=32" fake:"{firstname}" extensions:"x-order=02"`
 
-	// minLength: 2
+	// minLength: 1
 	// maxLength: 32
 	// example: Doe
 	Lastname string `json:"lastname" gorm:"column:lastname" validate:"required,min=2,max=32" fake:"{lastname}" extensions:"x-order=03"`

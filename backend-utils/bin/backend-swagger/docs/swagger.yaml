@@ -23,7 +23,7 @@ definitions:
         description: |-
           email address
           minLength: 5
-          maxLength: 128
+          maxLength: 64
           example: john@noreply.local
         type: string
         x-order: "08"
@@ -35,8 +35,8 @@ definitions:
       firstname:
         description: |-
           firstname
-          minLength: 2
-          maxLength: 24
+          minLength: 1
+          maxLength: 32
           example: John
         type: string
         x-order: "05"
@@ -45,7 +45,9 @@ definitions:
         type: string
         x-order: "01"
       labels:
-        description: labels
+        description: |-
+          labels, max length of a label is 32
+          maxLength: 16
         items:
           type: string
         type: array
@@ -53,8 +55,8 @@ definitions:
       lastname:
         description: |-
           lastname
-          minLength: 2
-          maxLength: 24
+          minLength: 1
+          maxLength: 32
           example: John
         type: string
         x-order: "06"
@@ -97,15 +99,15 @@ definitions:
         description: |-
           email address
           minLength: 5
-          maxLength: 128
+          maxLength: 64
           example: john@noreply.local
         type: string
         x-order: "08"
       firstname:
         description: |-
           firstname
-          minLength: 2
-          maxLength: 24
+          minLength: 1
+          maxLength: 32
           example: John
         type: string
         x-order: "05"
@@ -114,7 +116,9 @@ definitions:
         type: string
         x-order: "01"
       labels:
-        description: labels
+        description: |-
+          labels, max length of a label is 32
+          maxLength: 16
         items:
           type: string
         type: array
@@ -122,8 +126,8 @@ definitions:
       lastname:
         description: |-
           lastname
-          minLength: 2
-          maxLength: 24
+          minLength: 1
+          maxLength: 32
           example: John
         type: string
         x-order: "06"
@@ -171,7 +175,7 @@ definitions:
       firstname:
         description: |-
           required: true
-          minLength: 2
+          minLength: 1
           maxLength: 32
           example: John
         maxLength: 32
@@ -187,7 +191,7 @@ definitions:
         x-order: "07"
       lastname:
         description: |-
-          minLength: 2
+          minLength: 1
           maxLength: 32
           example: Doe
         maxLength: 32

@@ -91,7 +91,7 @@ watch(() => props.visible, (visible) => {
 
 <template>
 <el-dialog
-  :model-value="visible" title="Update account" width="500px"
+  :model-value="visible" title="Edit account" width="500px"
   @update:modelValue="emit('update:visible', $event)"
 >
   <el-divider style="margin: 0 0 20px 0" />
@@ -99,12 +99,12 @@ watch(() => props.visible, (visible) => {
   <el-form :model="form" :rules="validateAccount" ref="formRef" label-width="120px">
     <el-form-item label="ID"> <el-input :value="form.id" disabled /> </el-form-item>
 
-    <el-form-item label="Firstname"> <el-input v-model="form.firstname"/> </el-form-item>
-    <el-form-item label="Lastname"> <el-input v-model="form.lastname"/> </el-form-item>
+    <el-form-item label="Firstname" required> <el-input v-model="form.firstname"/> </el-form-item>
+    <el-form-item label="Lastname" required> <el-input v-model="form.lastname"/> </el-form-item>
     <el-form-item label="Email"> <el-input v-model="form.email"/> </el-form-item>
     <el-form-item label="Phone"> <el-input v-model="form.phone"/> </el-form-item>
 
-    <el-form-item label="Level" prop="level" style="flex: 1; min-width: 20px;">
+    <el-form-item label="Level" prop="level" style="flex: 1; min-width: 20px;" required>
       <el-select v-model="form.level" placeholder="Level">
         <el-option v-for="e in levels" :value="e" :label="e" :key="`account::level::${e}`" />
       </el-select>

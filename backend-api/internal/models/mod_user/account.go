@@ -30,14 +30,14 @@ type Account struct {
 	Status string `json:"status,omitempty" gorm:"column:status;->;<-:create" fake:"activated" extensions:"x-order=04"`
 
 	// firstname
-	// minLength: 2
-	// maxLength: 24
+	// minLength: 1
+	// maxLength: 32
 	// example: John
 	Firstname string `json:"firstname" gorm:"column:firstname" fake:"{firstname}" extensions:"x-order=05"`
 
 	// lastname
-	// minLength: 2
-	// maxLength: 24
+	// minLength: 1
+	// maxLength: 32
 	// example: John
 	Lastname string `json:"lastname" gorm:"column:lastname" fake:"{lastname}" extensions:"x-order=06"`
 
@@ -49,7 +49,7 @@ type Account struct {
 
 	// email address
 	// minLength: 5
-	// maxLength: 128
+	// maxLength: 64
 	// example: john@noreply.local
 	Email string `json:"email,omitempty" gorm:"column:email;default:null" fake:"{email}" extensions:"x-order=08"`
 

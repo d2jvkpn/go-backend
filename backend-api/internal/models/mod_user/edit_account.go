@@ -26,12 +26,12 @@ type EditAccount struct {
 	id        uuid.UUID `json:"-" fake:"-"`
 
 	// required: true
-	// minLength: 2
+	// minLength: 1
 	// maxLength: 32
 	// example: John
 	Firstname string `json:"firstname" gorm:"column:firstname" validate:"required,min=2,max=32" fake:"{firstname}" extensions:"x-order=02"`
 
-	// minLength: 2
+	// minLength: 1
 	// maxLength: 32
 	// example: Doe
 	Lastname string `json:"lastname" gorm:"column:lastname" validate:"required,min=2,max=32" fake:"{lastname}" extensions:"x-order=03"`
@@ -57,7 +57,7 @@ type EditAccount struct {
 	// password: ^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{8,32}$
 	// minLength: 8
 	// maxLength: 32
-	// default: ""
+	// default: 
 	Password string `json:"password" gorm:"column:password" validate:"omitempty,min=8,max=32" fake:"-" extensions:"x-order=08"`
 }
 

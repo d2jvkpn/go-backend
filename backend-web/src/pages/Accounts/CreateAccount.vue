@@ -28,7 +28,7 @@ const levels = ['admin', 'editor', 'reviewer', 'user', 'guest'];
 
 const newLabel = ref('')
 
-const addLabel = () => {
+function addLabel () {
   const trimmed = newLabel.value.trim()
 
   if (trimmed && !form.value.labels.includes(trimmed)) {
@@ -80,11 +80,11 @@ const submit = async () => {
   <el-divider style="margin: 0 0 20px 0" />
 
   <el-form :model="form" :rules="validateAccount" ref="formRef" label-width="100px">
-    <el-form-item label="Firstname" prop="firstname">
+    <el-form-item label="Firstname" prop="firstname" required>
       <el-input v-model="form.firstname" placeholder="Enter firstname" />
     </el-form-item>
 
-    <el-form-item label="Lastname" prop="lastname">
+    <el-form-item label="Lastname" prop="lastname" required>
       <el-input v-model="form.lastname" placeholder="Enter lastname" />
     </el-form-item>
 
@@ -96,7 +96,7 @@ const submit = async () => {
       <el-input v-model="form.phone" placeholder="Enter phone" />
     </el-form-item>
 
-    <el-form-item label="Password" prop="password">
+    <el-form-item label="Password" prop="password" required>
       <el-input v-model="form.password" type="password" placeholder="Enter password" show-password clearable />
     </el-form-item>
 
@@ -108,13 +108,13 @@ const submit = async () => {
 
     <el-form :model="form" label-width="100px">
       <div style="display: flex; gap: 5px; align-items: flex-start; flex-wrap: wrap;">
-        <el-form-item label="Level" prop="level" style="flex: 1; min-width: 20px;">
+        <el-form-item label="Level" prop="level" style="flex: 1; min-width: 20px;" required>
           <el-select v-model="form.level" placeholder="Level">
             <el-option v-for="e in levels" :value="e" :label="e" :key="`account::level::${e}`" />
           </el-select>
         </el-form-item>
 
-        <el-form-item label="Status" prop="status" style="flex: 1; min-width: 20px;">
+        <el-form-item label="Status" prop="status" style="flex: 1; min-width: 20px;" required>
           <el-select v-model="form.status" placeholder="Status">
             <el-option value="activated" label="activated" />
             <el-option value="created" label="created" />
