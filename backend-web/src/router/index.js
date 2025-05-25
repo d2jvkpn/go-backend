@@ -40,14 +40,25 @@ export const allRoutes = [
     ],
   },
 
+  /*
   {
     path: "/page-not-found", name: "PageNotFound",
     meta: { title: "Backend - Page not found", requiresAuth: false, levels: ["any"] },
     component: PageNotFound,
   },
+  */
 
-  { path: "/:pathMatch(.*)*", redirect: "/page-not-found" },
+  {
+    path: "/:pathMatch(.*)*",
+    // redirect: "/page-not-found",
+    name: 'NotFound',
+    component: () => PageNotFound,
+  },
 ]
+
+export function getFirstRoute(level) {
+  return allRoutes.find(e => e.meta?.levels.includes(level)).path || "/"
+}
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.VITE_BASE_PATH),

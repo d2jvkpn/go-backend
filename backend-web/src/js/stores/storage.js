@@ -33,7 +33,7 @@ export function checkIsLoggedIn() {
     return false;
   }
 
-  const now = Date.now();
+  const now = Date.now()/1000;
   const expiresAt = Number(localStorage.getItem("expiresAt"));
 
   if (expiresAt <= now) {

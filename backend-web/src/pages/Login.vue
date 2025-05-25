@@ -6,6 +6,7 @@ import { ElMessage } from 'element-plus'
 import { login } from "@/js/_login.js"
 import { service } from  "@/js/utils/request.js"
 import { setAccount, checkIsLoggedIn } from "@/js/stores/storage.js"
+import { getFirstRoute } from "@/router/index"
 
 // console.log(`==> import.meta.env: ${JSON.stringify(import.meta.env)}`);
 
@@ -14,9 +15,12 @@ const password = ref('')
 const loading = ref(false)
 const router = useRouter()
 
+let firstRoute = ""
+
 const submit = async () => {
   if (!account.value || !password.value) {
-    alert('Please enter acocunt and password!')
+    // alert('Please enter acocunt and password!')
+    ElMessage.warn('Please enter acocunt and password!');
     return
   }
 
@@ -34,12 +38,14 @@ const submit = async () => {
       { params: {platform: "web"} },
     )
 
+    firstRoute = getFirstRoute(data.level);
+
     setAccount(data)
     ElMessage.success(`Welcome back, ${data.firstname} ${data.lastname}!`)
 
-    router.push('/home/accounts')
+    router.push(firstRoute)
   } catch (err) {
-    console.log(`!!! login error: ${JSON.stringify(err)}`)
+    console.log(`!!! login error: ${JSON.stringify(err)}, ${err.message}`)
   } finally {
     loading.value = false
   }
@@ -47,9 +53,11 @@ const submit = async () => {
 
 onBeforeMount(() => {
   if (checkIsLoggedIn()) {
-    router.push('/home/accounts')
+    router.push(firstRoute)
   }
 })
+
+// onBeforeMount, onMounted, onBeforeUpdate, onUpdated, onUnmounted
 </script>
 
 
@@ -63,7 +71,7 @@ onBeforeMount(() => {
       </el-form-item>
 
       <el-form-item>
-        <el-input type="password" v-model="password" placeholder="password" show-password />
+        <el-input type="password" v-model="password" placeholder="password" clearable show-password/>
       </el-form-item>
 
       <div class="login-button">
