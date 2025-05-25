@@ -65,7 +65,7 @@ const confirmLogout = async () => {
 const handleCommand = (command) => {
   switch (command) {
   case 'profile':
-    router.push('/home/settings/profile')
+    router.push('/dashboard/settings/profile')
     break
   case 'change_password':
     showChangePassword.value = true
@@ -87,7 +87,7 @@ const handleCommand = (command) => {
     <el-button text circle @click="$emit('toggleSidebar')" class="headerbar-toggle-btn">
       <el-icon> <component :is="isSidebarHidden ? Expand : Fold" /> </el-icon>
     </el-button>
-    <div class="headerbar-logo"> 🌀 Home </div>
+    <div class="headerbar-logo"> 🌀 Dashboard </div>
   </div>
 
   <el-dropdown @command="handleCommand">

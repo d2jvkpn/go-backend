@@ -4,7 +4,7 @@
 
 <template>
 <div>
-  Welcome to dashboard!
+  Welcome to overview!
 </div>
 </template>
 

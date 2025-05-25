@@ -207,7 +207,7 @@ onMounted(async () => {
       <el-option label="Lastname At ↓" value="lastname-desc" />
     </el-select>
 
-    <el-button type="info" @click="handleReset"> Reset </el-button>
+    <el-button type="info" size="small" @click="handleReset"> Reset </el-button>
     <!--el-button type="info" @click="handleSearch"> Search </el-button-->
   </div>
 

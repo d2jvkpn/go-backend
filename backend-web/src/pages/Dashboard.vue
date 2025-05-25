@@ -28,18 +28,18 @@ const toggleCollapse = () => {
 
 
 <template>
-<div class="home">
+<div class="dashboard">
   <HeaderBar
-    class="home-headerbar"
+    class="dashboard-headerbar"
     :account="account"
     :isSidebarHidden="isHidden"
     @toggleSidebar="isHidden = !isHidden"
   />
 
-  <div class="home-main">
-    <Sidebar class="home-sidebar" v-show="!isHidden" :account="account" />
+  <div class="dashboard-main">
+    <Sidebar class="dashboard-sidebar" v-show="!isHidden" :account="account" />
 
-    <main class="home-content">
+    <main class="dashboard-content">
       <router-view v-slot="{ Component }">
         <KeepAlive> <component :is="Component" /> </KeepAlive>
       </router-view>
@@ -50,27 +50,27 @@ const toggleCollapse = () => {
 
 
 <style scoped>
-.home {
+.dashboard {
   height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
-.home-headerbar {
+.dashboard-headerbar {
   height: 60px;
 }
 
-.home-main {
+.dashboard-main {
   display: flex;
   flex: 1; /* flex-grow: 1; flex-shrink: 1; flex-basis: 0%; */
   overflow: hidden;
 }
 
-.home-sidebar {
+.dashboard-sidebar {
   width: 15rem;
 }
 
-.home-content {
+.dashboard-content {
   position: relative;
   flex: 1;
   padding: 20px;

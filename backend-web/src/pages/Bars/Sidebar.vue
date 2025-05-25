@@ -44,27 +44,27 @@ const visibleRouteNames = computed(() => {
 <template>
 <aside>
   <el-menu :default-active="$route.path" router>
-    <el-menu-item index="/home/accounts" v-if="visibleRouteNames.includes('Accounts')">
+    <el-menu-item index="/dashboard/accounts" v-if="visibleRouteNames.includes('Accounts')">
       <el-icon> <User /> </el-icon>
       Accounts
     </el-menu-item>
 
-    <el-menu-item index="/home/dashboard" v-if="visibleRouteNames.includes('Dashboard')">
+    <el-menu-item index="/dashboard/overview" v-if="visibleRouteNames.includes('Overview')">
       <el-icon> <Histogram /> </el-icon>
-      Dashboard
+      Overview
     </el-menu-item>
 
-    <el-sub-menu index="/home/settings" v-if="visibleRouteNames.includes('Settings')">
+    <el-sub-menu index="/dashboard/settings" v-if="visibleRouteNames.includes('Settings')">
       <template #title>
         <el-icon> <Setting /> </el-icon>
         Settings
       </template>
-      <el-menu-item index="/home/settings/profile" v-if="visibleRouteNames.includes('Profile')">
+      <el-menu-item index="/dashboard/settings/profile" v-if="visibleRouteNames.includes('Profile')">
         <el-icon><Postcard /></el-icon>
         Profile
       </el-menu-item>
 
-      <el-menu-item index="/home/settings/security" v-if="visibleRouteNames.includes('Security')">
+      <el-menu-item index="/dashboard/settings/security" v-if="visibleRouteNames.includes('Security')">
         <el-icon><Box /></el-icon>
         Security
       </el-menu-item>

@@ -12,19 +12,19 @@ export const allRoutes = [
   },
 
   {
-    path: "/home/dashboard", name: "Dashboard",
-    meta: { title: "Backend - Dashboard", requiresAuth: true, levels: ["editor", "admin"] },
-    component: () => import("@/pages/Dashboard/Dashboard.vue"),
-  },
-
-  {
-    path: "/home/accounts", name: "Accounts",
+    path: "/dashboard/accounts", name: "Accounts",
     meta: { title: "Backend - Accounts", requiresAuth: true, levels: ["admin"] },
     component: () => import("@/pages/Accounts/Accounts.vue"),
   },
 
   {
-    path: "/home/settings", name: "Settings",
+    path: "/dashboard/overview", name: "Overview",
+    meta: { title: "Backend - Overview", requiresAuth: true, levels: ["editor", "admin"] },
+    component: () => import("@/pages/Overview/Overview.vue"),
+  },
+
+  {
+    path: "/dashboard/settings", name: "Settings",
     meta: { title: "Backend - Settings", requiresAuth: true, levels: ["any"] },
     children: [
       {

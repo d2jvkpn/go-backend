@@ -7,6 +7,7 @@ import { login } from "@/js/_login.js"
 import { service } from  "@/js/utils/request.js"
 import { setAccount, checkIsLoggedIn } from "@/js/stores/storage.js"
 import { getFirstRoute } from "@/router/index"
+import { getAccount } from "@/js/stores/storage.js";
 
 // console.log(`==> import.meta.env: ${JSON.stringify(import.meta.env)}`);
 
@@ -18,6 +19,11 @@ const router = useRouter()
 let firstRoute = ""
 
 const submit = async () => {
+  if (loading.value) {
+    ElMessage.warn('Logining...');
+    return;
+  }
+
   if (!account.value || !password.value) {
     // alert('Please enter acocunt and password!')
     ElMessage.warn('Please enter acocunt and password!');
@@ -45,15 +51,20 @@ const submit = async () => {
 
     router.push(firstRoute)
   } catch (err) {
-    console.log(`!!! login error: ${JSON.stringify(err)}, ${err.message}`)
+    console.log(`!!! Login error: ${err.message}`)
   } finally {
     loading.value = false
   }
 }
 
 onBeforeMount(() => {
-  if (checkIsLoggedIn()) {
-    router.push(firstRoute)
+  if (!checkIsLoggedIn()) {
+    return
+  }
+
+  const account = getAccount();
+  if (account?.level) {
+    router.push(getFirstRoute(account.level));
   }
 })
 

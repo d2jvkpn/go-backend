@@ -2,7 +2,7 @@
 import { computed, ref, onBeforeMount } from 'vue'
 import { useRoute } from 'vue-router'
 
-import Home from './pages/Home.vue'
+import Dashboard from './pages/Dashboard.vue'
 
 //
 console.log(`==> import.meta.env: ${JSON.stringify(import.meta.env)}`);
@@ -26,7 +26,7 @@ const layoutComponent = computed(() => {
   const requiresAuth = route.meta.requiresAuth
 
   if (requiresAuth) {
-    return Home
+    return Dashboard
   }
 
   return 'div'
