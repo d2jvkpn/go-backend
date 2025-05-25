@@ -74,7 +74,7 @@ func CacheUpdateToken(ctx context.Context, key, tokenId string) (err *errx.ErrX)
 		expiration time.Duration
 	)
 
-	const msg = "Please log in again"
+	const msg = "Please login again"
 
 	expiration = Config.GetDuration("jwt.interval")
 	// fmt.Printf("==> CacheLoginTokenUpdate 1: %s, %v\n", key, expiration)
