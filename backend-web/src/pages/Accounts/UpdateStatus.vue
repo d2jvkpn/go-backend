@@ -33,7 +33,7 @@ const statusOptions = computed(() => {
 
 async function confirm() {
   if (!form.newStatus || form.newStatus === form.status) {
-    ElMessage.warning('Please select a different status')
+    ElMessage.warning('Please select a status')
     return
   }
 
