@@ -4,7 +4,7 @@ import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
 
 import { ApiError } from "./errors.js"
-import { clearAccount } from "../stores/local.js";
+import { clearAccount } from "../stores/storage.js";
 
 
 const router = useRouter();

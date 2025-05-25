@@ -44,14 +44,14 @@ const visibleRouteNames = computed(() => {
 <template>
 <aside>
   <el-menu :default-active="$route.path" router>
-    <el-menu-item index="/home/dashboard" v-if="visibleRouteNames.includes('Dashboard')">
-      <el-icon> <Histogram /> </el-icon>
-      Dashboard
-    </el-menu-item>
-
     <el-menu-item index="/home/accounts" v-if="visibleRouteNames.includes('Accounts')">
       <el-icon> <User /> </el-icon>
       Accounts
+    </el-menu-item>
+
+    <el-menu-item index="/home/dashboard" v-if="visibleRouteNames.includes('Dashboard')">
+      <el-icon> <Histogram /> </el-icon>
+      Dashboard
     </el-menu-item>
 
     <el-sub-menu index="/home/settings" v-if="visibleRouteNames.includes('Settings')">

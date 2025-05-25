@@ -1,11 +1,11 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onBeforeMount } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 
 import { login } from "@/js/_login.js"
 import { service } from  "@/js/utils/request.js"
-import { setAccount } from "@/js/stores/local.js"
+import { setAccount, checkLoggedIn } from "@/js/stores/storage.js"
 
 // console.log(`==> import.meta.env: ${JSON.stringify(import.meta.env)}`);
 
@@ -56,6 +56,7 @@ const sumbitLoginV1 = () => {
   }
 
   login(data, callback, onError)
+
 }
 
 const sumbitLogin = async () => {
@@ -80,13 +81,20 @@ const sumbitLogin = async () => {
 
     setAccount(data)
     ElMessage.success(`Welcome back, ${data.firstname} ${data.lastname}!`)
-    router.push('/home/dashboard')
+
+    router.push('/home/accounts')
   } catch (err) {
     console.log(`!!! login error: ${JSON.stringify(err)}`)
   } finally {
     loading.value = false
   }
 }
+
+onBeforeMount(() => {
+  if (checkLoggedIn()) {
+    router.push('/home/accounts')
+  }
+})
 </script>
 
 

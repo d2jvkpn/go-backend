@@ -3,7 +3,7 @@ import { ref, reactive } from 'vue'
 import { ElMessage, ElLoading } from 'element-plus'
 import { useRouter } from 'vue-router'
 
-import { clearAccount } from "@/js/stores/local.js"
+import { clearAccount } from "@/js/stores/storage.js"
 import { service } from  "@/js/utils/request.js"
 
 defineProps({

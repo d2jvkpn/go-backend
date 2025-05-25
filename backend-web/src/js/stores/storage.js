@@ -27,3 +27,8 @@ export function clearAccount() {
   localStorage.removeItem("token");
   localStorage.removeItem("expiresAt");
 }
+
+export function checkLoggedIn() {
+  // TODO
+  return !!localStorage.getItem("token");
+}

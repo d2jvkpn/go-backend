@@ -7,7 +7,7 @@ import { ArrowDown, Fold, Expand } from '@element-plus/icons-vue'
 import ChangePassword from './ChangePassword.vue'
 // import { useUserStore } from '@/js/stores/user'
 import { logout } from "@/js/_login.js"
-import { clearAccount } from "@/js/stores/local.js"
+import { clearAccount } from "@/js/stores/storage.js"
 import { service } from  "@/js/utils/request.js"
 
 //
