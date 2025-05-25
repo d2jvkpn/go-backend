@@ -293,8 +293,9 @@ onMounted(async () => {
   :page-sizes="[10, 20, 50]"
   class="pagination"
   layout="prev, pager, next, jumper, total, sizes"
-  @current-change="fetchData"
+  @current-change="fetchData()"
 />
+<!-- @size-change="" -->
 </template>
 
 
