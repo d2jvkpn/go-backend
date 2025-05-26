@@ -12,9 +12,9 @@ CREATE TABLE user_accounts (
 
   firstname  varchar(32) NOT NULL, -- UNIQUE,
   lastname   varchar(32) NOT NULL,
-  phone      varchar(20) DEFAULT NULL UNIQUE,
   -- length range=[5, 64]
   email      varchar(64) DEFAULT NULL UNIQUE,
+  phone      varchar(20) DEFAULT NULL UNIQUE,
   level      account_level NOT NULL,
   -- max=16x32
   labels     varchar[] NOT NULL DEFAULT array[]::varchar[],

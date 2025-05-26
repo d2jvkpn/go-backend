@@ -81,7 +81,10 @@ const submit = async () => {
 </script>
 
 <template>
-<el-dialog :model-value="visible" title="Create an account" width="500px">
+<el-dialog
+  title="Create an account" width="500px"
+  :model-value="visible" @update:modelValue="emit('update:visible', $event)"
+>
   <!--hr style="color: #bbb"-->
   <el-divider style="margin: 0 0 20px 0" />
 

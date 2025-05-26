@@ -95,8 +95,7 @@ watch(() => props.visible, (visible) => {
 <template>
 <el-dialog
   title="Edit account" width="500px"
-  :model-value="visible"
-  @update:modelValue="emit('update:visible', $event)"
+  :model-value="visible" @update:modelValue="emit('update:visible', $event)"
 >
   <el-divider style="margin: 0 0 20px 0" />
 

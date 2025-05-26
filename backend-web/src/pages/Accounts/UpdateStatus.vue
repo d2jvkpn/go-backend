@@ -95,8 +95,7 @@ watch(() => props.visible, (visible) => {
 <template>
 <el-dialog
   title="Update status of account" width="400px"
-  :model-value="visible"
-  @update:modelValue="emit('update:visible', $event)"
+  :model-value="visible" @update:modelValue="emit('update:visible', $event)"
 >
   <el-divider style="margin: 0 0 20px 0" />
 
@@ -110,7 +109,7 @@ watch(() => props.visible, (visible) => {
     <el-form-item label="Level"> <el-input :value="form.level" disabled /> </el-form-item>
 
     <el-form-item label="Current Status">
-      <el-tag :type="form.status === 'activated' ? 'success' : 'info'" size="large">
+      <el-tag :type="form.status === 'activated' ? 'success' : 'warning'" size="large">
         {{ form.status }}
       </el-tag>
     </el-form-item>
@@ -118,10 +117,8 @@ watch(() => props.visible, (visible) => {
     <el-form-item label="Update Status" v-if="statusOptions.length > 0">
       <div style="display: flex; gap: 12px;">
         <el-checkbox
-          v-for="val in statusOptions"
-          :key="val" :label="val"
-          :model-value="form.newStatus === val"
-          @change="() => form.newStatus = val"
+          v-for="val in statusOptions" :key="val" :label="val"
+          :model-value="form.newStatus === val" @change="() => form.newStatus = val"
         />
       </div>
     </el-form-item>
