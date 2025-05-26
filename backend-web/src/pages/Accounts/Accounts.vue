@@ -180,9 +180,10 @@ onMounted(async () => {
   <div class="toolbar-left">  <!-- 左侧：搜索、角色、重置 -->
     <el-input
       v-model="query.keyword"
-      placeholder="seach account or email"
+      placeholder="Seaching"
       @keyup.enter="handleSearch"
-      style="width: 200px"
+      style="width: 240px"
+      title="*Firstname*, *Lastname*, *Email*, *Phone* and ^Labels$"
       clearable
     />
 
