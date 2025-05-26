@@ -23,7 +23,7 @@ func TestFake01_Accounts(t *testing.T) {
 	tx = Table(_TestCtx, TABLE_UserAccounts).Where("'fake' = any(labels)").Delete(nil)
 
 	require.Nil(t, tx.Error)
-	fmt.Printf("==> deleted fake account(s): %d\n", tx.RowsAffected)
+	fmt.Printf("==> Deleted fake account(s): %d\n", tx.RowsAffected)
 
 	// 2.
 	num := 100
@@ -39,7 +39,7 @@ func TestFake01_Accounts(t *testing.T) {
 		require.Nil(t, e)
 		accounts[i].Password = string(bts)
 	}
-	fmt.Printf("==> fake accounts: %v\n", accounts)
+	fmt.Printf("==> Created fake accounts: %v\n", accounts)
 
 	e = Table(_TestCtx, TABLE_UserAccounts).CreateInBatches(accounts, len(accounts)).Error
 	require.Nil(t, e)
