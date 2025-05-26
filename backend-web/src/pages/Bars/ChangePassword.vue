@@ -83,7 +83,7 @@ const submit = async () => {
 
 <template>
 <el-dialog
-  title="Update status of account" width="400px"
+  title="Change password" width="400px"
   :model-value="visible" @update:modelValue="emit('update:visible', $event)"
 >
   <el-divider style="margin: 0 0 20px 0" />
