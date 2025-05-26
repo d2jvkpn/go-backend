@@ -12,3 +12,6 @@ Promise.all([
   callback()
 });
 */
+
+// import { hello } from "@/js/_hello.js"
+// hello()

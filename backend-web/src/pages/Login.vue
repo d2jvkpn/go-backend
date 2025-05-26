@@ -3,7 +3,6 @@ import { ref, onBeforeMount } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 
-import { login } from "@/js/_login.js"
 import { request } from  "@/js/api"
 import { getFirstRoute } from "@/router/index"
 import stores from "@/js/stores"
@@ -75,7 +74,7 @@ onBeforeMount(() => {
 <div class="login">
   <el-card class="login-card">
     <template #header> Please Login </template>
-    <el-form @submit.prevent="login">
+    <el-form @submit.prevent="submit">
       <el-form-item>
         <el-input v-model="account" placeholder="email or phone" />
       </el-form-item>

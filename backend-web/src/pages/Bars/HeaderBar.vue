@@ -5,8 +5,6 @@ import { ElMessageBox, ElMessage } from 'element-plus'
 import { ArrowDown, Fold, Expand } from '@element-plus/icons-vue'
 
 import ChangePassword from './ChangePassword.vue'
-// import { useUserStore } from '@/js/stores/user'
-import { logout } from "@/js/_login.js"
 import stores from "@/js/stores"
 import { request } from  "@/js/api"
 
@@ -16,35 +14,13 @@ const props = defineProps({
   isSidebarHidden: { type: Boolean },
 })
 
-const showChangePassword = ref(false)
-
-//
 const emit = defineEmits(['toggleSidebar'])
 
-//
 const router = useRouter()
-// const userStore = useUserStore()
+const showChangePassword = ref(false)
 
-const confirmLogoutV1 = () => {
-  ElMessageBox.confirm(
-    'Are you sure you want to log out?',
-    'Logout Confirmation',
-    { confirmButtonText: 'Logout', cancelButtonText: 'Cancel', type: 'warning' },
-  )
-  .then(() => {
-    // userStore.logout()
-    // localStorage.removeItem('token')
-    stores.clearAccount();
-    router.push('/login');
-    ElMessage.success('You have been logged out.');
-  })
-  .catch(() => {
-    ElMessage.info('Logout canceled.');
-  })
-}
-
-const confirmLogout = async () => {
-  let logout = true;
+async function confirmLogout() {
+  let LoggedOut = true;
 
   try {
     await ElMessageBox.confirm(
@@ -57,21 +33,22 @@ const confirmLogout = async () => {
     ElMessage.success('You have been logged out.');
   } catch (err) {
     if (err === "cancel") {
+      LoggedOut = false;
       ElMessage.info('Logout canceled');
-      logout = false;
     } else {
       ElMessage.error(err.response?.data?.msg || 'Logout failed');
     }
   } finally {
   }
 
-  if (logout) {
+  if (LoggedOut) {
+    // Clear the token first to avoid automatic redirection to /dashboard and unintended API requests after landing on the /login page.
     stores.clearAccount();
     router.push('/login');
   }
 }
 
-const handleCommand = (command) => {
+function handleCommand (command) {
   switch (command) {
   case 'profile':
     router.push('/dashboard/settings/profile')
@@ -83,7 +60,7 @@ const handleCommand = (command) => {
     confirmLogout()
     break
   default:
-    alert(`!!! unknown command: ${command}`)
+    console.error(`!!! unknown command: ${command}`)
   }
 }
 
@@ -113,7 +90,7 @@ const handleCommand = (command) => {
     </template>
   </el-dropdown>
 
-  <ChangePassword :visible="showChangePassword" @close="showChangePassword = false"/>
+  <ChangePassword v-model:visible="showChangePassword" />
 </header>
 </template>
 

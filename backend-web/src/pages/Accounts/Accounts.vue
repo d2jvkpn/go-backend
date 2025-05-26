@@ -4,8 +4,6 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { ArrowDown } from '@element-plus/icons-vue'
 import dayjs from 'dayjs'
 
-// import { hello } from "@/js/_hello.js"
-// hello()
 import { request } from "@/js/api";
 import CreateAccount from './CreateAccount.vue'
 import UpdateStatus from "./UpdateStatus.vue";

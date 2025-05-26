@@ -5,8 +5,8 @@ import { ElMessage, ElLoading } from 'element-plus';
 import { request } from "@/js/api";
 
 const props = defineProps({
-  visible: Boolean,
-  account: Object,
+  visible: { type: Boolean },
+  account: { type: Object },
 })
 
 const emit = defineEmits(['update:visible', 'update:status'])

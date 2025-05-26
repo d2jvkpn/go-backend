@@ -12,11 +12,9 @@ defineProps({
   visible: { type: Boolean },
 })
 
-const emit = defineEmits(['update:visible'])
-
 const router = useRouter();
 
-
+const emit = defineEmits(['close'])
 const formRef = ref()
 
 const form = reactive({ oldPassword: '', newPassword: '', confirmPassword: '' });
@@ -82,30 +80,69 @@ const submit = async () => {
 
 
 <template>
-<el-dialog
-  title="Update status of account" width="400px"
-  :model-value="visible" @update:modelValue="emit('update:visible', $event)"
->
-  <el-divider style="margin: 0 0 20px 0" />
+<Teleport to="body">
+  <div v-if="visible" class="overlay">
+    <div class="modal">
+      <header class="modal-header"> 🔒 Change Password </header>
+      <!--hr style="color: #bbb"-->
+      <el-divider style="margin: 0 0 20px 0" />
 
-  <el-form ref="formRef" :model="form" :rules="rules" label-width="10rem" class="modal-form">
-    <el-form-item label="old password" prop="oldPassword">
-      <el-input v-model="form.oldPassword" type="password" show-password clearable/>
-    </el-form-item>
+      <el-form ref="formRef" :model="form" :rules="rules" label-width="10rem" class="modal-form">
+        <el-form-item label="old password" prop="oldPassword">
+          <el-input v-model="form.oldPassword" type="password" show-password clearable/>
+        </el-form-item>
 
-    <el-form-item label="new password" prop="newPassword">
-      <el-input v-model="form.newPassword" type="password" show-password clearable/>
-    </el-form-item>
+        <el-form-item label="new password" prop="newPassword">
+          <el-input v-model="form.newPassword" type="password" show-password clearable/>
+        </el-form-item>
 
-    <el-form-item label="confirm password" prop="confirmPassword">
-      <el-input v-model="form.confirmPassword" type="password" show-password clearable/>
-      </el-form-item>
-    </el-form>
+        <el-form-item label="confirm password" prop="confirmPassword">
+          <el-input v-model="form.confirmPassword" type="password" show-password clearable/>
+        </el-form-item>
+      </el-form>
 
-  <template #footer>
-    <el-button @click="emit('update:visible', false)"> Cancel </el-button>
-    <el-button type="primary" @click="submit"> Submit </el-button>
-  </template>
-
-</el-dialog>
+      <footer class="modal-footer">
+        <el-button @click="$emit('close')"> Cancel </el-button>
+        <el-button type="primary" @click="submit"> Submit </el-button>
+      </footer>
+    </div>
+  </div>
+</Teleport>
 </template>
+
+<style scoped>
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal {
+  background: white;
+  border-radius: 5px;
+  width: 30rem;
+  padding: 1rem;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.modal-form {
+  margin-top: 1rem;
+}
+
+.modal-footer {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 2rem;
+}
+</style>
