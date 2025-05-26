@@ -3,6 +3,7 @@ import { ref, computed, watch, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { ArrowDown } from '@element-plus/icons-vue'
 import dayjs from 'dayjs'
+import * as yaml from 'js-yaml'
 
 import { request } from "@/js/api";
 import CreateAccount from './CreateAccount.vue'
@@ -27,8 +28,8 @@ const allColumns = [
   { prop: 'phone',     label: 'Phone', width: 120 },
   { prop: 'level',     label: 'Level', width: 100 },
   { prop: 'labels',    label: 'Labels' },
-  { prop: 'createdAt_x', label: 'Created At', sortable: true, width: 150 },
-  { prop: 'updatedAt_x', label: 'Updated At', sortable: true, width: 150 },
+  { prop: '_createdAt', label: 'Created At', sortable: true, width: 150 },
+  { prop: '_updatedAt', label: 'Updated At', sortable: true, width: 150 },
   //{ prop: 'status',    label: 'Status' },
 ]
 
@@ -58,8 +59,8 @@ async function fetchData() {
      }
 
      data.items.forEach(item => {
-       item.createdAt_x = dayjs(item.createdAt).format('YYYY-MM-DD HH:mm')
-       item.updatedAt_x = dayjs(item.updatedAt).format('YYYY-MM-DD HH:mm')
+       item._createdAt = dayjs(item.createdAt).format('YYYY-MM-DD HH:mm')
+       item._updatedAt = dayjs(item.updatedAt).format('YYYY-MM-DD HH:mm')
     })
 
      pageData.value.items = data.items
@@ -158,6 +159,20 @@ function editAccount (account) {
 }
 
 //
+function copyToClipboard(obj) {
+  // const text = JSON.stringify(obj, null, 2)
+  const text = yaml.dump(obj);
+
+  navigator.clipboard.writeText(text)
+  .then(() => {
+    ElMessage.success(`Copy success: ${obj.firstname} ${obj.lastname}`);
+  })
+  .catch(err => {
+    ElMessage.error(`Copy failed: ${err}`);
+  })
+}
+
+//
 watch(
   // query.value.keyword
   () => [query.value.pageSize, query.value.level, query.value.status, sortValue.value ],
@@ -195,7 +210,7 @@ onMounted(async () => {
       <el-option v-for="e in statuses" :value="e" :label="e" :key="`account::status::${e}`" clearable/>
     </el-select>
 
-    <el-select v-model="sortValue" placeholder="Sort by" style="width: 150px">
+    <el-select v-model="sortValue" placeholder="Sort by" style="width: 150px;">
       <el-option label="Created At ↓" value="createdAt-desc" />
       <el-option label="Created At ↑" value="createdAt-asc" />
       <el-option label="Updated At ↓" value="updatedAt-desc" />
@@ -231,9 +246,8 @@ onMounted(async () => {
       </template>
     </el-dropdown>
 
-    <el-button type="primary" @click="openCreateAccount">Create</el-button>
+    <el-button type="primary" @click="openCreateAccount"> Create </el-button>
     <!--CreateAccount v-model:visible="openCreateAccount" @success="refresh" /-->
-    <CreateAccount v-model:visible="createAccountVisible" @success="fetchData" />
   </div>
 </div>
 
@@ -256,10 +270,16 @@ onMounted(async () => {
     :prop="col.prop" :label="col.label" :key="col.prop" :sortable="col.sortable" :width="col.width"
   />
 
-  <el-table-column label="Actions" fixed="right" width="180">
+  <el-table-column label="Actions" fixed="right" width="240">
     <template #default="scope">
+      <el-button size="small" @click="copyToClipboard(scope.row)"> Copy </el-button>
       <el-button type="primary" size="small" @click="editAccount(scope.row)"> edit </el-button>
-      <el-button type="warning" size="small" @click="updateStatus(scope.row)"> {{ scope.row.status }} </el-button>
+      <el-button
+        size="small"
+        :type="scope.row.status == 'activated' ? 'success' : 'warning'"
+        @click="updateStatus(scope.row)"
+      > {{ scope.row.status }}
+      </el-button>
     </template>
   </el-table-column>
 </el-table>
@@ -277,6 +297,9 @@ onMounted(async () => {
 />
 <!-- @size-change="" -->
 
+
+
+<CreateAccount v-model:visible="createAccountVisible" @success="fetchData" />
 
 <UpdateStatus
   v-model:visible="updateStatusVisible"
