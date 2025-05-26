@@ -30,6 +30,9 @@ COMMENT ON COLUMN user_accounts.id IS 'account id';
 CREATE TRIGGER updated_at BEFORE UPDATE ON user_accounts
   FOR EACH ROW EXECUTE PROCEDURE update_now();
 
+CREATE INDEX user_accounts_firstname_trgm ON user_accounts USING gin (firstname gin_trgm_ops);
+CREATE INDEX user_accounts_lastname_trgm ON user_accounts USING gin (lastname gin_trgm_ops);
+
 CREATE INDEX user_accounts_created_at ON user_accounts (created_at DESC, status);
 CREATE INDEX user_accounts_level ON user_accounts (level, created_at DESC);
 CREATE INDEX user_accounts_labels ON user_accounts (labels);

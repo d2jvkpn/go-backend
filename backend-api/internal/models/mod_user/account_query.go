@@ -43,9 +43,9 @@ type QueryAccounts struct {
 	// default:
 	Level string `json:"level" form:"level" validate:"omitempty,oneof=admin editor reviewer user guest" extensions:"x-order=11"`
 
-	// enum: created,activated,blocked
+	// enum: created,activated,blocked,deleted
 	// default:
-	Status string `json:"status" form:"status" validate:"omitempty,oneof=created activated blocked" extensions:"x-order=12"`
+	Status string `json:"status" form:"status" validate:"omitempty,oneof=created activated blocked deleted" extensions:"x-order=12"`
 }
 
 func (self *QueryAccounts) SetDefaults() {
@@ -94,10 +94,10 @@ func (self *QueryAccounts) Validate() (err *errx.ErrX) {
 func (self *QueryAccounts) db(ctx context.Context, flip bool) *gorm.DB {
 	tx := Table(ctx, TABLE_UserAccounts+" t1")
 
-	// TODO: elasticsearch
 	if self.Keyword != "" {
+		// firstname, lastname, email, phone, labels
 		tx = tx.Where(
-			"t1.firstname LIKE ? OR t1.lastname LIKE ? OR t1.phone LIKE ? OR t1.email LIKE ? OR ? = ANY(labels)",
+			"t1.firstname LIKE ? OR t1.lastname LIKE ? OR t1.email LIKE ? OR t1.phone LIKE ? OR ? = ANY(labels)",
 			"%"+self.Keyword+"%", "%"+self.Keyword+"%", "%"+self.Keyword+"%", "%"+self.Keyword+"%", self.Keyword,
 		)
 	}

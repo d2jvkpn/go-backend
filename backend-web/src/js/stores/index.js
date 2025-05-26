@@ -1,4 +1,4 @@
-export function setAccount(data) {
+function setAccount(data) {
   localStorage.setItem("id", data.id);
   localStorage.setItem("firstname", data.firstname);
   localStorage.setItem("lastname", data.lastname);
@@ -7,7 +7,7 @@ export function setAccount(data) {
   localStorage.setItem("expiresAt", data.expiresAt);
 }
 
-export function getAccount() {
+function getAccount() {
   return {
     id: localStorage.getItem("id"),
     firstname: localStorage.getItem("firstname"),
@@ -18,7 +18,7 @@ export function getAccount() {
   }
 }
 
-export function clearAccount() {
+function clearAccount() {
   //localStorage.clear()
   localStorage.removeItem("id");
   localStorage.removeItem("firstname");
@@ -28,7 +28,7 @@ export function clearAccount() {
   localStorage.removeItem("expiresAt");
 }
 
-export function checkIsLoggedIn() {
+function checkIsLoggedIn() {
   if (!localStorage.getItem("token")) {
     return false;
   }
@@ -41,4 +41,11 @@ export function checkIsLoggedIn() {
   }
 
   return true;
+}
+
+export default {
+  setAccount,
+  getAccount,
+  clearAccount,
+  checkIsLoggedIn,
 }

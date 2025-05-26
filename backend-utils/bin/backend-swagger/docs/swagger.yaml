@@ -452,12 +452,13 @@ paths:
         type: string
         x-order: "11"
       - description: |-
-          enum: created,activated,blocked
+          enum: created,activated,blocked,deleted
           default:
         enum:
         - created
         - activated
         - blocked
+        - deleted
         in: query
         name: status
         type: string

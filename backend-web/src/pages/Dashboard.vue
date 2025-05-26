@@ -4,10 +4,10 @@ import { Fold, Expand, ArrowDown } from '@element-plus/icons-vue'
 
 import Sidebar from "./Bars/Sidebar.vue"
 import HeaderBar from "./Bars/HeaderBar.vue"
-import { getAccount } from "@/js/stores/storage.js"
+import stores from "@/js/stores"
 
 //
-const account = getAccount();
+const account = stores.getAccount();
 
 const isHidden = ref(false)
 

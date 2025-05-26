@@ -1,0 +1,24 @@
+{
+  "settings": {
+    "analysis": {
+      "analyzer": {
+        "ik_smart_analyzer": { "tokenizer": "ik_smart" }
+      }
+    }
+  },
+  "mappings": {
+    "dynamic": false,
+    "properties": {
+      "firstname": { "type": "text", "analyzer": "ik_smart_analyzer" },
+      "lastname": { "type": "text", "analyzer": "ik_smart_analyzer" },
+      "email": { "type": "keyword" },
+      "phone": { "type": "keyword" },
+      "level": { "type": "keyword" },
+      "labels": { "type": "keyword" },
+      "createdAt": { "type": "date", "index": true, "format": "strict_date_optional_time||epoch_millis" },
+      "updatedAt": { "type": "date", "index": true, "format": "strict_date_optional_time||epoch_millis" },
+
+      "id": { "type": "date", "index": false }
+    }
+  }
+}

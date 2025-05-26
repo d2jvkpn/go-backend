@@ -1,19 +1,18 @@
 import axios from 'axios'
 import qs from 'qs'
 import { ElMessage } from 'element-plus'
-import { useRouter } from 'vue-router'
 
-import { ApiError } from "./errors.js"
-import { clearAccount } from "../stores/storage.js";
+import { ApiError } from "../types/errors.js"
+import stores from "../stores";
 
 
-const service = axios.create({
+const request = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   paramsSerializer: params => qs.stringify(params, { arrayFormat: 'repeat' }),
   timeout: 3000,
 })
 
-service.interceptors.request.use(
+request.interceptors.request.use(
   config => {
     /*
     config.params = {
@@ -65,9 +64,8 @@ function handleStatus(err) {
       break;
     case 401:
       ElMessage.error(`Please login again ${status}`)
-      clearAccount();
-      const router = useRouter();
-      router.push('/login');
+      stores.clearAccount();
+      window.location.href = import.meta.env.VITE_BASE_PATH+'/login';
       break;
     case 403:
       ElMessage.error(`Permission denied ${status}: ${data.msg}`)
@@ -88,7 +86,7 @@ function handleStatus(err) {
   return
 };
 
-service.interceptors.response.use(
+request.interceptors.response.use(
   response => {
     if (response.status == 200 && response.data.code === "ok") {
       return response.data.data;
@@ -155,11 +153,11 @@ service.interceptors.response.use(
   }
 )
 
-export { service }
+export default request
 
 /*
 //
-import request from '@/utils/request'
+import { request } from '@/js/api'
 
 export function createUser(data) {
   service.post('/api/users',

@@ -126,6 +126,7 @@ func (self *CreateAccount) Do(ctx context.Context) (err *errx.ErrX) {
 
 	tracer = otel.Tracer("mod_user.CreateAccount")
 
+	self.Email = strings.ToLower(self.Email)
 	if err = self.Validate(); err != nil {
 		return err
 	}

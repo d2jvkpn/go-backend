@@ -4,10 +4,9 @@ import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 
 import { login } from "@/js/_login.js"
-import { service } from  "@/js/utils/request.js"
-import { setAccount, checkIsLoggedIn } from "@/js/stores/storage.js"
+import { request } from  "@/js/api"
 import { getFirstRoute } from "@/router/index"
-import { getAccount } from "@/js/stores/storage.js";
+import stores from "@/js/stores"
 
 // console.log(`==> import.meta.env: ${JSON.stringify(import.meta.env)}`);
 
@@ -38,7 +37,7 @@ const submit = async () => {
   }
 
   try {
-    const data = await service.post(
+    const data = await request.post(
       `${import.meta.env.VITE_API_URL}/api/v1/open/account/login`,
       loginData,
       { params: {platform: "web"} },
@@ -46,7 +45,7 @@ const submit = async () => {
 
     firstRoute = getFirstRoute(data.level);
 
-    setAccount(data)
+    stores.setAccount(data)
     ElMessage.success(`Welcome back, ${data.firstname} ${data.lastname}!`)
 
     router.push(firstRoute)
@@ -58,11 +57,11 @@ const submit = async () => {
 }
 
 onBeforeMount(() => {
-  if (!checkIsLoggedIn()) {
+  if (!stores.checkIsLoggedIn()) {
     return
   }
 
-  const account = getAccount();
+  const account = stores.getAccount();
   if (account?.level) {
     router.push(getFirstRoute(account.level));
   }

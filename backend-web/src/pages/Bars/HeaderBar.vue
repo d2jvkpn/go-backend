@@ -7,8 +7,8 @@ import { ArrowDown, Fold, Expand } from '@element-plus/icons-vue'
 import ChangePassword from './ChangePassword.vue'
 // import { useUserStore } from '@/js/stores/user'
 import { logout } from "@/js/_login.js"
-import { clearAccount } from "@/js/stores/storage.js"
-import { service } from  "@/js/utils/request.js"
+import stores from "@/js/stores"
+import { request } from  "@/js/api"
 
 //
 const props = defineProps({
@@ -34,7 +34,7 @@ const confirmLogoutV1 = () => {
   .then(() => {
     // userStore.logout()
     // localStorage.removeItem('token')
-    clearAccount();
+    stores.clearAccount();
     router.push('/login');
     ElMessage.success('You have been logged out.');
   })
@@ -51,13 +51,13 @@ const confirmLogout = async () => {
       { confirmButtonText: 'Logout', cancelButtonText: 'Cancel', type: 'warning' },
     );
 
-    await service.post(`${import.meta.env.VITE_API_URL}/api/v1/auth/account/logout`);
+    await request.post(`${import.meta.env.VITE_API_URL}/api/v1/auth/account/logout`);
 
     ElMessage.success('You have been logged out.');
   } catch (err) {
     ElMessage.error(err.response?.data?.msg || 'Logout failed');
   } finally {
-    clearAccount();
+    stores.clearAccount();
     router.push('/login');
   }
 }

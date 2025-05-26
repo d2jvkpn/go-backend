@@ -2,7 +2,7 @@
 import { computed, reactive, watch } from 'vue'
 import { ElMessage, ElLoading } from 'element-plus';
 
-import { service } from "@/js/utils/request.js"
+import { request } from "@/js/api";
 
 const props = defineProps({
   visible: Boolean,
@@ -46,7 +46,7 @@ async function confirm() {
   })
 
   try {
-    await service.post("/api/v1/auth/account/update_status", {}, { params: {
+    await request.post("/api/v1/auth/account/update_status", {}, { params: {
       accountId: form.id,
       status: form.status,
       newStatus: form.newStatus,

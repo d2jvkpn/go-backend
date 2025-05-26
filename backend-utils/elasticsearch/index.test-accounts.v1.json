@@ -1,0 +1,21 @@
+{
+  "settings": {
+    "analysis": {
+      "analyzer": {
+        "ik_smart_analyzer": { "tokenizer": "ik_smart" }
+      }
+    }
+  },
+  "mappings": {
+    "dynamic": "strict",
+    "properties": {
+      "firstname": { "type": "text", "analyzer": "ik_smart_analyzer" },
+      "lastname": { "type": "text", "analyzer": "ik_smart_analyzer" },
+      "email": { "type": "keyword" },
+      "phone": { "type": "keyword" },
+      "level": { "type": "keyword" },
+      "labels": { "type": "keyword" },
+      "createdAt": { "type": "date", "index": false }
+    }
+  }
+}

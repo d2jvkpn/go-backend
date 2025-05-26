@@ -6,7 +6,7 @@ import dayjs from 'dayjs'
 
 // import { hello } from "@/js/_hello.js"
 // hello()
-import { service } from "@/js/utils/request.js";
+import { request } from "@/js/api";
 import CreateAccount from './CreateAccount.vue'
 import UpdateStatus from "./UpdateStatus.vue";
 import EditAccount from "./EditAccount.vue";
@@ -23,8 +23,8 @@ function openCreateAccount() {
 // show accounts table
 const allColumns = [
   { prop: 'id',        label: 'ID' },
-  { prop: 'firstname', label: 'Firstname' },
-  { prop: 'lastname',  label: 'Lastname' },
+  { prop: 'firstname', label: 'Firstname', sortable: true },
+  { prop: 'lastname',  label: 'Lastname', sortable: true },
   { prop: 'email',     label: 'Email' },
   { prop: 'phone',     label: 'Phone', width: 120 },
   { prop: 'level',     label: 'Level', width: 100 },
@@ -53,7 +53,7 @@ async function fetchData() {
   try {
      const [sortBy, order] = sortValue.value.split('-');
      const params = {...query.value, sortBy, order};
-     const data = await service.get("/api/v1/auth/account/query_accounts", { params });
+     const data = await request.get("/api/v1/auth/account/query_accounts", { params });
 
      if (query.value.pageIndex == 1) {
        pageData.value.total = data.total;
@@ -74,7 +74,7 @@ async function fetchData() {
 
 // search bar
 const levels = ['admin', 'editor', 'reviewer', 'user', 'guest'];
-const statuses = ["created", "activated", "blocked"]
+const statuses = ["created", "activated", "blocked", "deleted"]
 
 const query = ref({ pageIndex: 1, pageSize: 10, keyword: '', level: '', status: '' })
 
@@ -127,7 +127,7 @@ async function deleteSelected () {
       { type: 'warning', confirmButtonText: 'Yes', cancelButtonText: 'No' }
     );
 
-    const data = await service.post(
+    const data = await request.post(
       "/api/v1/auth/account/delete_accounts",
       {},
       { params: { "accountId": idsToDelete } },

@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { ElMessage, ElLoading } from 'element-plus'
 
-import { service } from  "@/js/utils/request.js"
+import { request } from "@/js/api";
 import { validateAccount, validateContact } from "@/js/utils/validateAccount.js"
 
 defineProps({
@@ -56,7 +56,7 @@ const submit = async () => {
   console.log(`==> form: ${JSON.stringify(form.value)}`);
 
   try {
-    const data = await service.post("/api/v1/auth/account/create_account", form.value);
+    const data = await request.post("/api/v1/auth/account/create_account", form.value);
 
     form.value = {
       firstname: '',

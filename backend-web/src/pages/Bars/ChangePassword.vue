@@ -3,8 +3,8 @@ import { ref, reactive } from 'vue'
 import { ElMessage, ElLoading } from 'element-plus'
 import { useRouter } from 'vue-router'
 
-import { clearAccount } from "@/js/stores/storage.js"
-import { service } from  "@/js/utils/request.js"
+import stores from "@/js/stores"
+import { request } from  "@/js/api"
 
 defineProps({
   visible: { type: Boolean },
@@ -71,14 +71,14 @@ const submit = async () => {
   })
 
   try {
-    const response = await service.post('/api/v1/auth/account/change_password', {
+    const response = await request.post('/api/v1/auth/account/change_password', {
       oldPassword: form.oldPassword,
       newPassword: form.newPassword,
     })
 
     ElMessage.success('Password changed successfully');
     emit('close');
-    clearAccount();
+    stores.clearAccount();
     router.push('/login');
   } catch (err) {
     console.log(`!!! error: ${JSON.stringify(err)}, ${err.message}`)

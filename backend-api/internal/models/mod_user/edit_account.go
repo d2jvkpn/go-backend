@@ -120,6 +120,7 @@ func (self *EditAccount) Do(ctx context.Context) (err *errx.ErrX) {
 		e      error
 	)
 
+	self.Email = strings.ToLower(self.Email)
 	if err = self.Validate(); err != nil {
 		return err
 	}

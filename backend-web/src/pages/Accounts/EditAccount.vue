@@ -3,7 +3,7 @@ import { computed, reactive, watch, ref } from 'vue'
 import { ElMessage, ElLoading } from 'element-plus'
 import cloneDeep from 'lodash/cloneDeep'
 
-import { service } from "@/js/utils/request.js"
+import { request } from "@/js/api"
 import { validateAccount, validateContact } from "@/js/utils/validateAccount.js"
 
 const props = defineProps({
@@ -61,7 +61,7 @@ async function confirm() {
   console.log(`==> Updating account`)
 
   try {
-    await service.post("/api/v1/auth/account/edit_account", form, { params: { accountId: form.id } })
+    await request.post("/api/v1/auth/account/edit_account", form, { params: { accountId: form.id } })
 
     emit('update:visible', false)
     emit('update:refresh', form)

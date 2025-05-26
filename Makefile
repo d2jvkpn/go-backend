@@ -1,7 +1,7 @@
-api:
+run-api:
 	cd backend-api && make run
 
-web:
+run-web:
 	cd backend-web && make run
 
 swag:
