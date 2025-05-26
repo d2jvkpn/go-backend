@@ -44,6 +44,8 @@ const confirmLogoutV1 = () => {
 }
 
 const confirmLogout = async () => {
+  let logout = true;
+
   try {
     await ElMessageBox.confirm(
       'Are you sure you want to log out?',
@@ -52,11 +54,18 @@ const confirmLogout = async () => {
     );
 
     await request.post(`${import.meta.env.VITE_API_URL}/api/v1/auth/account/logout`);
-
     ElMessage.success('You have been logged out.');
   } catch (err) {
-    ElMessage.error(err.response?.data?.msg || 'Logout failed');
+    if (err === "cancel") {
+      ElMessage.info('Logout canceled');
+      logout = false;
+    } else {
+      ElMessage.error(err.response?.data?.msg || 'Logout failed');
+    }
   } finally {
+  }
+
+  if (logout) {
     stores.clearAccount();
     router.push('/login');
   }
