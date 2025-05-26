@@ -18,13 +18,13 @@ let firstRoute = ""
 
 const submit = async () => {
   if (loading.value) {
-    ElMessage.warn('Logining...');
+    ElMessage.warning('Logining...');
     return;
   }
 
   if (!account.value || !password.value) {
     // alert('Please enter acocunt and password!')
-    ElMessage.warn('Please enter acocunt and password!');
+    ElMessage.warning('Please enter acocunt and password!');
     return
   }
 

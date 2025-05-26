@@ -103,6 +103,7 @@ request.interceptors.response.use(
     } if (axios.isAxiosError(err) && !err.response) { // Unexpected
       // both code and kind are empty, "Network Error"...
       err = new ApiError("", err.message, { status: 0, kind: "", raw: err })
+      ElMessage.error(`!!! Got a request error: ${err.message}`);
     } else if(axios.isAxiosError(err)) {
       handleStatus(err);
       console.log(`!!! Got an AxiosError: status=${err.response.status}, data=${JSON.stringify(err.response.data)}`);
@@ -112,7 +113,7 @@ request.interceptors.response.use(
 
       err = new ApiError(data.code, data.msg, details)
     } else { // Unexpected
-      console.log(`!!! Got UnknownError: ${err}`)
+      console.log(`!!! Got a UnknownError: ${err}`)
       err = new ApiError("", `Unknown Error: ${err.msg}`, { status: err.response.status, kind: "", raw: err })
     }
 
