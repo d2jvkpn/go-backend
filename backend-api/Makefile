@@ -19,6 +19,12 @@ check:
 	command -v yq
 	command -v docker
 
+postgres:
+	./configs/postgres.exp
+
+redis:
+	./configs/redis.exp
+
 lint:
 	go mod tidy
 	if [ -d vendor ]; then go mod vendor; fi

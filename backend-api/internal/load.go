@@ -39,6 +39,7 @@ func Load(project *viper.Viper) (err error) {
 		return err
 	}
 
+	config.SetDefault("init", map[string]any{})
 	config.SetDefault("prometheus", map[string]any{})
 	config.SetDefault("opentelemetry", map[string]any{})
 	settings.Config = config
@@ -70,10 +71,6 @@ func Load(project *viper.Viper) (err error) {
 		func() (err error) {
 			_SLogger.Debug("connecting to postgres")
 			_GORM_PG, _DB, err = infra.PgConnect(config.Sub("postgres"), release)
-
-			if err = mod_user.Init(ctx, _GORM_PG); err != nil {
-				return err
-			}
 
 			return err
 		},
@@ -112,7 +109,15 @@ func Load(project *viper.Viper) (err error) {
 		return err
 	}
 
-	// 4. metrics
+	// 4. Initialize mod_user
+	if err = mod_user.Init(ctx, _GORM_PG); err != nil {
+		return err
+	}
+	if err = mod_user.InitializeDefaultAccount(ctx, config.Sub("init")); err != nil {
+		return err
+	}
+
+	// 5. metrics
 	if otelConfig.GetBool("meter") {
 		var (
 			meter     otelmetric.Meter
@@ -134,7 +139,7 @@ func Load(project *viper.Viper) (err error) {
 		_APIMeters = append(_APIMeters, otelMeter)
 	}
 
-	// 5. servers
+	// 6. servers
 	// http server
 	_SLogger.Debug("setup http")
 	if err = SetupHttp(release, config); err != nil {

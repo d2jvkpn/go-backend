@@ -59,7 +59,7 @@ type Account struct {
 
 	// labels, max length of a label is 32
 	// maxLength: 16
-	Labels pq.StringArray `json:"labels" gorm:"column:labels;type:varchar[]" fake:"fake" fakesize:"1" swaggertype:"array,string" extensions:"x-order=10"`
+	Labels pq.StringArray `json:"labels" gorm:"column:labels;default:null;type:varchar[]" fake:"fake" fakesize:"1" swaggertype:"array,string" extensions:"x-order=10"`
 
 	Password string `json:"-" gorm:"column:password" fake:"-" swaggerignore:"true"`
 }

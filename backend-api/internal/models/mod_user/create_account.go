@@ -53,7 +53,7 @@ type CreateAccount struct {
 	Level string `json:"level" gorm:"column:level" validate:"required,oneof=admin editor reviewer user guest" fake:"{randomstring:[admin,editor,reviewer,user,guest]}" extensions:"x-order=06"`
 
 	// labels
-	Labels pq.StringArray `json:"labels" gorm:"column:labels;type:varchar[]" validate:"max=16" fake:"fake" fakesize:"1" swaggertype:"array,string" extensions:"x-order=07"`
+	Labels pq.StringArray `json:"labels" gorm:"column:labels;default:null,type:varchar[]" validate:"max=16" fake:"fake" fakesize:"1" swaggertype:"array,string" extensions:"x-order=07"`
 
 	// password: ^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{8,32}$
 	// minLength: 8

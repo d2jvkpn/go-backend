@@ -8,6 +8,14 @@ image_name: local/fullstack-go-vue/backend-api
 config: |
   # path: configs/local.yaml
 
+  init:
+    firstname: d2jvkpn
+    lastname: Doe
+    email: d2jvkpn@local.dev
+    password: cKEvRvCM6Tme1zQ0
+    # level: admin
+    # status: activated
+
   http:
     path: /local
     allow_origins: ["*"]
