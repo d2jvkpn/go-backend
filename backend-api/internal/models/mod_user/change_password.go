@@ -17,7 +17,12 @@ import (
 
 type ChangePassword struct {
 	OldPassword string `json:"oldPassword"`
-	NewPassword string `json:"newPassword"`
+
+	// password: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,32}$/
+	// minLength: 8
+	// maxLength: 32
+	// default:
+	NewPassword string `json:"newPassword" validate:"omitempty,min=8,max=32"`
 }
 
 func (self *ChangePassword) Do(ctx context.Context, accountId uuid.UUID) (err *errx.ErrX) {

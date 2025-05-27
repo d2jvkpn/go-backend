@@ -55,7 +55,7 @@ type CreateAccount struct {
 	// labels
 	Labels pq.StringArray `json:"labels" gorm:"column:labels;default:null;type:varchar[]" validate:"max=16" fake:"fake" fakesize:"1" swaggertype:"array,string" extensions:"x-order=07"`
 
-	// password: ^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{8,32}$
+	// password: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,32}$/
 	// minLength: 8
 	// maxLength: 32
 	Password string `json:"password" gorm:"column:password" validate:"required,min=8,max=32" fake:"-" extensions:"x-order=08"`

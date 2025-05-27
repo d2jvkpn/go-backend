@@ -14,9 +14,9 @@ var (
 	_ACCOUNT_Password = regexp.MustCompile(`^[a-zA-Z0-9]{8,32}$`) // !@.-_*
 
 	_ACCOUNT_PasswordContains = []*regexp.Regexp{
-		regexp.MustCompile(`[a-z]\+`),
-		regexp.MustCompile(`[A-Z]\+`),
-		regexp.MustCompile(`[0-9]\+`),
+		regexp.MustCompile(`[a-z]+`),
+		regexp.MustCompile(`[A-Z]+`),
+		regexp.MustCompile(`[0-9]+`),
 	}
 )
 
