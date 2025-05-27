@@ -14,7 +14,7 @@
 }
 
 
-.cell-center {
+.g-cell-center {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -22,13 +22,13 @@
   height: 100%;
 }
 
-.hover-change {
+.g-hover-icon {
   font-weight: normal;
   transition: transform 0.2s;
   transition: font-weight 0.2s;
   color: #909399;
 }
-.hover-change:hover {
+.g-hover-icon:hover {
   transform: scale(1.2);
   font-weight: bold;
   color: #409EFF;

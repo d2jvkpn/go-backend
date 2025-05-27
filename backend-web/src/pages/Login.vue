@@ -76,11 +76,11 @@ onBeforeMount(() => {
     <template #header> Please Login </template>
     <el-form @submit.prevent="submit">
       <el-form-item>
-        <el-input v-model="account" placeholder="email or phone" />
+        <el-input placeholder="email or phone" v-model="account" />
       </el-form-item>
 
       <el-form-item>
-        <el-input type="password" v-model="password" placeholder="password" clearable show-password/>
+        <el-input placeholder="password" type="password" v-model="password" clearable show-password/>
       </el-form-item>
 
       <div class="login-button">

@@ -99,7 +99,7 @@ watch(() => props.visible, (visible) => {
 >
   <el-divider style="margin: 0 0 20px 0" />
 
-  <el-form :model="form" :rules="validateAccount" ref="formRef" label-width="120px">
+  <el-form ref="formRef" label-width="120px" :model="form" :rules="validateAccount" >
     <el-form-item label="ID"> <el-input :value="form.id" disabled /> </el-form-item>
 
     <el-form-item label="Firstname" required> <el-input v-model="form.firstname"/> </el-form-item>
@@ -107,7 +107,7 @@ watch(() => props.visible, (visible) => {
     <el-form-item label="Email"> <el-input v-model="form.email"/> </el-form-item>
     <el-form-item label="Phone"> <el-input v-model="form.phone"/> </el-form-item>
 
-    <el-form-item label="Level" prop="level" style="flex: 1; min-width: 20px;" required>
+    <el-form-item style="flex: 1; min-width: 20px;" label="Level" prop="level" required>
       <el-select v-model="form.level" placeholder="Level">
         <el-option v-for="e in levels" :value="e" :label="e" :key="`account::level::${e}`" />
       </el-select>
@@ -131,7 +131,7 @@ watch(() => props.visible, (visible) => {
     </el-form-item>
 
     <el-form-item label="Password">
-      <el-input v-model="form.password" type="password" placeholder="Enter password" show-password clearable />
+      <el-input placeholder="Enter password" v-model="form.password" type="password" show-password clearable />
     </el-form-item>
   </el-form>
 

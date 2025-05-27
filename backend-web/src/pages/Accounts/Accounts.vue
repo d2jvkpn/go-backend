@@ -108,10 +108,6 @@ async function updatePageSize (v) {
   await fetchData();
 }
 
-function customSort (a, b) {
-  return a > b;
-}
-
 //
 const selectedRows = ref([]);
 
@@ -195,23 +191,20 @@ onMounted(async () => {
 <div class="toolbar"> <!-- 搜索栏 -->
   <div class="toolbar-left">  <!-- 左侧：搜索、角色、重置 -->
     <el-input
-      v-model="query.keyword"
-      placeholder="Seaching"
-      @keyup.enter="handleSearch"
-      style="width: 240px"
+      placeholder="Seaching" style="width: 240px"
       title="*Firstname*, *Lastname*, *Email*, *Phone* and ^Labels$"
-      clearable
+      v-model="query.keyword"  @keyup.enter="handleSearch" clearable
     />
 
-    <el-select v-model="query.level" placeholder="level" style="width: 100px" clearable>
+    <el-select placeholder="level" style="width: 100px" v-model="query.level" clearable>
       <el-option v-for="e in levels" :value="e" :label="e" :key="`account::level::${e}`" />
     </el-select>
 
-    <el-select v-model="query.status" placeholder="status" style="width: 100px" clearable>
+    <el-select style="width: 100px" placeholder="status" v-model="query.status" clearable>
       <el-option v-for="e in statuses" :value="e" :label="e" :key="`account::status::${e}`" clearable/>
     </el-select>
 
-    <el-select v-model="sortValue" placeholder="Sort by" style="width: 150px;">
+    <el-select placeholder="Sort by" style="width: 150px;" v-model="sortValue">
       <el-option label="Created At ↓" value="createdAt-desc" />
       <el-option label="Created At ↑" value="createdAt-asc" />
       <el-option label="Updated At ↓" value="updatedAt-desc" />
@@ -228,13 +221,13 @@ onMounted(async () => {
 
   <div class="toolbar-right">
     <el-dropdown trigger="click">
-      <el-icon :style="{ fontSize: '20px', margin: '2px' }" title="Columns" class="hover-change"
+      <el-icon :style="{ fontSize: '20px', margin: '2px' }" title="Columns" class="g-hover-icon"
       > <ArrowDown /> </el-icon>
 
       <template #dropdown>
         <el-dropdown-menu class="column-dropdown">
           <el-checkbox-group v-model="visibleColumns">
-            <el-dropdown-item v-for="col in allColumns" :key="col.prop" class="no-hover">
+            <el-dropdown-item  class="no-hover" v-for="col in allColumns" :key="col.prop">
               <el-checkbox :value="col.prop"> {{ col.label }} </el-checkbox>
             </el-dropdown-item>
           </el-checkbox-group>
@@ -254,8 +247,8 @@ onMounted(async () => {
 </div>
 
 <el-table
-  v-loading="loading" :data="pageData.items" @selection-change="selectedRows = $event"
   style="margin-top: 10px;" empty-text="No accounts found" border
+  v-loading="loading" :data="pageData.items" @selection-change="selectedRows = $event"
 >
   <el-table-column type="selection" width="40" />
 
@@ -263,21 +256,22 @@ onMounted(async () => {
     <template #default="scope"> {{ scope.row.firstname }} {{ scope.row.lastname }} </template>
   </el-table-column>
 
-  <!--el-table-column prop="id" label="ID" sortable :sort-method="customSort"/-->
+  <!--el-table-column prop="id" label="ID" sortable :sort-method="(a, b) => a > b"/-->
   <el-table-column v-for="col in selectVisibleColumns"
-    :prop="col.prop" :label="col.label" :key="col.prop" :sortable="col.sortable" :width="col.width"
+    :prop="col.prop" :label="col.label" :key="col.prop"
+    :sortable="col.sortable" :width="col.width"
   />
 
   <el-table-column label="Actions" fixed="right" width="180">
     <template #default="scope">
-      <div class="cell-center">
+      <div class="g-cell-center">
         <el-icon
-          :style="{fontSize: '20px', margin: '2px'}" title="Copy Account" class="hover-change"
+          :style="{fontSize: '20px', margin: '2px'}" title="Copy Account" class="g-hover-icon"
           @click="copyToClipboard(scope.row)"
         > <CopyDocument /> </el-icon>
 
         <el-icon
-          :style="{fontSize: '20px', margin: '2px'}" title="Edit Account" class="hover-change"
+          :style="{fontSize: '20px', margin: '2px'}" title="Edit Account" class="g-hover-icon"
           @click="editAccount(scope.row)"
         > <Edit /> </el-icon>
 
@@ -291,15 +285,12 @@ onMounted(async () => {
   </el-table-column>
 </el-table>
 
-<el-alert v-if="error" :title="error" type="error" show-icon style="margin-top: 10px" />
+<el-alert type="error" show-icon style="margin-top: 10px" v-if="error" :title="error"/>
 
 <el-pagination
-  v-model:current-page="query.pageIndex"
-  v-model:page-size="query.pageSize"
-  :total="pageData.total"
-  :page-sizes="[10, 20, 50]"
-  class="pagination"
-  layout="prev, pager, next, jumper, total, sizes"
+  class="pagination" layout="prev, pager, next, jumper, total, sizes"
+  v-model:current-page="query.pageIndex" v-model:page-size="query.pageSize"
+  :total="pageData.total" :page-sizes="[10, 20, 50]"
   @current-change="fetchData()"
 />
 <!-- @size-change="" -->
@@ -309,8 +300,7 @@ onMounted(async () => {
 <CreateAccount v-model:visible="createAccountVisible" @success="fetchData" />
 
 <UpdateStatus
-  v-model:visible="updateStatusVisible"
-  :account="selectedAccount"
+  v-model:visible="updateStatusVisible" :account="selectedAccount"
   @update:status="({ id, status }) => {
     const target = pageData.items.find(item => item.id === id)
     if (target) { target.status = status }
@@ -319,8 +309,7 @@ onMounted(async () => {
 />
 
 <EditAccount
-  v-model:visible="editAccountVisible"
-  :account="selectedAccount"
+  v-model:visible="editAccountVisible" :account="selectedAccount"
   @update:refresh="(form) => {
     const target = pageData.items.find(item => item.id === form.id)
     if (target) { Object.assign(target, form); delete target.password; }

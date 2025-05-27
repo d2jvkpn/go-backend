@@ -88,25 +88,25 @@ const submit = async () => {
   <!--hr style="color: #bbb"-->
   <el-divider style="margin: 0 0 20px 0" />
 
-  <el-form :model="form" :rules="validateAccount" ref="formRef" label-width="100px">
+  <el-form label-width="100px" :model="form" :rules="validateAccount" ref="formRef" >
     <el-form-item label="Firstname" prop="firstname" required>
-      <el-input v-model="form.firstname" placeholder="Enter firstname" />
+      <el-input placeholder="Enter firstname" v-model="form.firstname" />
     </el-form-item>
 
     <el-form-item label="Lastname" prop="lastname" required>
-      <el-input v-model="form.lastname" placeholder="Enter lastname" />
+      <el-input placeholder="Enter lastname"  v-model="form.lastname" />
     </el-form-item>
 
     <el-form-item label="Email" prop="email">
-      <el-input v-model="form.email" placeholder="Enter email" />
+      <el-input placeholder="Enter email" v-model="form.email" />
     </el-form-item>
 
     <el-form-item label="Phone" prop="phone">
-      <el-input v-model="form.phone" placeholder="Enter phone" />
+      <el-input placeholder="Enter phone" v-model="form.phone" />
     </el-form-item>
 
     <el-form-item label="Password" prop="password" required>
-      <el-input v-model="form.password" type="password" placeholder="Enter password" show-password clearable />
+      <el-input placeholder="Enter password" type="password" v-model="form.password" show-password clearable />
     </el-form-item>
 
     <!--el-form-item label="Level" prop="level">
@@ -118,13 +118,13 @@ const submit = async () => {
     <el-form :model="form" label-width="100px">
       <div style="display: flex; gap: 5px; align-items: flex-start; flex-wrap: wrap;">
         <el-form-item label="Level" prop="level" style="flex: 1; min-width: 20px;" required>
-          <el-select v-model="form.level" placeholder="Level">
+          <el-select placeholder="Level" v-model="form.level">
             <el-option v-for="e in levels" :value="e" :label="e" :key="`account::level::${e}`" />
           </el-select>
         </el-form-item>
 
         <el-form-item label="Status" prop="status" style="flex: 1; min-width: 20px;" required>
-          <el-select v-model="form.status" placeholder="Status">
+          <el-select placeholder="Status" v-model="form.status" >
             <el-option value="activated" label="activated" />
             <el-option value="created" label="created" />
           </el-select>
@@ -138,8 +138,8 @@ const submit = async () => {
           {{ label }}
         </el-tag>
         <el-input
-          v-model="newLabel" @keyup.enter="addLabel"
           placeholder="input label and press enter" size="small" style="width: 180px; height: 30px"
+          v-model="newLabel" @keyup.enter="addLabel"
         />
       </div>
     </el-form-item>
