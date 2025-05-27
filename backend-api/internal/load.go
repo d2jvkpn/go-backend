@@ -10,6 +10,7 @@ import (
 	"backend-api/internal/settings"
 	"backend-api/internal/ws"
 	"backend-api/pkg/infra"
+	"backend-api/pkg/utils"
 
 	"github.com/d2jvkpn/gotk"
 	"github.com/d2jvkpn/gotk/cloud"
@@ -58,6 +59,10 @@ func Load(project *viper.Viper) (err error) {
 			Exit()
 		}
 	}()
+
+	if settings.Captcha, err = utils.CaptchaFromViper(config.Sub("captcha")); err != nil {
+		return err
+	}
 
 	settings.JwtHMAC, err = ginx.NewJwtHMAC(config.Sub("jwt"), appName)
 	if err != nil {

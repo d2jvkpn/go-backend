@@ -50,7 +50,7 @@ request.interceptors.request.use(
 )
 
 function handleStatus(err) {
-  const status = err.response?.status;
+  const status = err.response?.status || 0;
   const data = err.response?.data || {};
 
   if (status >= 500) {
@@ -58,29 +58,29 @@ function handleStatus(err) {
     return
   }
 
-  switch(status) {
-    case 400:
-      ElMessage.error(`Bad Request ${status}: ${data.msg}`)
-      break;
-    case 401:
-      ElMessage.error(`Please login again ${status}`)
-      stores.clearAccount();
-      window.location.href = import.meta.env.VITE_BASE_PATH+'/login';
-      break;
-    case 403:
-      ElMessage.error(`Permission denied ${status}: ${data.msg}`)
-      break;
-    case 404:
-      ElMessage.error(`Not route ${status}`);
-      break;
-    case 409:
-      ElMessage.error(`Biz error ${status}: ${data.msg}`);
-      break
-    case 429:
-      ElMessage.error(`Too many requests ${status}`);
-      break;
-    default:
-      ElMessage.error(`Error ${status}: ${err.message}, code=${data.code}, kind=${data.kind}`);
+  switch (status) {
+  case 400:
+    ElMessage.error(`Bad Request ${status}: ${data.msg}`)
+    break;
+  case 401:
+    ElMessage.error(`Please login again ${status}`)
+    stores.clearAccount();
+    window.location.href = `${import.meta.env.VITE_BASE_PATH}/login`;
+    break;
+  case 403:
+    ElMessage.error(`Permission denied ${status}: ${data.msg}`)
+    break;
+  case 404:
+    ElMessage.error(`Not route ${status}`);
+    break;
+  case 409:
+    ElMessage.error(`Biz error ${status}: ${data.msg}`);
+    break
+  case 429:
+    ElMessage.error(`Too many requests ${status}`);
+    break;
+  default:
+    ElMessage.error(`Error ${status}: ${err.message}, code=${data.code}, kind=${data.kind}`);
   }
 
   return
@@ -100,7 +100,7 @@ request.interceptors.response.use(
   err => { // always throw an ApiError
     if (err instanceof ApiError) {
       const { status, data: res } = err.response;
-      console.log(`!!! Got an ApiError: status=${status}, data=${JSON.stringify(res)}`);
+      console.log(`!!! ApiError: status=${status}, data=${JSON.stringify(res)}`);
     } else if (axios.isAxiosError(err) && !err.response) {
       /*
       if (err.code === 'ECONNABORTED') {
@@ -113,18 +113,18 @@ request.interceptors.response.use(
       */
       // both code and kind are empty, "Network Error"...
       err = new ApiError("", err.message, { status: 0, kind: "", raw: err })
-      ElMessage.error(`!!! Got an AxiosError request error: ${err.message}`);
+      ElMessage.error(`!!! AxiosError request error: ${err.message}`);
     } else if (axios.isAxiosError(err)) {
       handleStatus(err);
       const { status, data: res } = err.response;
-      console.log(`!!! Got an AxiosError respoonse error: status=${status}, data=${JSON.stringify(res)}`);
+      console.log(`!!! GAxiosError respoonse error: status=${status}, data=${JSON.stringify(res)}`);
 
       err = new ApiError(
         res.code, res.msg,
         { status: status, kind: res.kind, requestId: res.requestId, raw: err },
       )
     } else { // Unexpected
-      console.log(`!!! Got a UnknownError: ${err}`)
+      console.log(`!!! UnknownError: ${err}`)
       err = new ApiError("", `Unknown Error: ${err.msg}`, { status: err.response.status, kind: "", raw: err })
     }
     return Promise.reject(err)

@@ -4,6 +4,7 @@ import (
 	// "fmt"
 
 	"backend-api/internal/ws"
+	"backend-api/pkg/utils"
 
 	"github.com/d2jvkpn/gotk"
 	"github.com/d2jvkpn/gotk/ginx"
@@ -15,6 +16,7 @@ var (
 	Config   *viper.Viper
 	Project  *viper.Viper
 	Logger   *gotk.ZapLogger
+	Captcha  *utils.Captcha
 	WsServer *ws.Server
 	JwtHMAC  *ginx.JwtHMAC
 	Redis    *redis.Client

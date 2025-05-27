@@ -11,6 +11,7 @@ import (
 func LoadOpen(router *gin.RouterGroup, handlers ...gin.HandlerFunc) {
 	group := router.Group("/api/v1/open", handlers...)
 
+	group.GET("/account/captcha", getCaptcha)
 	group.POST("/account/login", accountLogin)
 }
 

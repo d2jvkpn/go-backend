@@ -20,6 +20,29 @@ import (
 	"go.opentelemetry.io/otel/trace"
 )
 
+// @Summary		Get an Captcha
+// @Description	...
+// @Tags		account::captcha
+// @Produces	json
+// @Success		200		{object}	biz_user.CaptchaResponse
+// @Router		/api/v1/open/account/captcha	[get]
+func getCaptcha(ctx *gin.Context) {
+	var (
+		err  *errx.ErrX
+		data *biz_user.CaptchaResponse
+	)
+
+	if data, err = biz_user.NewCaptcha(); err != nil {
+		structs.JsonErr(ctx, err)
+		return
+	}
+
+	// ctx.Set(pkg.CONTEXT_Data, map[string]int{"hello": 42})
+	// TODO: session id for login
+
+	structs.JsonOK(ctx, data)
+}
+
 // @Summary		Create an account
 // @Description	...
 // @Tags			account::create_account

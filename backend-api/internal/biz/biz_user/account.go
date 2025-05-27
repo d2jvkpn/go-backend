@@ -23,6 +23,9 @@ type LoginRequest struct {
 	mod_user.AccountLogin
 	Platform string `json:"-" form:"platform" extensions:"x-order=04"`
 
+	CaptchaId     string `json:"captchaId" extensions:"x-order=21"`
+	CaptchaAnswer string `json:"captchaAnswer" extensions:"x-order=22"`
+
 	TokenId string `json:"-" form:"-" swaggerignore:"true"`
 	IP      string `json:"-" form:"-" swaggerignore:"true"`
 }
@@ -51,11 +54,18 @@ func Login(ctx context.Context, input *LoginRequest) (result *LoginResponse, err
 
 	// TODO: check input.Platform
 	tracer = otel.Tracer("biz_user.Login")
-
-	// 1.
 	ctx = context.WithValue(ctx, "platform", input.Platform)
 	ctx = context.WithValue(ctx, "tokenId", input.TokenId)
 
+	// 1.
+	_, span = tracer.Start(ctx, "VerifyCaptcha")
+	err = VerifyCaptcha(input.CaptchaId, input.CaptchaAnswer)
+	span.End()
+	if err != nil {
+		return nil, err
+	}
+
+	// 2.
 	otelCtx, span = tracer.Start(ctx, "AccountLogin")
 	account, err = input.AccountLogin.Do(otelCtx)
 	span.End()
@@ -63,7 +73,7 @@ func Login(ctx context.Context, input *LoginRequest) (result *LoginResponse, err
 		return nil, err
 	}
 
-	// 2.
+	// 3.
 	data = ginx.JwtData{
 		ID:      input.TokenId,
 		Subject: account.Id.String(),
@@ -84,7 +94,7 @@ func Login(ctx context.Context, input *LoginRequest) (result *LoginResponse, err
 		Account:   account,
 	}
 
-	// 3.
+	// 4.
 	values = make(url.Values, 5)
 	values.Add("issuedAt", strconv.FormatInt(data.IssuedAt, 10))
 	values.Add("level", account.Level)

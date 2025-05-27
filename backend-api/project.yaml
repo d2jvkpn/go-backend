@@ -23,6 +23,18 @@ config: |
     cer: configs/site.cer
     key: configs/site.key
 
+  captcha:
+    enabled: false
+    clear: true
+    length: 4
+    height: 40
+    width: 80
+    noise_count: 1
+    show_line: 1
+    source: ABCDEFGHJKLMNPQRSTUVWXY3456789 # ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
+    collect_num: 100
+    duration: 3m
+
   grpc:
     tls: false
     cer: configs/site.cer
