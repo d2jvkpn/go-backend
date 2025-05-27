@@ -12,3 +12,25 @@
     margin: 0 2px;
   }
 }
+
+
+.cell-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  height: 100%;
+}
+
+.hover-change {
+  font-weight: normal;
+  transition: transform 0.2s;
+  transition: font-weight 0.2s;
+  color: #909399;
+}
+.hover-change:hover {
+  transform: scale(1.2);
+  font-weight: bold;
+  color: #409EFF;
+  cursor: pointer;
+}

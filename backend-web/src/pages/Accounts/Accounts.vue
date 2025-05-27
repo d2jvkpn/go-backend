@@ -1,7 +1,8 @@
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { ArrowDown } from '@element-plus/icons-vue'
+// https://element-plus.org/zh-CN/component/icon.html
+import { ArrowDown, Edit, CopyDocument } from '@element-plus/icons-vue'
 import dayjs from 'dayjs'
 import * as yaml from 'js-yaml'
 
@@ -22,8 +23,8 @@ function openCreateAccount() {
 // show accounts table
 const allColumns = [
   { prop: 'id',        label: 'ID' },
-  { prop: 'firstname', label: 'Firstname', sortable: true },
-  { prop: 'lastname',  label: 'Lastname', sortable: true },
+  { prop: 'firstname', label: 'Firstname' },
+  { prop: 'lastname',  label: 'Lastname' },
   { prop: 'email',     label: 'Email' },
   { prop: 'phone',     label: 'Phone', width: 120 },
   { prop: 'level',     label: 'Level', width: 100 },
@@ -34,7 +35,7 @@ const allColumns = [
 ]
 
 // const visibleColumns = ref(['id', 'firstname', 'lastname', 'email', 'phone', 'level', 'labels', 'createdAt', 'status'])
-const visibleColumns = ref(['email', 'phone', 'level', 'labels', 'createdAt_x'])
+const visibleColumns = ref(['email', 'phone', 'level', 'labels', '_createdAt'])
 
 const selectVisibleColumns = computed(() =>
   allColumns.filter(col => visibleColumns.value.includes(col.prop))
@@ -221,19 +222,14 @@ onMounted(async () => {
       <el-option label="Lastname At ↓" value="lastname-desc" />
     </el-select>
 
-    <el-button type="info" size="small" @click="handleReset"> Reset </el-button>
+    <el-button style="padding:5px; height: 1.8rem" type="info" size="small" @click="handleReset"> Reset </el-button>
     <!--el-button type="info" @click="handleSearch"> Search </el-button-->
   </div>
 
   <div class="toolbar-right">
-    <el-button type="danger" @click="deleteSelected" :disabled="!selectedRows.length">
-      Delete
-    </el-button>
-
     <el-dropdown trigger="click">
-      <el-button type="success">
-        Columns <el-icon> <ArrowDown /> </el-icon>
-      </el-button>
+      <el-icon :style="{ fontSize: '20px', margin: '2px' }" title="Columns" class="hover-change"
+      > <ArrowDown /> </el-icon>
 
       <template #dropdown>
         <el-dropdown-menu class="column-dropdown">
@@ -246,22 +242,24 @@ onMounted(async () => {
       </template>
     </el-dropdown>
 
-    <el-button type="primary" @click="openCreateAccount"> Create </el-button>
+    <el-button style="padding:5px" type="danger" @click="deleteSelected" :disabled="!selectedRows.length">
+      Delete
+    </el-button>
+
+
+
+    <el-button style="padding:5px" type="primary" @click="openCreateAccount"> Create </el-button>
     <!--CreateAccount v-model:visible="openCreateAccount" @success="refresh" /-->
   </div>
 </div>
 
 <el-table
-  :data="pageData.items"
-  style="margin-top: 10px;"
-  @selection-change="selectedRows = $event"
-  v-loading="loading"
-  empty-text="No accounts found"
-  border
+  v-loading="loading" :data="pageData.items" @selection-change="selectedRows = $event"
+  style="margin-top: 10px;" empty-text="No accounts found" border
 >
   <el-table-column type="selection" width="40" />
 
-  <el-table-column label="Full Name" prop="fullName" width="120">
+  <el-table-column label="Full Name" prop="fullName" width="120" sortable>
     <template #default="scope"> {{ scope.row.firstname }} {{ scope.row.lastname }} </template>
   </el-table-column>
 
@@ -270,16 +268,25 @@ onMounted(async () => {
     :prop="col.prop" :label="col.label" :key="col.prop" :sortable="col.sortable" :width="col.width"
   />
 
-  <el-table-column label="Actions" fixed="right" width="240">
+  <el-table-column label="Actions" fixed="right" width="180">
     <template #default="scope">
-      <el-button size="small" @click="copyToClipboard(scope.row)"> Copy </el-button>
-      <el-button type="primary" size="small" @click="editAccount(scope.row)"> edit </el-button>
-      <el-button
-        size="small"
-        :type="scope.row.status == 'activated' ? 'success' : 'warning'"
-        @click="updateStatus(scope.row)"
-      > {{ scope.row.status }}
-      </el-button>
+      <div class="cell-center">
+        <el-icon
+          :style="{fontSize: '20px', margin: '2px'}" title="Copy Account" class="hover-change"
+          @click="copyToClipboard(scope.row)"
+        > <CopyDocument /> </el-icon>
+
+        <el-icon
+          :style="{fontSize: '20px', margin: '2px'}" title="Edit Account" class="hover-change"
+          @click="editAccount(scope.row)"
+        > <Edit /> </el-icon>
+
+        <el-button
+          size="small" style="padding:5px"
+          :type="scope.row.status == 'activated' ? '' : 'warning'"
+          @click="updateStatus(scope.row)"
+        > {{ scope.row.status }} </el-button>
+      </div>
     </template>
   </el-table-column>
 </el-table>
