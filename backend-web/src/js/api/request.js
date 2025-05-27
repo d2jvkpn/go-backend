@@ -99,19 +99,30 @@ request.interceptors.response.use(
   },
   err => { // always throw an ApiError
     if (err instanceof ApiError) {
-      console.log(`!!! Got an ApiError: status=${err.response.status}, data=${JSON.stringify(err.response.data)}`);
-    } if (axios.isAxiosError(err) && !err.response) { // Unexpected
+      const { status, data: res } = err.response;
+      console.log(`!!! Got an ApiError: status=${status}, data=${JSON.stringify(res)}`);
+    } else if (axios.isAxiosError(err) && !err.response) {
+      /*
+      if (err.code === 'ECONNABORTED') {
+        console.error(`!!! 请求超时: ${err.code}, ${err.message}`)
+      } else if (err.message === 'Network Error') {
+        console.error(`!!! 网络错误, 请检查你的连接: ${err.code}, ${err.message}`)
+      } else {
+        console.error(`!!! 未知网络错误: ${err.code}, ${err.message}`)
+      }
+      */
       // both code and kind are empty, "Network Error"...
       err = new ApiError("", err.message, { status: 0, kind: "", raw: err })
-      ElMessage.error(`!!! Got a request error: ${err.message}`);
+      ElMessage.error(`!!! Got an AxiosError request error: ${err.message}`);
     } else if(axios.isAxiosError(err)) {
       handleStatus(err);
-      console.log(`!!! Got an AxiosError: status=${err.response.status}, data=${JSON.stringify(err.response.data)}`);
+      const { status, data: res } = err.response;
+      console.log(`!!! Got an AxiosError respoonse error: status=${status}, data=${JSON.stringify(res))}`);
 
-      let data = err.response.data;
-      let details = { status: err.response.status, kind: data.kind, requestId: data.requestId, raw: err };
-
-      err = new ApiError(data.code, data.msg, details)
+      err = new ApiError(
+        res.code, res.msg,
+        { status: status, kind: res.kind, requestId: res.requestId, raw: err },
+      )
     } else { // Unexpected
       console.log(`!!! Got a UnknownError: ${err}`)
       err = new ApiError("", `Unknown Error: ${err.msg}`, { status: err.response.status, kind: "", raw: err })
