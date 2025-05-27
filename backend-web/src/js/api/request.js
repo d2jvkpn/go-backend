@@ -114,10 +114,10 @@ request.interceptors.response.use(
       // both code and kind are empty, "Network Error"...
       err = new ApiError("", err.message, { status: 0, kind: "", raw: err })
       ElMessage.error(`!!! Got an AxiosError request error: ${err.message}`);
-    } else if(axios.isAxiosError(err)) {
+    } else if (axios.isAxiosError(err)) {
       handleStatus(err);
       const { status, data: res } = err.response;
-      console.log(`!!! Got an AxiosError respoonse error: status=${status}, data=${JSON.stringify(res))}`);
+      console.log(`!!! Got an AxiosError respoonse error: status=${status}, data=${JSON.stringify(res)}`);
 
       err = new ApiError(
         res.code, res.msg,
@@ -127,89 +127,8 @@ request.interceptors.response.use(
       console.log(`!!! Got a UnknownError: ${err}`)
       err = new ApiError("", `Unknown Error: ${err.msg}`, { status: err.response.status, kind: "", raw: err })
     }
-
-    /*
-    if (err instanceof TypeError && err.message.startsWith("NetworkError")) {
-      ElMessage.error("Network error");
-      err = new ApiError("NetworkError", "network error", { raw: err });
-    } else if (err instanceof TypeError) {
-      err = new ApiError("TypeError", "type error", { raw: err })
-    } else if (err instanceof SyntaxError) {
-      ElMessage.warn(`SyntaxError`);
-      err = new ApiError("SyntaxError", "syntax error", { raw: err })
-    }
-    */
-
-    /*
-    if (error.response) {
-      const { status, data } = error.response
-      if (status === 401) {
-        ElMessage.error('Authentication failed, please login again')
-        clearAccount()
-        // go to login page
-      } else if (status === 400) {
-        ElMessage.error(data.message || 'Invalid request')
-      } else {
-        ElMessage.error(data.message || 'Failed to change password')
-      }
-    } else if (error.request) {
-      ElMessage.error('Network error, please try again later')
-    } else {
-      if (error.message) {
-        ElMessage.error(error.message)
-      }
-    }
-    */
-
     return Promise.reject(err)
   }
 )
 
 export default request
-
-/*
-//
-import { request } from '@/js/api'
-
-export function createUser(data) {
-  service.post('/api/users',
-    { name: 'John', age: 30 },   // json body
-    { params: { debug: true } }, // query parameters
-  )
-}
-
-createUser({ firstname: "Jane", "lastname": "Doe", password: "123abcABC" })
-.then(data => {
-  console.log('--> created user:', data)
-})
-.catch(err => {
-  console.error('!!! failed to create user:', err)
-})
-
-//
-export default {
-  user: {
-    login(data) {
-      return service.post('/auth/login', data)
-    },
-    getInfo() {
-      return service.get('/auth/info')
-    },
-    logout() {
-      return service.post('/auth/logout')
-    },
-  },
-
-  product: {
-    list(params) {
-      return service.get('/products', { params })
-    },
-    detail(id) {
-      return service.get(`/products/${id}`)
-    },
-    create(data) {
-      return service.post('/products', data)
-    }
-  }
-}
-*/
