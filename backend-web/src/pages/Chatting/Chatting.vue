@@ -1,6 +1,7 @@
 <script setup>
 import { ref, nextTick } from 'vue'
-import { Operation, Position, ChatDotSquare, Plus } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
+import { Operation, Position, ChatDotSquare, Plus, Files, VideoPause } from '@element-plus/icons-vue'
 // ChatLineSquare, Edit, Folder, Menu
 
 const isCollapsed = ref(false)
@@ -11,16 +12,10 @@ const toggleSidebar = () => {
 
 const input = ref('')
 const messages = ref([])
+const loading = ref(false)
 const chatLog = ref(null)
 
-const send = () => {
-  if (!input.value.trim()) return
-
-  messages.value.push({ role: 'user', content: input.value })
-  messages.value.push({ role: 'assistant', content: input.value })
-  input.value = ''
-
-  // 等 DOM 更新后滚动到底部
+function scrollChat() {
   nextTick(() => {
     if (chatLog.value) {
       // chatLog.value.scrollTop = chatLog.value.scrollHeight
@@ -28,6 +23,80 @@ const send = () => {
     }
   })
 }
+
+async function cancelRequest() {
+  console.log("==> cancelRequest")
+  loading.value = false
+
+  const lastMsg = messages.value[messages.value.length - 1]
+  if (lastMsg?.role === 'assistant') {
+     lastMsg.content = '<Canceled>'
+  }
+}
+
+async function sendRequest () {
+  console.log("==> sendRequest")
+  if (!input.value.trim()) {
+    return
+  }
+
+  const msg = input.value;
+  input.value = ''
+  messages.value.push({ role: 'user', content: msg });
+  const ans = { role: 'assistant', content: '__TYPING_DOTS__' };
+  messages.value.push(ans)
+  scrollChat()
+  loading.value = true
+
+  setTimeout(() => {
+    ans.content = msg
+    scrollChat()
+    loading.value = false
+  }, 3000);
+}
+
+async function addDocs() {
+  ElMessage.warning("TODO: add documents")
+}
+
+function listDocs() {
+  ElMessage.warning("TODO: list documents")
+}
+
+/*
+let controller = null;
+
+function send() {
+  // 创建新的 AbortController
+  controller = new AbortController()
+
+  try {
+    const response = await axios.post('/api/ai-reply', { prompt: msg }, {
+      signal: controller.signal,
+    })
+
+    ans.content = response.data.reply
+  } catch (err) {
+    if (axios.isCancel(err) || err.name === 'CanceledError' || err.code === 'ERR_CANCELED') {
+      ans.content = '（已取消）'
+    } else {
+      ans.content = '请求失败，请稍后重试。'
+      console.error(err)
+    }
+  } finally {
+    loading.value = false
+    controller = null
+    scrollChat()
+  }
+}
+
+function cancelRequest() {
+  if (controller) {
+    controller.abort()
+    loading.value = false
+  }
+}
+*/
 </script>
 
 <template>
@@ -67,21 +136,28 @@ const send = () => {
     <div class="chat-log" ref="chatLog">
       <div :class="['chat-message', msg.role]" v-for="(msg, i) in messages" :key="i">
         <div class="bubble">
-          <strong>{{ msg.role === 'user' ? 'You' : 'AI' }}:</strong> {{ msg.content }}
+          <strong>{{ msg.role === 'user' ? 'You' : 'AI' }}: </strong>
+          <template v-if="msg.content === '__TYPING_DOTS__'"> <TypingDots /> </template>
+          <template v-else> {{ msg.content }} </template>
         </div>
       </div>
     </div>
 
-    <div class="input-container">
-      <textarea :rows="2" class="input-box" placeholder="Ask anything...(Press Ctrl+Enter to Send)"
-        v-model="input" @keyup.enter.ctrl="send"
+    <div class="input-container" title="Press Ctrl+Enter to Send">
+      <textarea :rows="2" class="input-box" placeholder="Ask anything..."
+        v-model="input" @keyup.enter.ctrl="sendRequest()" :disabled="loading"
       ></textarea>
 
       <div class="input-actions">
-        <el-icon class="input-icon" @click="send"><Position /></el-icon>
-        <el-icon class="plus-icon" @click="toggleExtras" title="More"><Plus /></el-icon>
+        <el-icon class="input-icon" @click="loading ? cancelRequest() : sendRequest()">
+          <template v-if="loading"> <VideoPause /> </template>
+          <template v-else> <Position /> </template>
+        </el-icon>
+        <el-icon class="plus-icon" @click="addDocs" title="More"><Plus /></el-icon>
+        <el-icon class="list-icon" @click="listDocs" title="More"><Files /></el-icon>
       </div>
     </div>
+
   </div>
 </div>
 </template>
@@ -165,6 +241,7 @@ const send = () => {
   border-radius: 10px;
   line-height: 1.5;
   word-break: break-word;
+  white-space: pre-wrap;
 }
 .chat-message.user {
   display: flex;
@@ -176,6 +253,7 @@ const send = () => {
   border-top-right-radius: 0;
 }
 
+/* an element has both class chat-message and assistant */
 .chat-message.assistant {
   display: flex;
   justify-content: flex-start;
@@ -190,10 +268,10 @@ const send = () => {
   display: flex;
   gap: 8px;
   border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 10px;
   justify-content: center; 
   height: 5rem;
-  padding: 8px;
+  padding: 10px;
 }
 
 .input-box {
@@ -213,19 +291,20 @@ const send = () => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-end;
-  gap: 8px;
+  /*justify-content: flex-end;*/
+  gap: 5px;
   margin-left: 8px;
   padding-bottom: 10px;
 }
 
-.input-icon, .plus-icon {
-  font-size: 20px;
+/* all direct children of class input-actions */
+.input-actions > * {
+  font-size: 18px;
   cursor: pointer;
   color: grey;
   transition: transform 0.2s;
 }
-.input-icon:hover, .plus-icon:hover {
+.input-actions > *:hover {
   transform: scale(1.2);
 }
 </style>
