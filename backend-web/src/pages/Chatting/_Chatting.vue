@@ -1,8 +1,8 @@
 <script setup>
 import { ref, nextTick } from 'vue'
 import { ElMessage } from 'element-plus'
-import { Operation, Position, ChatDotSquare, Plus, Files, VideoPause, MoreFilled } from '@element-plus/icons-vue'
-// ChatLineSquare, Edit, Folder, Menu
+import { Operation, Position, ChatDotSquare, Plus, Files, VideoPause } from '@element-plus/icons-vue'
+// ChatLineSquare, Edit, Folder, Menu, MoreFilled
 
 //
 const isCollapsed = ref(false)
@@ -23,28 +23,7 @@ const chatSessions = ref([
   { id: "sess-3", title: "Writting Assistant" },
 ])
 
-const selectedSessionId = ref(null)
 
-//
-function selectedSession (session) {
-  selectedSessionId.value = session.id
-}
-
-async function handleCommand ({ action, session }) {
-  switch (action) {
-  case "rename":
-    editingSessionId.value = session.id
-    await nextTick()
-    const inputEl = document.getElementById(`session-input-${session.id}`)
-    inputEl?.focus()
-    break
-  case "delete":
-    chatSessions.value = chatSessions.value.filter(v => v.id !== session.id)
-    break
-  }
-}
-
-//
 function addNewChat() {
   const newId = 'sess_' + Date.now()
   const newSession = { id: newId, title: '', editing: true }
@@ -54,10 +33,6 @@ function addNewChat() {
     const inputEl = document.getElementById(`session-input-${newId}`)
     inputEl?.focus()
   })
-}
-
-const selectSession = (session) => {
-  session
 }
 
 function finishEditing(session) {
@@ -169,39 +144,30 @@ function cancelRequest() {
       </template>
     </div>
 
-    <div class="sidebar-menu" default-active="1" :collapse="isCollapsed" >
-      <div index="0" class="chat-session" @click="addNewChat">
-        <el-icon><Plus /></el-icon> New Chat
-      </div>
+    <el-menu class="sidebar-menu" default-active="1" :collapse="isCollapsed" >
+      <el-menu-item index="0" class="chat-session" @click="addNewChat">
+        <el-icon><Plus /></el-icon>
+        <template #title>New Chat</template>
+      </el-menu-item>
 
-      <div class="chat-session" :class="{ selected: selectedSessionId === session.id }" 
-        :title="session.title || 'Untitled'"
+      <el-menu-item class="chat-session"
         v-for="(session, index) in chatSessions" :index="index+1" :key="session.id"
       >
         <el-icon> <ChatDotSquare /> </el-icon>
+        <template #title>
 
-        <input v-if="editingSessionId === session.id"
-          style="width: 100%; border: none; outline: none" placeholder="Enter title"
-          v-model="session.title" :id="`session-input-${session.id}`"
-          @blur="finishEditing(session)" @keyup.enter="finishEditing(session)"
-        />
-
-        <span class="session-title" v-if="editingSessionId !== session.id" @click="selectedSession(session)">
-          {{ session.title || 'Untitled' }}
-        </span>
-
-        <el-dropdown v-if="selectedSessionId === session.id" @command="handleCommand" trigger="click">
-          <el-icon style="margin-left: auto; cursor: pointer;"> <MoreFilled /> </el-icon>
-          <template #dropdown>
-            <el-dropdown-menu>
-              <el-dropdown-item :command="{ action: 'rename', session }"> Rename </el-dropdown-item>
-              <el-dropdown-item :command="{ action: 'delete', session }"> Delete </el-dropdown-item>
-              </el-dropdown-menu>
+          <template v-if="editingSessionId === session.id">
+            <input
+              style="width: 100%; border: none; outline: none" placeholder="Enter title"
+              v-model="session.title" :id="`session-input-${session.id}`"
+              @blur="finishEditing(session)" @keyup.enter="finishEditing(session)"
+            />
           </template>
-       </el-dropdown>
+          <template v-else> {{ session.title || 'Untitled' }} </template>
 
-      </div>
-    </div>
+        </template>
+      </el-menu-item>
+    </el-menu>
   </div>
 
   <div class="chat-main">
@@ -309,30 +275,15 @@ function cancelRequest() {
 }
 
 .chat-session {
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 10px;
-  cursor: pointer;
-  border-radius: 6px;
-  transition: background 0.2s;
+  border-radius: 5px;
+  padding: 2px;
+  height: 2rem;
+  margin: 2px 2px;
 }
 
-.chat-session.selected {
-  background-color: #f0f0f0;
-}
-
-.session-title {
-  font-size: 12px;
-  color: #333;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  flex: 1;
-  cursor: pointer;
-  user-select: none;
-  transition: color 0.2s;
+.chat-session:hover {
+  border: 1px solid grey;
+  background-color: #eee;
 }
 
 .chat-message .bubble {
@@ -391,6 +342,7 @@ function cancelRequest() {
   display: flex;
   flex-direction: column;
   align-items: center;
+  /*justify-content: flex-end;*/
   gap: 5px;
   margin-left: 8px;
   padding-bottom: 10px;
