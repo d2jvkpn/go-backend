@@ -4,12 +4,14 @@ import { ElMessage } from 'element-plus'
 import { Operation, Position, ChatDotSquare, Plus, Files, VideoPause } from '@element-plus/icons-vue'
 // ChatLineSquare, Edit, Folder, Menu
 
+//
 const isCollapsed = ref(false)
 
 const toggleSidebar = () => {
   isCollapsed.value = !isCollapsed.value
 }
 
+//
 const input = ref('')
 const messages = ref([])
 const loading = ref(false)
@@ -24,6 +26,7 @@ function scrollChat() {
   })
 }
 
+//
 async function cancelRequest() {
   console.log("==> cancelRequest")
   loading.value = false
@@ -41,20 +44,21 @@ async function sendRequest () {
   }
 
   const msg = input.value;
-  input.value = ''
-  messages.value.push({ role: 'user', content: msg });
   const ans = { role: 'assistant', content: '__TYPING_DOTS__' };
-  messages.value.push(ans)
+  input.value = ''
+  messages.value.push({ role: 'user', content: msg }, ans);
   scrollChat()
   loading.value = true
 
   setTimeout(() => {
+    // TODO: axios request
     ans.content = msg
     scrollChat()
     loading.value = false
   }, 3000);
 }
 
+//
 async function addDocs() {
   ElMessage.warning("TODO: add documents")
 }
