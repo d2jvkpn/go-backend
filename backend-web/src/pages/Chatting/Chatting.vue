@@ -17,15 +17,6 @@ const messages = ref([])
 const loading = ref(false)
 const chatLog = ref(null)
 
-function scrollChat() {
-  nextTick(() => {
-    if (chatLog.value) {
-      // chatLog.value.scrollTop = chatLog.value.scrollHeight
-      chatLog.value.scrollTo({ top: chatLog.value.scrollHeight, behavior: 'smooth' })
-    }
-  })
-}
-
 //
 async function cancelRequest() {
   console.log("==> cancelRequest")
@@ -35,6 +26,15 @@ async function cancelRequest() {
   if (lastMsg?.role === 'assistant') {
      lastMsg.content = '<Canceled>'
   }
+}
+
+function scrollChat() {
+  nextTick(() => {
+    if (chatLog.value) {
+      // chatLog.value.scrollTop = chatLog.value.scrollHeight
+      chatLog.value.scrollTo({ top: chatLog.value.scrollHeight, behavior: 'smooth' })
+    }
+  })
 }
 
 async function sendRequest () {
@@ -53,8 +53,8 @@ async function sendRequest () {
   setTimeout(() => {
     // TODO: axios request
     ans.content = msg
-    scrollChat()
     loading.value = false
+    scrollChat()
   }, 3000);
 }
 
@@ -148,7 +148,8 @@ function cancelRequest() {
     </div>
 
     <div class="input-container" title="Press Ctrl+Enter to Send">
-      <textarea :rows="2" class="input-box" placeholder="Ask anything..."
+      <textarea class="input-box" rows="2"
+        :placeholder="loading ? 'Thinking...' : 'Ask anything...'"
         v-model="input" @keyup.enter.ctrl="sendRequest()" :disabled="loading"
       ></textarea>
 
