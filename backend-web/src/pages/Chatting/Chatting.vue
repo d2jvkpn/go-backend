@@ -1,6 +1,7 @@
 <script setup>
 import { ref, nextTick } from 'vue'
-import { ChatLineSquare, Edit, Folder, Menu, Operation, Position, ChatDotSquare } from '@element-plus/icons-vue'
+import { Operation, Position, ChatDotSquare, Plus } from '@element-plus/icons-vue'
+// ChatLineSquare, Edit, Folder, Menu
 
 const isCollapsed = ref(false)
 
@@ -16,7 +17,7 @@ const send = () => {
   if (!input.value.trim()) return
 
   messages.value.push({ role: 'user', content: input.value })
-  messages.value.push({ role: 'assistant', content: 'Reply: ' + input.value })
+  messages.value.push({ role: 'assistant', content: input.value })
   input.value = ''
 
   // 等 DOM 更新后滚动到底部
@@ -66,20 +67,20 @@ const send = () => {
     <div class="chat-log" ref="chatLog">
       <div :class="['chat-message', msg.role]" v-for="(msg, i) in messages" :key="i">
         <div class="bubble">
-          <strong>{{ msg.role === 'user' ? 'You' : 'AI 🤖' }}:</strong> {{ msg.content }}
+          <strong>{{ msg.role === 'user' ? 'You' : 'AI' }}:</strong> {{ msg.content }}
         </div>
       </div>
     </div>
 
     <div class="input-container">
-      <el-input
-        class="input-box" placeholder="Ask anything...(Press Ctrl+Enter to Send)"
-        v-model="input" @keyup.enter.ctrl="send" clearable
-      >
-        <template #suffix>
-          <el-icon class="input-icon" @click="send"> <Position /> </el-icon>
-        </template>
-      </el-input>
+      <textarea :rows="2" class="input-box" placeholder="Ask anything...(Press Ctrl+Enter to Send)"
+        v-model="input" @keyup.enter.ctrl="send"
+      ></textarea>
+
+      <div class="input-actions">
+        <el-icon class="input-icon" @click="send"><Position /></el-icon>
+        <el-icon class="plus-icon" @click="toggleExtras" title="More"><Plus /></el-icon>
+      </div>
     </div>
   </div>
 </div>
@@ -138,14 +139,14 @@ const send = () => {
   margin: 0 auto;
 }
 
-
 .chat-main {
   flex: 1;
   display: flex;
   flex-direction: column;
   padding: 16px;
-  margin: 0 5rem;
   height: 100%;
+  max-width: 50rem;
+  margin: 0 auto;
 }
 
 .chat-log {
@@ -187,22 +188,44 @@ const send = () => {
 
 .input-container {
   display: flex;
-  padding-top: 12px;
+  gap: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  justify-content: center; 
+  height: 5rem;
+  padding: 8px;
 }
 
 .input-box {
   flex: 1;
   font-size: 16px;
+  height: 100%;
+  border: none;
+  outline: none;
+  resize: none;
+  background-color: transparent;
+  width: 100%;
+  font-size: 16px;
+  line-height: 1.5;
 }
 
-.input-icon {
-  cursor: pointer;
+.input-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-left: 8px;
+  padding-bottom: 10px;
+}
+
+.input-icon, .plus-icon {
   font-size: 20px;
-  color: #409EFF;
+  cursor: pointer;
+  color: grey;
   transition: transform 0.2s;
 }
-
-.input-icon:hover {
+.input-icon:hover, .plus-icon:hover {
   transform: scale(1.2);
 }
 </style>
