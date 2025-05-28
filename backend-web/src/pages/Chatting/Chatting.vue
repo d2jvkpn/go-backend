@@ -1,7 +1,7 @@
 <script setup>
 import { ref, nextTick } from 'vue'
 import { ElMessage } from 'element-plus'
-import { Operation, Position, ChatSquare, Plus, Files, VideoPause, MoreFilled } from '@element-plus/icons-vue'
+import { Operation, Position, ChatSquare, Plus, Files, VideoPause, MoreFilled, Delete } from '@element-plus/icons-vue'
 // ChatLineSquare, Edit, Folder, Menu
 
 //
@@ -17,15 +17,16 @@ const messages = ref([])
 const loading = ref(false)
 const chatLog = ref(null)
 const editingSessionId = ref(null)
+
 const chatSessions = ref([
   { id: "sess-1", title: "GPT Chat" },
   { id: "sess-2", title: "A.I.D.A" },
   { id: "sess-3", title: "Writting Assistant" },
 ])
 
+//
 const selectedSessionId = ref(null)
 
-//
 function selectedSession (session) {
   selectedSessionId.value = session.id
 }
@@ -56,10 +57,6 @@ function addNewChat() {
   })
 }
 
-const selectSession = (session) => {
-  session
-}
-
 function finishEditing(session) {
   if (!session.title.trim()) {
     session.title = 'Untitled'
@@ -85,6 +82,15 @@ function scrollChat() {
       chatLog.value.scrollTo({ top: chatLog.value.scrollHeight, behavior: 'smooth' })
     }
   })
+}
+
+function deleteMessage(msg, i) {
+  if (msg.content == '__TYPING_DOTS__') {
+    return;
+  }
+
+  ElMessage.warning(`removed message: ${msg.content.slice(0, 10)}`);
+  messages.value.splice(i, 1)
 }
 
 async function sendRequest () {
@@ -170,7 +176,7 @@ function cancelRequest() {
     </div>
 
     <div class="sidebar-menu" default-active="1" :collapse="isCollapsed" >
-      <div index="0" class="chat-session" @click="addNewChat">
+      <div index="0" class="new-chat" @click="addNewChat">
         <el-icon><Plus /></el-icon> New Chat
       </div>
 
@@ -180,9 +186,9 @@ function cancelRequest() {
       >
         <el-icon> <ChatSquare /> </el-icon>
 
-        <input v-if="editingSessionId === session.id"
-          style="width: 100%; border: none; outline: none" placeholder="Enter title"
-          v-model="session.title" :id="`session-input-${session.id}`"
+        <input
+          placeholder="Enter title" style="width: 100%; border: none; outline: none; font-size: 12px"
+          v-model="session.title" :id="`session-input-${session.id}`" v-if="editingSessionId === session.id"
           @blur="finishEditing(session)" @keyup.enter="finishEditing(session)"
         />
 
@@ -207,7 +213,8 @@ function cancelRequest() {
   <div class="chat-main">
     <div class="chat-log" ref="chatLog">
       <div :class="['chat-message', msg.role]" v-for="(msg, i) in messages" :key="i">
-        <div class="bubble">
+        <div class="bubble g-cell-center">
+          <el-icon @click="deleteMessage(msg, i)"> <Delete /> </el-icon>
           <strong>{{ msg.role === 'user' ? 'You' : 'AI' }}: </strong>
           <template v-if="msg.content === '__TYPING_DOTS__'"> <TypingDots /> </template>
           <template v-else> {{ msg.content }} </template>
@@ -308,8 +315,18 @@ function cancelRequest() {
   gap: 8px;
 }
 
-.chat-session {
+.new-chat {
   font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.chat-session {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -328,7 +345,7 @@ function cancelRequest() {
 }
 
 .session-title {
-  font-size: 14px;
+  font-size: 12px;
   color: #333;
   white-space: nowrap;
   overflow: hidden;

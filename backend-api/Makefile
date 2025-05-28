@@ -19,11 +19,11 @@ check:
 	command -v yq
 	command -v docker
 
-postgres:
-	./configs/postgres.exp
+#postgres:
+#	./configs/postgres.exp
 
-redis:
-	./configs/redis.exp
+#redis:
+#	./configs/redis.exp
 
 lint:
 	go mod tidy
