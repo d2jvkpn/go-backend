@@ -1,7 +1,7 @@
 <script setup>
 import { ref, nextTick } from 'vue'
 import { ElMessage } from 'element-plus'
-import { Operation, Position, ChatDotSquare, Plus, Files, VideoPause, MoreFilled } from '@element-plus/icons-vue'
+import { Operation, Position, ChatSquare, Plus, Files, VideoPause, MoreFilled } from '@element-plus/icons-vue'
 // ChatLineSquare, Edit, Folder, Menu
 
 //
@@ -178,7 +178,7 @@ function cancelRequest() {
         :title="session.title || 'Untitled'"
         v-for="(session, index) in chatSessions" :index="index+1" :key="session.id"
       >
-        <el-icon> <ChatDotSquare /> </el-icon>
+        <el-icon> <ChatSquare /> </el-icon>
 
         <input v-if="editingSessionId === session.id"
           style="width: 100%; border: none; outline: none" placeholder="Enter title"
@@ -190,7 +190,7 @@ function cancelRequest() {
           {{ session.title || 'Untitled' }}
         </span>
 
-        <el-dropdown v-if="selectedSessionId === session.id" @command="handleCommand" trigger="click">
+        <el-dropdown @command="handleCommand" trigger="click">
           <el-icon style="margin-left: auto; cursor: pointer;"> <MoreFilled /> </el-icon>
           <template #dropdown>
             <el-dropdown-menu>
@@ -319,12 +319,16 @@ function cancelRequest() {
   transition: background 0.2s;
 }
 
+.chat-session:hover {
+  background-color: #f0f0f0;
+}
+
 .chat-session.selected {
   background-color: #f0f0f0;
 }
 
 .session-title {
-  font-size: 12px;
+  font-size: 14px;
   color: #333;
   white-space: nowrap;
   overflow: hidden;
