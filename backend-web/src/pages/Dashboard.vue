@@ -73,7 +73,7 @@ const toggleCollapse = () => {
 .dashboard-content {
   position: relative;
   flex: 1;
-  padding: 20px;
+  padding: 1.5rem 1.5rem 0 1.5rem;
   background-color: #f5f7fa;
   overflow-y: auto;
 }

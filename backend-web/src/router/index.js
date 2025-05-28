@@ -18,6 +18,12 @@ export const allRoutes = [
   },
 
   {
+    path: "/dashboard/chatting", name: "Chatting",
+    meta: { title: "Backend - Chatting", requiresAuth: true, levels: ["any"] },
+    component: () => import("@/pages/Chatting/Chatting.vue"),
+  },
+
+  {
     path: "/dashboard/overview", name: "Overview",
     meta: { title: "Backend - Overview", requiresAuth: true, levels: ["editor", "admin"] },
     component: () => import("@/pages/Overview/Overview.vue"),

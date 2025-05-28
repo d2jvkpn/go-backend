@@ -1,7 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { Histogram, User, Setting, Postcard, Box } from '@element-plus/icons-vue'
+import { Histogram, User, Setting, Postcard, Box, ChatLineSquare } from '@element-plus/icons-vue'
 
 import { allRoutes } from '@/router/index'
 
@@ -45,28 +45,27 @@ const visibleRouteNames = computed(() => {
 <aside>
   <el-menu :default-active="$route.path" router>
     <el-menu-item index="/dashboard/accounts" v-if="visibleRouteNames.includes('Accounts')">
-      <el-icon> <User /> </el-icon>
-      Accounts
+      <el-icon> <User /> </el-icon> Accounts
+    </el-menu-item>
+
+    <el-menu-item index="/dashboard/chatting" v-if="visibleRouteNames.includes('Chatting')">
+      <el-icon> <ChatLineSquare /> </el-icon> Chatting
     </el-menu-item>
 
     <el-menu-item index="/dashboard/overview" v-if="visibleRouteNames.includes('Overview')">
-      <el-icon> <Histogram /> </el-icon>
-      Overview
+      <el-icon> <Histogram /> </el-icon> Overview
     </el-menu-item>
 
     <el-sub-menu index="/dashboard/settings" v-if="visibleRouteNames.includes('Settings')">
       <template #title>
-        <el-icon> <Setting /> </el-icon>
-        Settings
+        <el-icon> <Setting /> </el-icon> Settings
       </template>
       <el-menu-item index="/dashboard/settings/profile" v-if="visibleRouteNames.includes('Profile')">
-        <el-icon><Postcard /></el-icon>
-        Profile
+        <el-icon><Postcard /></el-icon> Profile
       </el-menu-item>
 
       <el-menu-item index="/dashboard/settings/security" v-if="visibleRouteNames.includes('Security')">
-        <el-icon><Box /></el-icon>
-        Security
+        <el-icon><Box /></el-icon> Security
       </el-menu-item>
     </el-sub-menu>
   </el-menu>
