@@ -2,7 +2,7 @@
 import { ref, nextTick } from 'vue'
 import { ElMessage } from 'element-plus'
 import { Operation, Position, ChatDotSquare, Plus, Files, VideoPause } from '@element-plus/icons-vue'
-// ChatLineSquare, Edit, Folder, Menu
+// ChatLineSquare, Edit, Folder, Menu, MoreFilled
 
 //
 const isCollapsed = ref(false)
@@ -16,6 +16,31 @@ const input = ref('')
 const messages = ref([])
 const loading = ref(false)
 const chatLog = ref(null)
+const editingSessionId = ref(null)
+const chatSessions = ref([
+  { id: "sess-1", title: "GPT Chat" },
+  { id: "sess-2", title: "A.I.D.A" },
+  { id: "sess-3", title: "Writting Assistant" },
+])
+
+
+function addNewChat() {
+  const newId = 'sess_' + Date.now()
+  const newSession = { id: newId, title: '', editing: true }
+  chatSessions.value.unshift(newSession)
+  editingSessionId.value = newId
+  nextTick(() => {
+    const inputEl = document.getElementById(`session-input-${newId}`)
+    inputEl?.focus()
+  })
+}
+
+function finishEditing(session) {
+  if (!session.title.trim()) {
+    session.title = 'Untitled'
+  }
+  editingSessionId.value = null
+}
 
 //
 async function cancelRequest() {
@@ -40,6 +65,7 @@ function scrollChat() {
 async function sendRequest () {
   console.log("==> sendRequest")
   if (!input.value.trim()) {
+    ElMessage.warning('Please enter a message before sending.')
     return
   }
 
@@ -47,14 +73,14 @@ async function sendRequest () {
   const ans = { role: 'assistant', content: '__TYPING_DOTS__' };
   input.value = ''
   messages.value.push({ role: 'user', content: msg }, ans);
-  scrollChat()
   loading.value = true
+  scrollChat()
 
   setTimeout(() => {
     // TODO: axios request
     ans.content = msg
     loading.value = false
-    scrollChat()
+    nextTick(() => scrollChat())
   }, 3000);
 }
 
@@ -119,19 +145,27 @@ function cancelRequest() {
     </div>
 
     <el-menu class="sidebar-menu" default-active="1" :collapse="isCollapsed" >
-      <el-menu-item index="1">
-        <el-icon><ChatDotSquare /></el-icon>
-        <template #title>GPT Chat</template>
+      <el-menu-item index="0" class="chat-session" @click="addNewChat">
+        <el-icon><Plus /></el-icon>
+        <template #title>New Chat</template>
       </el-menu-item>
 
-      <el-menu-item index="2">
-        <el-icon><ChatDotSquare /></el-icon>
-        <template #title>A.I.D.A</template>
-      </el-menu-item>
+      <el-menu-item class="chat-session"
+        v-for="(session, index) in chatSessions" :index="index+1" :key="session.id"
+      >
+        <el-icon> <ChatDotSquare /> </el-icon>
+        <template #title>
 
-      <el-menu-item index="3">
-        <el-icon><ChatDotSquare /></el-icon>
-        <template #title>Writing Assistant</template>
+          <template v-if="editingSessionId === session.id">
+            <input
+              style="width: 100%; border: none; outline: none" placeholder="Enter title"
+              v-model="session.title" :id="`session-input-${session.id}`"
+              @blur="finishEditing(session)" @keyup.enter="finishEditing(session)"
+            />
+          </template>
+          <template v-else> {{ session.title || 'Untitled' }} </template>
+
+        </template>
       </el-menu-item>
     </el-menu>
   </div>
@@ -150,7 +184,7 @@ function cancelRequest() {
     <div class="input-container" title="Press Ctrl+Enter to Send">
       <textarea class="input-box" rows="2"
         :placeholder="loading ? 'Thinking...' : 'Ask anything...'"
-        v-model="input" @keyup.enter.ctrl="sendRequest()" :disabled="loading"
+        v-model="input" @keyup.enter.ctrl="sendRequest" :disabled="loading"
       ></textarea>
 
       <div class="input-actions">
@@ -238,6 +272,18 @@ function cancelRequest() {
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+.chat-session {
+  border-radius: 5px;
+  padding: 2px;
+  height: 2rem;
+  margin: 2px 2px;
+}
+
+.chat-session:hover {
+  border: 1px solid grey;
+  background-color: #eee;
 }
 
 .chat-message .bubble {
