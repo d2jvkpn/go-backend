@@ -77,7 +77,7 @@ func ValidatePassword(password string) (err error) {
 	}
 
 	for i := range _ACCOUNT_PasswordContains {
-		if _ACCOUNT_PasswordContains[i].Match(bts) {
+		if !_ACCOUNT_PasswordContains[i].Match(bts) {
 			return fmt.Errorf("invalid password")
 		}
 	}

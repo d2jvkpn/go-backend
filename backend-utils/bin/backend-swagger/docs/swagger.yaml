@@ -214,7 +214,7 @@ definitions:
           maxLength: 32
           example: John
         maxLength: 32
-        minLength: 2
+        minLength: 1
         type: string
         x-order: "02"
       labels:
@@ -230,7 +230,7 @@ definitions:
           maxLength: 32
           example: Doe
         maxLength: 32
-        minLength: 2
+        minLength: 1
         type: string
         x-order: "03"
       level:

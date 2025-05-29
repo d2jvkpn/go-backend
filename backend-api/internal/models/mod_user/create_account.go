@@ -30,12 +30,12 @@ type CreateAccount struct {
 	// minLength: 1
 	// maxLength: 32
 	// example: John
-	Firstname string `json:"firstname" gorm:"column:firstname" validate:"required,min=2,max=32" fake:"{firstname}" extensions:"x-order=02"`
+	Firstname string `json:"firstname" gorm:"column:firstname" validate:"required,min=1,max=32" fake:"{firstname}" extensions:"x-order=02"`
 
 	// minLength: 1
 	// maxLength: 32
 	// example: Doe
-	Lastname string `json:"lastname" gorm:"column:lastname" validate:"required,min=2,max=32" fake:"{lastname}" extensions:"x-order=03"`
+	Lastname string `json:"lastname" gorm:"column:lastname" validate:"required,min=1,max=32" fake:"{lastname}" extensions:"x-order=03"`
 
 	// Phone number
 	// minLength: 6
