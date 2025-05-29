@@ -20,6 +20,10 @@ function openCreateAccount() {
   createAccountVisible.value = true
 }
 
+function formatTime(row, column, cellValue, index) {
+  return dayjs(cellValue).format('YYYY-MM-DD HH:mm')
+}
+
 // show accounts table
 const allColumns = [
   { prop: 'id',        label: 'ID' },
@@ -29,13 +33,13 @@ const allColumns = [
   { prop: 'phone',     label: 'Phone', width: 120 },
   { prop: 'level',     label: 'Level', width: 100 },
   { prop: 'labels',    label: 'Labels' },
-  { prop: '_createdAt', label: 'Created At', sortable: true, width: 150 },
-  { prop: '_updatedAt', label: 'Updated At', sortable: true, width: 150 },
+  { prop: 'createdAt', label: 'Created At', sortable: true, width: 150, formatter: formatTime },
+  { prop: 'updatedAt', label: 'Updated At', sortable: true, width: 150, formatter: formatTime },
   //{ prop: 'status',    label: 'Status' },
 ]
 
 // const visibleColumns = ref(['id', 'firstname', 'lastname', 'email', 'phone', 'level', 'labels', 'createdAt', 'status'])
-const visibleColumns = ref(['email', 'phone', 'level', 'labels', '_createdAt'])
+const visibleColumns = ref(['email', 'phone', 'level', 'labels', 'createdAt'])
 
 const selectVisibleColumns = computed(() =>
   allColumns.filter(col => visibleColumns.value.includes(col.prop))
@@ -59,10 +63,12 @@ async function fetchData() {
        pageData.value.total = data.total;
      }
 
+     /*
      data.items.forEach(item => {
        item._createdAt = dayjs(item.createdAt).format('YYYY-MM-DD HH:mm')
        item._updatedAt = dayjs(item.updatedAt).format('YYYY-MM-DD HH:mm')
     })
+    */
 
      pageData.value.items = data.items
   } catch (err) {
@@ -259,7 +265,7 @@ onMounted(async () => {
   <!--el-table-column prop="id" label="ID" sortable :sort-method="(a, b) => a > b"/-->
   <el-table-column v-for="col in selectVisibleColumns"
     :prop="col.prop" :label="col.label" :key="col.prop"
-    :sortable="col.sortable" :width="col.width"
+    :sortable="col.sortable" :width="col.width" :formatter="col.formatter"
   />
 
   <el-table-column label="Actions" fixed="right" width="180">

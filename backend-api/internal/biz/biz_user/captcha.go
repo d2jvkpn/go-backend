@@ -15,9 +15,12 @@ type CaptchaResponse struct {
 	Enabled bool   `json:"enabled" extensions:"x-order=01"`
 	Id      string `json:"id,omitempty" extensions:"x-order=02"`
 
-	Length      int    `json:"length,omitempty" extensions:"x-order=03"`
-	Base64Image string `json:"base64Image,omitempty" extensions:"x-order=03"` // data:image/png;base64,...
-	ExpiresAt   int64  `json:"expiresAt,omitempty" extensions:"x-order=04"`   // unix timstamp
+	// captcha length
+	Length int `json:"length,omitempty" extensions:"x-order=03"`
+	// data:image/png;base64,...
+	Base64Image string `json:"base64Image,omitempty" extensions:"x-order=04"`
+	// unix timestamp
+	ExpiresAt int64 `json:"expiresAt,omitempty" extensions:"x-order=05"`
 }
 
 func NewCaptcha() (item *CaptchaResponse, err *errx.ErrX) {

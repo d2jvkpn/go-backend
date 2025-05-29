@@ -1,6 +1,34 @@
 definitions:
+  biz_user.CaptchaResponse:
+    properties:
+      base64Image:
+        description: data:image/png;base64,...
+        type: string
+        x-order: "04"
+      enabled:
+        description: 'required: true'
+        type: boolean
+        x-order: "01"
+      expiresAt:
+        description: unix timestamp
+        type: integer
+        x-order: "05"
+      id:
+        type: string
+        x-order: "02"
+      length:
+        description: captcha length
+        type: integer
+        x-order: "03"
+    type: object
   biz_user.LoginRequest:
     properties:
+      captchaAnswer:
+        type: string
+        x-order: "22"
+      captchaId:
+        type: string
+        x-order: "21"
       email:
         example: john@noreply.local
         type: string
@@ -518,6 +546,17 @@ paths:
       summary: Delete accounts
       tags:
       - account::query
+  /api/v1/open/account/captcha:
+    get:
+      description: '...'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/biz_user.CaptchaResponse'
+      summary: Get an Captcha
+      tags:
+      - account::captcha
   /api/v1/open/account/login:
     post:
       consumes:

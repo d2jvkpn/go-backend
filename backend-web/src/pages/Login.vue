@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onBeforeMount, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
 
 import { request } from  "@/js/api"
@@ -14,8 +14,7 @@ const password = ref('')
 const captcha = ref({ enabled: true, id: "", base64Image: "", length: 0, answer: "" })
 const loading = ref(false)
 const router = useRouter()
-
-let firstRoute = ""
+const route = useRoute()
 
 async function getCaptcha() {
   try {
@@ -47,7 +46,7 @@ async function submit () {
       return
     }
 
-    console.log("???", captcha.value.answer.length, captcha.value.length)
+    // console.log("???", captcha.value.answer.length, captcha.value.length)
     if (captcha.value.answer.length != captcha.value.length) {
       ElMessage.warning('Invlaid captcha!');
       return
@@ -73,12 +72,10 @@ async function submit () {
       { params: {platform: "web"} },
     )
 
-    firstRoute = getFirstRoute(data.level);
-
     stores.setAccount(data)
     ElMessage.success(`Welcome back, ${data.firstname} ${data.lastname}!`)
 
-    router.push(firstRoute)
+    router.push(route.query?.from || getFirstRoute(data.level))
   } catch (err) {
     console.log(`!!! Login error: ${err.message}`)
     if (err.code == "captcha_verify_failed") {

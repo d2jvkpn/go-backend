@@ -77,7 +77,11 @@ router.beforeEach((to, from, next) => {
   const isLoggedIn = !!localStorage.getItem("token");
 
   if (to.meta.requiresAuth && !isLoggedIn) {
-    return next("/login")
+    // console.log("???", to.fullPath);
+    return next({
+      path: '/login',
+      query: { from: to.fullPath },
+    })
   }
 
   /* TODO: pemission denied
