@@ -1,7 +1,8 @@
 <script setup>
 import { ref, nextTick } from 'vue'
 import { ElMessage } from 'element-plus'
-import { Operation, Position, ChatSquare, Plus, Files, VideoPause, MoreFilled, Delete } from '@element-plus/icons-vue'
+import { Operation, Position, ChatSquare, DocumentAdd, Plus, MoreFilled } from '@element-plus/icons-vue'
+import { Folder, Microphone, VideoPause, Delete } from '@element-plus/icons-vue'
 // ChatLineSquare, Edit, Folder, Menu
 
 //
@@ -184,7 +185,7 @@ function cancelRequest() {
         :title="session.title || 'Untitled'"
         v-for="(session, index) in chatSessions" :index="index+1" :key="session.id"
       >
-        <el-icon> <ChatSquare /> </el-icon>
+        <!--el-icon> <ChatSquare /> </el-icon-->
 
         <input
           placeholder="Enter title" style="width: 100%; border: none; outline: none; font-size: 12px"
@@ -211,12 +212,12 @@ function cancelRequest() {
   </div>
 
   <div class="chat-main">
+
     <div class="chat-log" ref="chatLog">
       <div :class="['chat-message', msg.role]" v-for="(msg, i) in messages" :key="i">
         <div class="bubble g-cell-center">
-          <el-icon @click="deleteMessage(msg, i)"> <Delete /> </el-icon>
-          <strong>{{ msg.role === 'user' ? 'You' : 'AI' }}: </strong>
-          <template v-if="msg.content === '__TYPING_DOTS__'"> <TypingDots /> </template>
+          <el-icon class="delete-icon" @click="deleteMessage(msg, i)"> <Delete /> </el-icon>
+          <template v-if="msg.content === '__TYPING_DOTS__'"> <TypingDots /></template>
           <template v-else> {{ msg.content }} </template>
         </div>
       </div>
@@ -229,12 +230,13 @@ function cancelRequest() {
       ></textarea>
 
       <div class="input-actions">
-        <el-icon class="input-icon" @click="loading ? cancelRequest() : sendRequest()">
+        <el-icon @click="" title="More"><Microphone /></el-icon>
+        <el-icon  @click="loading ? cancelRequest() : sendRequest()">
           <template v-if="loading"> <VideoPause /> </template>
           <template v-else> <Position /> </template>
         </el-icon>
-        <el-icon class="plus-icon" @click="addDocs" title="More"><Plus /></el-icon>
-        <el-icon class="list-icon" @click="listDocs" title="More"><Files /></el-icon>
+        <el-icon @click="listDocs" title="More"><Folder /></el-icon>
+        <el-icon @click="addDocs" title="More"><DocumentAdd /></el-icon>
       </div>
     </div>
 
@@ -246,7 +248,8 @@ function cancelRequest() {
 <style scoped>
 .chat-layout {
   display: flex;
-  height: 100%;
+  /* height: 100%; */
+  height: 100vh;
 }
 
 .sidebar {
@@ -316,7 +319,7 @@ function cancelRequest() {
 }
 
 .new-chat {
-  font-size: 14px;
+  font-size: 16px;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -324,6 +327,10 @@ function cancelRequest() {
   cursor: pointer;
   border-radius: 6px;
   transition: background 0.2s;
+}
+
+.new-chat:hover {
+  background: #cce6ff;
 }
 
 .chat-session {
@@ -331,21 +338,22 @@ function cancelRequest() {
   align-items: center;
   gap: 8px;
   padding: 6px 10px;
+  margin: 0.21rem;
   cursor: pointer;
   border-radius: 6px;
   transition: background 0.2s;
 }
 
 .chat-session:hover {
-  background-color: #f0f0f0;
+  background-color: #e0e0e0;
 }
 
 .chat-session.selected {
-  background-color: #f0f0f0;
+  background-color: #cce6ff;
 }
 
 .session-title {
-  font-size: 12px;
+  font-size: 14px;
   color: #333;
   white-space: nowrap;
   overflow: hidden;
@@ -354,6 +362,25 @@ function cancelRequest() {
   cursor: pointer;
   user-select: none;
   transition: color 0.2s;
+}
+
+.bubble {
+  position: relative;
+  padding-right: 1.5em; /* 给右上角留空间 */
+}
+
+.delete-icon {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  cursor: pointer;
+  display: none;
+  color: #888;
+  font-size: 16px;
+}
+
+.bubble:hover .delete-icon {
+  display: inline-block;
 }
 
 .chat-message .bubble {
@@ -369,8 +396,8 @@ function cancelRequest() {
   justify-content: flex-end;
 }
 .chat-message.user .bubble {
-  background-color: #cce6ff;
-  color: #003366;
+  background-color: #f5f5f5;
+  color: #333;
   border-top-right-radius: 0;
 }
 
@@ -380,8 +407,8 @@ function cancelRequest() {
   justify-content: flex-start;
 }
 .chat-message.assistant .bubble {
-  background-color: #f5f5f5;
-  color: #333;
+  background-color: #cce6ff;
+  color: #003366;
   border-top-left-radius: 0;
 }
 
@@ -391,7 +418,7 @@ function cancelRequest() {
   border: 1px solid #ccc;
   border-radius: 10px;
   justify-content: center; 
-  height: 5rem;
+  height: 6rem;
   padding: 10px;
 }
 
@@ -409,17 +436,15 @@ function cancelRequest() {
 }
 
 .input-actions {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
-  margin-left: 8px;
-  padding-bottom: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: auto 2px auto 5px;
 }
 
 /* all direct children of class input-actions */
 .input-actions > * {
-  font-size: 18px;
+  font-size: 24px;
   cursor: pointer;
   color: grey;
   transition: transform 0.2s;

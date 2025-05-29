@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessageBox, ElMessage } from 'element-plus'
-import { ArrowDown, Fold, Expand } from '@element-plus/icons-vue'
+import { ArrowDown, Fold, Expand , ChatLineSquare, Postcard, Lock, SwitchButton } from '@element-plus/icons-vue'
 
 import ChangePassword from './ChangePassword.vue'
 import stores from "@/js/stores"
@@ -50,6 +50,9 @@ async function confirmLogout() {
 
 function handleCommand (command) {
   switch (command) {
+  case "chat":
+    window.open(`${import.meta.env.VITE_BASE_PATH}/chat`, '_blank')
+    break
   case 'profile':
     router.push('/dashboard/settings/profile')
     break
@@ -83,9 +86,24 @@ function handleCommand (command) {
 
     <template #dropdown>
       <el-dropdown-menu>
-        <el-dropdown-item command="profile"> 👤 Profile </el-dropdown-item>
-        <el-dropdown-item command="change_password"> 🔒 Change password </el-dropdown-item>
-        <el-dropdown-item divided command="logout"> ⏻ Logout </el-dropdown-item>
+        <el-dropdown-item command="chat">
+          <el-icon> <ChatLineSquare /> </el-icon> Chat
+        </el-dropdown-item>
+        <!--el-dropdown-item command="profile"> 👤 Profile </el-dropdown-item-->
+        <!--el-dropdown-item command="change_password"> 🔒 Change password </el-dropdown-item-->
+        <!--el-dropdown-item divided command="logout"> ⏻ Logout </el-dropdown-item-->
+
+        <el-dropdown-item command="profile">
+          <el-icon> <Postcard /> </el-icon> Profile
+        </el-dropdown-item>
+
+        <el-dropdown-item command="change_password">
+          <el-icon><Lock /></el-icon> Change password
+        </el-dropdown-item>
+
+        <el-dropdown-item divided command="logout">
+          <el-icon><SwitchButton /></el-icon> Logout
+        </el-dropdown-item>
       </el-dropdown-menu>
     </template>
   </el-dropdown>

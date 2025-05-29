@@ -3,6 +3,7 @@ import { computed, ref, onBeforeMount } from 'vue'
 import { useRoute } from 'vue-router'
 
 import Dashboard from './pages/Dashboard.vue'
+import Chat from './pages/Chat/Chat.vue'
 
 //
 console.log(`==> import.meta.env: ${JSON.stringify(import.meta.env)}`);
@@ -25,11 +26,16 @@ const route = useRoute()
 const layoutComponent = computed(() => {
   const requiresAuth = route.meta.requiresAuth
 
-  if (requiresAuth) {
-    return Dashboard
+  if (!requiresAuth) {
+    return 'div'
   }
 
-  return 'div'
+  switch (route.name) {
+  case "Chat":
+    return Chat;
+  default:
+    return Dashboard;
+  }
 })
 </script>
 

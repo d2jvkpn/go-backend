@@ -12,15 +12,15 @@ export const allRoutes = [
   },
 
   {
-    path: "/dashboard/accounts", name: "Accounts",
-    meta: { title: "Backend - Accounts", requiresAuth: true, levels: ["admin"] },
-    component: () => import("@/pages/Accounts/Accounts.vue"),
+    path: "/chat", name: "Chat",
+    meta: { title: "Backend - Chat", requiresAuth: true, levels: ["any"] },
+    component: () => import("@/pages/Chat/Chat.vue"),
   },
 
   {
-    path: "/dashboard/chatting", name: "Chatting",
-    meta: { title: "Backend - Chatting", requiresAuth: true, levels: ["any"] },
-    component: () => import("@/pages/Chatting/Chatting.vue"),
+    path: "/dashboard/accounts", name: "Accounts",
+    meta: { title: "Backend - Accounts", requiresAuth: true, levels: ["admin"] },
+    component: () => import("@/pages/Accounts/Accounts.vue"),
   },
 
   {

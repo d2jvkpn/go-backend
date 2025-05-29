@@ -48,9 +48,9 @@ const visibleRouteNames = computed(() => {
       <el-icon> <User /> </el-icon> Accounts
     </el-menu-item>
 
-    <el-menu-item index="/dashboard/chatting" v-if="visibleRouteNames.includes('Chatting')">
-      <el-icon> <ChatLineSquare /> </el-icon> Chatting
-    </el-menu-item>
+    <!--el-menu-item index="/dashboard/chat" v-if="visibleRouteNames.includes('Chat')">
+      <el-icon> <ChatLineSquare /> </el-icon> Chat
+    </el-menu-item-->
 
     <el-menu-item index="/dashboard/overview" v-if="visibleRouteNames.includes('Overview')">
       <el-icon> <Histogram /> </el-icon> Overview
