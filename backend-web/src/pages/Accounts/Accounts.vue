@@ -155,10 +155,31 @@ function updateStatus (account) {
 //
 const editAccountVisible = ref(false)
 
-function editAccount (account) {
+function clickEditAccount(account) {
+  if (account.status == "deleted") {
+    ElMessage.warning("Can't edit the deleted account");
+    return
+  }
+
   console.log(`==> EditAccount: ${account.id}, ${account.firstname} ${account.lastname}, ${account.status}`)
   selectedAccount.value = account
   editAccountVisible.value = true
+}
+
+async function postUpdateStatus ({id, status}) {
+  /*
+  const target = pageData.items.find(item => item.id === account.id)
+  if (target) {
+    target.status = account.status
+  }
+  */
+
+  selectedAccount.value.status = status;
+  selectedAccount.value.newStatus = '';
+
+  if (status == "deleted") {
+    pageData.value.items = pageData.value.items.filter(v => v.id != id);
+  }
 }
 
 //
@@ -278,7 +299,7 @@ onMounted(async () => {
 
         <el-icon
           :style="{fontSize: '20px', margin: '2px'}" title="Edit Account" class="g-hover-icon"
-          @click="editAccount(scope.row)"
+          @click="clickEditAccount(scope.row)"
         > <Edit /> </el-icon>
 
         <el-button
@@ -305,14 +326,7 @@ onMounted(async () => {
 
 <CreateAccount v-model:visible="createAccountVisible" @success="fetchData" />
 
-<UpdateStatus
-  v-model:visible="updateStatusVisible" :account="selectedAccount"
-  @update:status="({ id, status }) => {
-    const target = pageData.items.find(item => item.id === id)
-    if (target) { target.status = status }
-    selectedAccount.status = status; selectedAccount.newStatus = '';
-  }"
-/>
+<UpdateStatus v-model:visible="updateStatusVisible" :account="selectedAccount" @update:status="postUpdateStatus" />
 
 <EditAccount
   v-model:visible="editAccountVisible" :account="selectedAccount"
