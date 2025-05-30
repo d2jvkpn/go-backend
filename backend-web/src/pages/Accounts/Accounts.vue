@@ -179,6 +179,7 @@ async function postUpdateStatus ({id, status}) {
 
   if (status == "deleted") {
     pageData.value.items = pageData.value.items.filter(v => v.id != id);
+    pageData.value.total -= 1;
   }
 }
 
