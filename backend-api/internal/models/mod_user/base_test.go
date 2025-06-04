@@ -12,7 +12,7 @@ import (
 	"github.com/brianvoe/gofakeit/v7"
 	"github.com/brianvoe/gofakeit/v7/source"
 	"github.com/spf13/viper"
-	"github.com/stretchr/testify/require"
+	//"github.com/stretchr/testify/require"
 )
 
 var (

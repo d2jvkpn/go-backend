@@ -2,7 +2,7 @@
 import { ref, nextTick } from 'vue'
 import { ElMessage } from 'element-plus'
 import { Operation, Position, ChatSquare, DocumentAdd, Plus, MoreFilled } from '@element-plus/icons-vue'
-import { Folder, Microphone, VideoPause, Delete } from '@element-plus/icons-vue'
+import { Folder, Microphone, VideoPause, Document, Delete } from '@element-plus/icons-vue'
 // ChatLineSquare, Edit, Folder, Menu
 
 //
@@ -216,6 +216,7 @@ function cancelRequest() {
     <div class="chat-log" ref="chatLog">
       <div :class="['chat-message', msg.role]" v-for="(msg, i) in messages" :key="i">
         <div class="bubble g-cell-center">
+          <el-icon class="delete-icon" @click=""> <Document /> </el-icon>
           <el-icon class="delete-icon" @click="deleteMessage(msg, i)"> <Delete /> </el-icon>
           <template v-if="msg.content === '__TYPING_DOTS__'"> <TypingDots /></template>
           <template v-else> {{ msg.content }} </template>

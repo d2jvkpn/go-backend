@@ -70,18 +70,19 @@ func SetupHttp(release bool, config *viper.Viper) (err error) {
 	} else {
 		engine = gin.Default()
 	}
-	engine.RedirectTrailingSlash = false
+	// engine.RedirectTrailingSlash = false
 	// engine.MaxMultipartMemory = HTTP_MaxMultipartMemory // ??
 
 	// engine.Use(Cors(config.GetString("cors")))
+	x_server := fmt.Sprintf(
+		"app=%s; version=%s",
+		settings.Project.GetString("app_name"),
+		settings.Project.GetString("app_version"),
+	)
 	engine.Use(
 		Cors(httpConfig.GetStringSlice("allow_origins")),
 		func(ctx *gin.Context) {
-			ctx.Header("x-server", fmt.Sprintf(
-				"app=%s; version=%s",
-				settings.Project.GetString("app_name"),
-				settings.Project.GetString("app_version"),
-			))
+			ctx.Header("x-server", x_server)
 		},
 	)
 
@@ -126,7 +127,19 @@ func SetupHttp(release bool, config *viper.Viper) (err error) {
 	)
 
 	// 5. apis and router
+	router.GET("/", ginx.JSONStatic(gin.H{
+		"app_name":        settings.Project.GetString("meta.app_name"),
+		"app_version":     settings.Project.GetString("meta.app_version"),
+		"build_time":      settings.Project.GetString("meta.build_time"),
+		"git_branch":      settings.Project.GetString("meta.git_branch"),
+		"git_commit_time": settings.Project.GetString("meta.git_commit_time"),
+	}))
+
 	router.GET("/healthz", ginx.Healthz)
+
+	router.GET("/ip", func(ctx *gin.Context) {
+		ctx.String(http.StatusOK, ctx.ClientIP()+"\n")
+	})
 
 	if fsys, err = fs.Sub(_Static, "static"); err != nil {
 		return err
