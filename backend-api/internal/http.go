@@ -127,7 +127,7 @@ func SetupHttp(release bool, config *viper.Viper) (err error) {
 	)
 
 	// 5. apis and router
-	router.GET("/", ginx.JSONStatic(gin.H{
+	router.GET("", ginx.JSONStatic(gin.H{
 		"app_name":        settings.Project.GetString("meta.app_name"),
 		"app_version":     settings.Project.GetString("meta.app_version"),
 		"build_time":      settings.Project.GetString("meta.build_time"),
