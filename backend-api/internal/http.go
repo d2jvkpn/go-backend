@@ -32,9 +32,10 @@ func SetupHttp(release bool, config *viper.Viper) (err error) {
 		httpConfig *viper.Viper
 		cert       tls.Certificate
 
-		apiLog gin.HandlerFunc
-		router *gin.RouterGroup
-		engine *gin.Engine
+		appInfo gin.HandlerFunc
+		apiLog  gin.HandlerFunc
+		router  *gin.RouterGroup
+		engine  *gin.Engine
 	)
 
 	httpConfig = config.Sub("http")
@@ -86,14 +87,8 @@ func SetupHttp(release bool, config *viper.Viper) (err error) {
 		},
 	)
 
-	router = &engine.RouterGroup
-	if p := httpConfig.GetString("path"); p != "" {
-		*router = *(router.Group(p))
-	}
-
 	// engine.LoadHTMLGlob("templates/*.templ"), "templates/*/*.html"
-	templ, err = template.ParseFS(_Templates, "templates/*.html")
-	if err != nil {
+	if templ, err = template.ParseFS(_Templates, "templates/*.html"); err != nil {
 		return err
 	}
 	engine.SetHTMLTemplate(templ)
@@ -102,10 +97,17 @@ func SetupHttp(release bool, config *viper.Viper) (err error) {
 	notRoute, _ := json.Marshal(gin.H{"requestId": "", "code": "no_route", "kind": "no_route", "msg": ""})
 	engine.NoRoute(func(ctx *gin.Context) {
 		time.Sleep(1000 * time.Millisecond)
-
 		ctx.Header("Content-Type", "application/json")
 		ctx.Writer.WriteHeader(http.StatusNotFound)
 		ctx.Writer.Write(notRoute)
+	})
+
+	appInfo = ginx.JSONStatic(gin.H{
+		"app_name":        settings.Project.GetString("meta.app_name"),
+		"app_version":     settings.Project.GetString("meta.app_version"),
+		"build_time":      settings.Project.GetString("meta.build_time"),
+		"git_branch":      settings.Project.GetString("meta.git_branch"),
+		"git_commit_time": settings.Project.GetString("meta.git_commit_time"),
 	})
 
 	apiLog = middlewares.NewAPILog(
@@ -126,17 +128,15 @@ func SetupHttp(release bool, config *viper.Viper) (err error) {
 		_APIMeters...,
 	)
 
+	router = &engine.RouterGroup
+	router.GET("", appInfo)
+	if p := httpConfig.GetString("path"); p != "" {
+		*router = *(router.Group(p))
+	}
+
 	// 5. apis and router
-	router.GET("", ginx.JSONStatic(gin.H{
-		"app_name":        settings.Project.GetString("meta.app_name"),
-		"app_version":     settings.Project.GetString("meta.app_version"),
-		"build_time":      settings.Project.GetString("meta.build_time"),
-		"git_branch":      settings.Project.GetString("meta.git_branch"),
-		"git_commit_time": settings.Project.GetString("meta.git_commit_time"),
-	}))
-
+	router.GET("", appInfo)
 	router.GET("/healthz", ginx.Healthz)
-
 	router.GET("/ip", func(ctx *gin.Context) {
 		ctx.String(http.StatusOK, ctx.ClientIP()+"\n")
 	})
