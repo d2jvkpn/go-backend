@@ -1,6 +1,6 @@
 module backend-utils
 
-go 1.24
+go 1.25
 
 require (
 	github.com/d2jvkpn/gotk v0.0.0-20241126071738-da6892fba447

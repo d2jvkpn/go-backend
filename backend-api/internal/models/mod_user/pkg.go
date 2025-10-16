@@ -11,7 +11,8 @@ var (
 	//_ACCOUNT_Phone = regexp.MustCompile(`^1[3456789]\d{9}$`)
 	_ACCOUNT_Phone = regexp.MustCompile(`^\d{6,20}$`)
 
-	_ACCOUNT_Password = regexp.MustCompile(`^[a-zA-Z0-9]{8,32}$`) // !@.-_*
+	//_ACCOUNT_Password = regexp.MustCompile(`^[a-zA-Z0-9]{8,32}$`) // !@.-_*
+	_ACCOUNT_Password = regexp.MustCompile(`^.{8,32}$`)
 
 	_ACCOUNT_PasswordContains = []*regexp.Regexp{
 		regexp.MustCompile(`[a-z]+`),

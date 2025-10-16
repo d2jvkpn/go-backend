@@ -3,12 +3,12 @@ package infra
 import (
 	"io/ioutil"
 
-	es8 "github.com/elastic/go-elasticsearch/v8"
+	es "github.com/elastic/go-elasticsearch/v9"
 	"github.com/spf13/viper"
 )
 
-func NewEsClient(vp *viper.Viper) (client *es8.Client, err error) {
-	var config es8.Config
+func NewEsClient(vp *viper.Viper) (client *es.Client, err error) {
+	var config es.Config
 
 	config.Addresses = vp.GetStringSlice("addresses")
 	config.Username = vp.GetString("username")
@@ -21,5 +21,5 @@ func NewEsClient(vp *viper.Viper) (client *es8.Client, err error) {
 		}
 	}
 
-	return es8.NewClient(config)
+	return es.NewClient(config)
 }

@@ -45,8 +45,8 @@ export const validateAccount = {
   password: [{
     required: true, message: 'Please enter password',
     trigger: 'blur', min: 8, max: 32,
-    // pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,32}$/,
-    pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,32}$/,
+    pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,32}$/,
+    // pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,32}$/,
     message: 'Password must be 8-32 chars with at least one uppercase, lowercase and number',
   }],
   level: [{ required: true, message: 'Please enter level', trigger: 'change' }],
